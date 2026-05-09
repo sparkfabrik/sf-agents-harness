@@ -3,56 +3,37 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I just fixed a bug in the authentication module where OAuth tokens were not being refreshed. The related issue is #18. Please create the git commit message for me (don't actually run git commit, just output the full git commit command I should run).",
-      "expected_output": "A conventional commit with fix(auth) type/scope, NO issue number in subject line, Refs or Closes footer with fully qualified project path and #18 (e.g. owner/repo#18), and Assisted-by trailer",
+      "prompt": "I need to squash the last 3 commits on my feature branch into one before a PR. My global git config has commit.gpgsign = true. Show me the exact commands.",
+      "expected_output": "Uses git reset --soft HEAD~3 + git commit (not git commit-tree). Does not suggest git rebase -i. Mentions GPG signing is preserved.",
+      "assertions": [
+        {"name": "no-commit-tree", "description": "Does not suggest git commit-tree"},
+        {"name": "no-interactive-rebase", "description": "Does not suggest git rebase -i"},
+        {"name": "uses-git-commit", "description": "Uses git commit for the final squash"},
+        {"name": "gpg-aware", "description": "Addresses GPG signing being preserved"}
+      ],
       "files": []
     },
     {
       "id": 2,
-      "prompt": "I added a new feature to the RAG pipeline that handles PDF ingestion. The issue is tracked in a different project: sparkfabrik-innovation-team/r-d/ai/poc-drupal-rag-intelligence#72. Write the git commit command for me (don't actually run it).",
-      "expected_output": "Conventional commit with feat(rag) type/scope, NO issue number in subject line, Refs footer with full cross-project path, and Assisted-by trailer",
+      "prompt": "My last commit shows as 'Unverified' on GitHub even though commit.gpgsign is true. I used git commit-tree to rewrite its parent SHA. How do I fix it?",
+      "expected_output": "Diagnoses git commit-tree as the cause, suggests git commit --amend -S or git rebase --exec to re-sign, explains why plumbing bypasses signing.",
+      "assertions": [
+        {"name": "diagnoses-commit-tree", "description": "Identifies git commit-tree as the cause"},
+        {"name": "suggests-resign", "description": "Suggests git commit --amend -S or rebase --exec to re-sign"},
+        {"name": "no-commit-tree-again", "description": "Does not suggest git commit-tree in the fix"}
+      ],
       "files": []
     },
     {
       "id": 3,
-      "prompt": "I updated the CI pipeline configuration to add a new linting step. There's no related issue for this. Write the git commit command (don't run it).",
-      "expected_output": "The agent should ask if there is a related issue before producing the commit. If confirmed none, output conventional commit with ci scope, no issue ref, and Assisted-by trailer",
-      "files": []
-    },
-    {
-      "id": 4,
-      "prompt": "I need to start working on issue #42 which is about adding PDF export functionality. I haven't created a branch yet. What branch name should I use? Just tell me the branch name, don't create it.",
-      "expected_output": "Branch name following feat/<issue>-<description> pattern, e.g. feat/42-add-pdf-export. All lowercase, hyphens as separators.",
-      "files": []
-    },
-    {
-      "id": 5,
-      "prompt": "I need to create a branch for a bug fix. The issue is #7, it's about a broken redirect after login. What should I name the branch? Just output the name.",
-      "expected_output": "Branch name following fix/<issue>-<description> pattern, e.g. fix/7-broken-login-redirect. All lowercase, hyphens as separators.",
-      "files": []
-    },
-    {
-      "id": 6,
-      "prompt": "I'm working on a customer project where all commits follow Jira-style format. The last 5 commits in git log are:\n\n[ACME-301] add pagination to user list\n[ACME-298] fix date formatting in reports\n[ACME-295] update API client timeout\n[ACME-290] add error handling for uploads\n[ACME-287] refactor auth middleware\n\nI just fixed a null pointer in the search module. The Jira ticket is ACME-310. Write the git commit command for me (don't run it).",
-      "expected_output": "The agent should detect the Jira-style [ACME-NNN] format from git log and produce a commit message matching that convention (e.g. [ACME-310] fix null pointer in search module), with Assisted-by trailer. Should NOT use conventional commit format since the project uses a different convention.",
-      "files": []
-    },
-    {
-      "id": 7,
-      "prompt": "I tried to commit with conventional commit format but the commit-msg hook rejected it with this error:\n\nERROR: Commit message must match pattern: ^[A-Z]+-[0-9]+: .+$\nExample: PROJECT-123: add new feature\n\nThe ticket is PROJECT-456 and I added a new dashboard widget. Write the correct git commit command (don't run it).",
-      "expected_output": "The agent should parse the hook error, understand the required format (PROJECT-NNN: description), and produce a compliant commit (e.g. PROJECT-456: add new dashboard widget) with Assisted-by trailer. Should NOT retry with conventional commit or legacy refs format.",
-      "files": []
-    },
-    {
-      "id": 8,
-      "prompt": "I fixed a race condition in the queue worker. The last 5 commits in git log are:\n\nfeat(api): add rate limiting\n[PROJ-88] update dependencies\nrefs #12: fix login timeout\nfix: correct null check\n[PROJ-85] add retry logic\n\nThe issue is #33. Write the git commit command (don't run it).",
-      "expected_output": "The agent should detect the mixed formats in git log and use the most recent commit's format (conventional commits: feat(api): add rate limiting). It should produce a conventional commit (e.g. fix(queue): resolve race condition in worker) with fully qualified Refs/Closes footer and Assisted-by trailer. It should NOT ask the user what format to use.",
-      "files": []
-    },
-    {
-      "id": 9,
-      "prompt": "I added input validation to the signup form. The last 5 commits in git log are:\n\nupdated stuff\nwip\nfix\nmore changes\nmisc updates\n\nThere's no related issue. Write the git commit command (don't run it).",
-      "expected_output": "The agent should recognize that the git log has no recognizable commit convention (all freeform messages) and ask the user what commit format the project expects before producing a commit command. It should NOT assume conventional commits or any other format.",
+      "prompt": "I want to add a Refs: trailer to the last 5 commits on a project where commit.gpgsign = true. What's the non-interactive approach that keeps signatures valid?",
+      "expected_output": "Suggests git rebase --exec with git commit --amend -S. Does not use git rebase -i or git commit-tree. Includes proper Assisted-by trailer in examples.",
+      "assertions": [
+        {"name": "no-interactive-rebase", "description": "Does not suggest git rebase -i"},
+        {"name": "no-commit-tree", "description": "Does not suggest git commit-tree"},
+        {"name": "uses-exec-signing", "description": "Uses --exec with -S to re-apply signing"},
+        {"name": "includes-trailer", "description": "Mentions Assisted-by trailer convention"}
+      ],
       "files": []
     }
   ]

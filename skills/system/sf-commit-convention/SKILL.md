@@ -169,6 +169,7 @@ Agents run without a TTY. Any git command that opens `$EDITOR` or expects intera
 | `git commit` (without `-m`)        | Opens editor for commit message | `git commit -m "..."` with `--trailer` flags |
 | `git merge` (conflict with editor) | Opens editor for merge message  | `git merge --no-edit <branch>`               |
 | `git tag -a` (without `-m`)        | Opens editor for tag annotation | `git tag -a v1.0 -m "..."`                   |
+| `git commit-tree`                  | Bypasses commit machinery, skips GPG signing and hooks | `git commit --amend -S` or `git rebase --exec "git commit --amend --no-edit -S"` |
 
 **General rule:** if a git command has a `-i` or `--interactive` flag, never use it. If a command normally opens an editor, find the flag that passes the value inline.
 
@@ -178,6 +179,25 @@ Agents run without a TTY. Any git command that opens `$EDITOR` or expects intera
 - For squashing commits, prefer the platform's squash merge option (GitHub / GitLab) over `git rebase -i`.
 - Prefer `git pull --rebase` over manual fetch + rebase when updating a branch.
 - If rebase conflicts occur, resolve the files then run `git rebase --continue`. Do not add `--edit` — the original commit messages are reused automatically.
+
+## GPG Signing & Commit Rewriting
+
+When `commit.gpgsign = true` is set, **never use git plumbing commands to rewrite commits**. `git commit-tree` and similar low-level commands bypass the commit machinery entirely, skipping GPG signing even when it is globally configured — resulting in "Unverified" commits on GitHub/GitLab.
+
+Always rewrite through `git commit`:
+
+```bash
+# Amend a single commit (re-signs automatically)
+git commit --amend --no-edit -S
+
+# Re-sign N commits after any history rewrite
+git rebase HEAD~N --exec "git commit --amend --no-edit -S"
+
+# Squash N commits (git commit handles signing automatically)
+git reset --soft HEAD~N && git commit -m "msg" --trailer "..."
+```
+
+Check if signing is active: `git config commit.gpgsign`
 
 ## Git Command Examples
 
