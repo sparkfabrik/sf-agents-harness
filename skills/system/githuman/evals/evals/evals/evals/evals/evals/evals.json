@@ -1,0 +1,138 @@
+{
+  "skill_name": "githuman",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just finished refactoring the authentication module — changed about 8 files. Before I commit, I want to review all the changes in a nice diff view. How do I do that on this Linux machine?",
+      "expected_output": "Should instruct the user to stage changes with git add, then use ajust githuman-start to launch GitHuman. Should mention ajust (not sjust) since the user said Linux. Should describe what the review interface offers.",
+      "files": [],
+      "expectations": [
+        "Response mentions using 'ajust' (not 'sjust') since the user specified Linux",
+        "Response includes the 'git add' step to stage changes before launching GitHuman",
+        "Response includes the 'ajust githuman-start' command to launch a review instance",
+        "Response mentions that GitHuman provides a browser-based diff review interface",
+        "Response does NOT suggest 'npx githuman serve' as the primary approach"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I have 3 different GitHuman reviews running and I can't remember which one is for which project. How do I figure out what's running and clean up the ones I don't need?",
+      "expected_output": "Should guide the user to run sjust/ajust githuman-list to see all running instances with their directories and URLs. Then explain how to stop specific ones with githuman-stop or stop all at once.",
+      "files": [],
+      "expectations": [
+        "Response includes the 'githuman-list' command to show all running instances",
+        "Response explains that githuman-list shows container names, project directories, and URLs",
+        "Response includes the 'githuman-stop' command for stopping specific instances",
+        "Response mentions the option to stop all instances at once",
+        "Response uses sjust or ajust as the command prefix (not bare 'just')"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My GitHuman instance started but the browser shows a connection error. The container seems to be running though. How do I debug this?",
+      "expected_output": "Should walk through troubleshooting: check container logs with githuman-logs, verify Docker networking, check if spark-http-proxy is running, mention the 60s readiness check, suggest stopping and restarting the instance.",
+      "files": [],
+      "expectations": [
+        "Response suggests checking container logs via 'sjust githuman-logs' or 'ajust githuman-logs' (not bare 'githuman-logs' or 'npx githuman')",
+        "Response mentions verifying Docker networking or container status",
+        "Response mentions the TLS certificate / spark-http-proxy as a possible cause",
+        "Response suggests stopping and restarting the instance via sjust/ajust githuman-stop and githuman-start as a recovery step",
+        "Response does NOT suggest reconfiguring Docker port mappings (the proxy handles routing)",
+        "Response does NOT suggest 'npx githuman serve' or 'npx githuman list' — operations that have Just recipe equivalents must use sjust/ajust"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I'm reviewing some AI-generated code in GitHuman and I want to leave a comment suggesting a specific code change on line 42 of auth.ts. How do inline comments and suggestions work?",
+      "expected_output": "Should explain how to click on a line in the diff view to add a comment, describe the comment types (question, note, suggestion, issue), explain that suggestions allow proposing specific code replacements that can be applied directly, and mention resolving comments individually or with sjust/ajust githuman-exec resolve last.",
+      "files": [],
+      "expectations": [
+        "Response explains clicking on a line in the diff view to add a comment",
+        "Response mentions at least two comment types (question, note, suggestion, issue)",
+        "Response explains that suggestions allow proposing specific code replacements",
+        "Response mentions resolving comments individually or all at once",
+        "Response does NOT suggest running 'npx githuman serve' to start the server — assumes GitHuman is already running via sjust/ajust",
+        "Response does NOT suggest 'npx githuman resolve' — must use sjust/ajust githuman-exec resolve instead"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I've finished reviewing the AI's changes in GitHuman and everything looks good. What's the process to approve the review and commit?",
+      "expected_output": "Should describe the resolve-and-commit flow: run sjust/ajust githuman-exec resolve last to approve the review and resolve all comments, optionally check pending todos with sjust/ajust githuman-exec todo list, then git commit. Should NOT suggest using githuman serve or githuman-start since the review is already done.",
+      "files": [],
+      "expectations": [
+        "Response includes 'githuman-exec resolve last' via sjust/ajust to approve the review",
+        "Response includes a 'git commit' step after resolving",
+        "Response suggests checking pending todos before committing",
+        "Response does NOT suggest starting a new GitHuman instance or running githuman-start",
+        "Response does NOT suggest 'npx githuman resolve' or 'npx githuman todo' — all subcommands must use sjust/ajust githuman-exec",
+        "Response does NOT suggest 'npx githuman serve' or 'npx githuman list' — operations that have Just recipe equivalents must use sjust/ajust"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "During a code review I spotted a few non-blocking things that should be addressed later. How do I track follow-up tasks in GitHuman?",
+      "expected_output": "Should explain the todo feature: creating todos from inline comments in the UI or from the CLI with sjust/ajust githuman-exec todo add, listing with githuman-exec todo list, and completing with githuman-exec todo done. Should recommend creating todos for non-blocking issues and checking them before each commit.",
+      "files": [],
+      "expectations": [
+        "Response mentions creating todos from inline comments in the web UI",
+        "Response includes the 'githuman-exec todo add' command via sjust/ajust for creating todos",
+        "Response includes the 'githuman-exec todo list' command via sjust/ajust for listing pending todos",
+        "Response includes the 'githuman-exec todo done' command via sjust/ajust for completing todos",
+        "Response recommends checking todos before committing",
+        "Response does NOT suggest 'npx githuman todo' or 'npx githuman serve' or 'npx githuman list' — all commands must use sjust/ajust recipes"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "I want to save a record of my latest code review for the team. Can I export it as a markdown document?",
+      "expected_output": "Should explain the export command: sjust/ajust githuman-exec export last for stdout, or githuman-exec export last -o review.md to save to a file. Should describe what the export includes (metadata, changed files, comments, suggestions, todos).",
+      "files": [],
+      "expectations": [
+        "Response includes 'githuman-exec export last' via sjust/ajust to export the most recent review",
+        "Response shows the '-o' flag for saving to a file",
+        "Response mentions the export includes review metadata, changed files, and comments",
+        "Response does NOT suggest 'npx githuman export' — must use sjust/ajust githuman-exec export instead",
+        "Response does NOT suggest 'npx githuman serve' — if starting GitHuman is mentioned, it must use sjust/ajust githuman-start or githuman-open"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I'm on macOS. The AI made changes across many files but I only want to review and commit the changes to the API layer. How do I stage just those files and review them?",
+      "expected_output": "Should explain selective staging: either git add specific files from the terminal or use GitHuman's UI to stage individual files or hunks. Then launch the review with sjust githuman-start. Should use sjust since the user is on macOS.",
+      "files": [],
+      "expectations": [
+        "Response uses 'sjust' (not 'ajust') since the user specified macOS",
+        "Response explains selective staging with 'git add' for specific files",
+        "Response mentions GitHuman's UI staging capability (stage individual files or hunks)",
+        "Response includes 'sjust githuman-start' to launch the review",
+        "Response does NOT suggest staging all changes with 'git add .'"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I staged my changes and want to launch GitHuman and have it open directly in my browser. I'm on Linux.",
+      "expected_output": "Should tell the user to run ajust githuman-open which starts the GitHuman instance and opens the review URL in the default browser automatically. Should use ajust since the user is on Linux. Should NOT suggest githuman-start followed by manually opening the URL.",
+      "files": [],
+      "expectations": [
+        "Response includes 'ajust githuman-open' as the command to start and open in browser",
+        "Response uses 'ajust' (not 'sjust') since the user specified Linux",
+        "Response explains that githuman-open both starts the instance and opens the browser",
+        "Response does NOT suggest 'npx githuman serve' — must use ajust githuman-open",
+        "Response does NOT suggest a two-step workflow of githuman-start then manually opening the URL, unless it also mentions githuman-open as the simpler alternative"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I'm on my Mac. I just finished a review in GitHuman and want to approve it and export a summary for the team. How do I do both?",
+      "expected_output": "Should instruct the user to run sjust githuman-exec resolve last to approve the review, then sjust githuman-exec export last -o review.md to save a markdown summary. Should use sjust since the user is on macOS.",
+      "files": [],
+      "expectations": [
+        "Response uses 'sjust' (not 'ajust') since the user specified macOS",
+        "Response includes 'sjust githuman-exec resolve last' to approve the review",
+        "Response includes 'sjust githuman-exec export last' to export the review summary",
+        "Response does NOT suggest 'npx githuman resolve' or 'npx githuman export' — must use sjust githuman-exec"
+      ]
+    }
+  ]
+}
