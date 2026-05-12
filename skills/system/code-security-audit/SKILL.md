@@ -150,7 +150,9 @@ before running this path.
    `optionalDependencies`, override blocks, and install-time lifecycle hooks
    such as `preinstall`, `install`, `postinstall`, and `prepare`.
 5. Check repo-local `.claude/` and `.vscode/` persistence paths by default.
-   Only scan home-directory equivalents if that scope was explicitly approved.
+   Here, repo-local means paths physically inside the current repository root;
+   do not follow symlinks or mounted paths outside that root. Only scan
+   home-directory equivalents if that scope was explicitly approved.
 6. Review CI workflows and publishing pipelines for the trust-boundary patterns
    used by the campaign, such as `pull_request_target`, overly broad
    `id-token: write`, cache poisoning risk, or unpinned third-party actions.

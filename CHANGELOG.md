@@ -24,6 +24,7 @@ Changes are grouped by date.
 
 ### Fixed
 
+- `code-security-audit` skill: replace point-in-time IOC examples with abstract incident categories and clarify that repo-local persistence checks must stay inside the current repository root unless the user explicitly expands the scope
 - `glab` skill: document `-f` vs `-F` flag difference for `glab api` — `-f key=@file` sends the literal string while `-F key=@file` reads the file content; using the wrong flag silently corrupts note/description updates
 
 ## [2026-04-13]

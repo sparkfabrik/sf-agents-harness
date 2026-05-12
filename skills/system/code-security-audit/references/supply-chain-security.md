@@ -50,6 +50,10 @@ Inventory at least these files and directories:
 - Persistence paths in scope: repo-local `.claude/`, `.vscode/`, and only
   home-directory equivalents if the user approved that scope
 
+`Repo-local` means physically inside the current repository root. Do not follow
+symlinks, bind mounts, or workspace shortcuts that resolve outside the
+repository unless the user explicitly expanded the scope.
+
 ## Step 3: High-signal checks
 
 ### Exact package/version matches
@@ -120,18 +124,22 @@ Inspect recent commits for:
 - sudden workflow changes
 - IOC filenames, domains, or commit hashes from the advisory
 
-## Example patterns from 2026 campaigns
+## Example IOC categories from past campaigns
 
-These are examples, not a complete IOC set:
+These are pattern categories, not current or authoritative IOCs. Do not treat
+them as a substitute for the campaign's actual advisory or organizational
+scanner:
 
-- filenames such as `router_init.js`, `router_runtime.js`, `tanstack_runner.js`
-- malicious Git-based dependencies injected through `optionalDependencies`
-- suspicious Git commit refs used as dependency sources
-- persistence under `.claude/` or `.vscode/`
-- CI abuse patterns combining `pull_request_target` with `id-token: write`
+- unexpectedly added executable payload files or obfuscated bootstrap files
+- malicious Git-based dependencies injected through `optionalDependencies`,
+  override blocks, or tarball URLs
+- suspicious Git commit refs or repository URLs used as dependency sources
+- persistence under repo-local `.claude/` or `.vscode/`
+- CI abuse patterns combining privileged PR workflows and `id-token: write`
 
-If the user names a campaign, use the advisory's IOC list rather than assuming
-these exact values.
+If the user names a campaign, pull the exact filenames, hashes, domains, and
+version ranges from the current advisory instead of assuming any example here
+is still valid.
 
 ## False-positive discipline
 
