@@ -1,6 +1,6 @@
 ---
 name: glab
-description: 'Use the glab CLI for all GitLab tasks: issues, merge requests, CI/CD pipelines, releases, and repo files. Trigger when the user mentions "glab", "MR", "merge request", provides a GitLab URL, or the git remote points to GitLab. For GitLab file URLs use glab api instead of WebFetch. GitLab equivalent of the gh skill.'
+description: 'Invoke whenever the user is working with GitLab. Trigger on any of these signals: a URL containing "gitlab" (gitlab.com or any self-hosted instance like gitlab.sparkfabrik.com), a git remote pointing to GitLab (git@gitlab.com:... or https://gitlab...), the !N merge-request notation (!15, !42), or words like "merge request", "MR", "glab", or "gitlab". Handles issues, merge requests, CI/CD pipelines, releases, and reading files from GitLab repos. Always use glab—not WebFetch or curl—for any GitLab URL because GitLab requires authentication. Do not invoke for GitHub tasks (use the gh skill instead).'
 ---
 
 # glab CLI Skill
