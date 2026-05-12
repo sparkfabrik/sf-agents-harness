@@ -14,11 +14,13 @@ Changes are grouped by date.
 - `skill-creator` custom section: document `opencode run` as an alternative to `claude -p` for running skill evals, including OpenCode JSON event schema and skill-trigger detection pattern; enforce `github-copilot/gpt-4.1` as default model for evals to avoid premium model costs
 - `gh` and `glab` skills: warn about accidental issue auto-linking -- wrap `#N` in backticks when used as examples rather than intentional references
 - `drupal-major-upgrade-validation` skill (`skills/drupal/`): validate Drupal major version upgrades (e.g., D10 to D11) by capturing a browser-automation baseline on the stable branch, applying the upgrade, re-running the same tests, and producing a structured comparison report with per-page status, console error diffs, and screenshot references
+- `code-security-audit` skill: supply-chain incident triage reference (`references/supply-chain-security.md`) covering nested manifest discovery, exact-version IOC checks, malicious lifecycle hooks, CI trust-boundary review, persistence artifacts, and guidance for using existing organization-maintained incident scanners without vendoring them into the skill
 
 ### Changed
 
 - README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
 - `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links
+- `code-security-audit` skill: broaden trigger coverage from generic web-app audits to malicious dependency and supply-chain compromise investigations across npm, PyPI, and Packagist, including repo-wide manifest discovery, nested workspace handling, explicit IOC triage before treating advisory-based scanners as sufficient, and updated summary/catalog text so the new coverage is visible in README, SYSTEM, and sparkdock metadata
 
 ### Fixed
 

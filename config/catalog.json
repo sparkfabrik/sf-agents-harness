@@ -11,7 +11,7 @@
       "description": "Auto-format files with external formatters (Just)"
     },
     "code-security-audit": {
-      "description": "Multi-phase security audit for web apps and APIs"
+      "description": "Security audit plus npm/PyPI/Packagist IOC triage"
     },
     "doc-coauthoring": {
       "description": "Co-author docs, proposals, and technical specs"
