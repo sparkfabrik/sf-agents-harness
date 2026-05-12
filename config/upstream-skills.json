@@ -7,7 +7,7 @@
       "ref": "main",
       "path": "skills/playwright-cli",
       "frontmatter_overrides": {
-        "description": "Browser automation with the playwright-cli CLI tool. Use when the user needs to automate browser interactions, navigate websites, test web applications, take screenshots, fill forms, extract data from web pages, or interact with headless browsers. Also use when the user mentions \"playwright-cli\", \"playwright\", \"browser automation\", \"headless browser\", \"web scraping\", \"screenshot\", \"snapshot\", \"browser testing\", or wants to open, click, fill, or type in a web page."
+        "description": "Browser automation with the playwright-cli tool. Use when the user needs to automate browser interactions, test web apps, take screenshots, fill forms, or extract data from pages. Trigger on: \"playwright-cli\", \"playwright\", \"browser automation\", \"headless browser\", \"web scraping\", \"screenshot\", \"browser testing\", \"e2e test\"."
       }
     },
     {

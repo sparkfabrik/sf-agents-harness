@@ -1,6 +1,6 @@
 ---
 name: glab
-description: How to use the glab CLI to work with GitLab issues, merge requests, CI/CD pipelines, repository files, and releases. Use this skill whenever the user provides a URL containing "gitlab" in the hostname (e.g., gitlab.com, gitlab.example.com), mentions merge requests, GitLab issues, GitLab CI pipelines, or wants to interact with a GitLab remote. Also use this skill when the user mentions "glab", "MR", "merge request", or when you detect the git remote points to a GitLab instance (look for "gitlab" in the remote URL). This includes GitLab file URLs (raw files, blobs, tree views) -- use glab api to fetch file contents instead of WebFetch or curl. This skill is the GitLab equivalent of using `gh` for GitHub -- if the project is on GitLab, use this skill instead.
+description: 'Use the glab CLI for all GitLab tasks: issues, merge requests, CI/CD pipelines, releases, and repo files. Trigger when the user mentions "glab", "MR", "merge request", provides a GitLab URL, or the git remote points to GitLab. For GitLab file URLs use glab api instead of WebFetch. GitLab equivalent of the gh skill.'
 ---
 
 # glab CLI Skill

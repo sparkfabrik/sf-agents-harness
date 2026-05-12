@@ -1,6 +1,6 @@
 ---
 name: sf-create-agentsmd
-description: 'Generate or review AGENTS.md files for projects following team conventions. Use when bootstrapping a new project, creating AGENTS.md, reviewing an existing AGENTS.md for completeness, or auditing agent instructions. Also trigger on "create agents.md", "review agents.md", "bootstrap agents", "audit agents.md", "sf-create-agentsmd".'
+description: 'Generate or review AGENTS.md files following team conventions. Use when bootstrapping a project, creating or reviewing AGENTS.md, or auditing agent instructions. Trigger on: "create agents.md", "review agents.md", "bootstrap agents", "audit agents.md", "sf-create-agentsmd".'
 ---
 
 # SF Create AGENTS.md
