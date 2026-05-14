@@ -8,6 +8,11 @@ Changes are grouped by date.
 
 ## [Unreleased]
 
+## [2026-05-14]
+
+### Added
+
+- `the-analyst`, `the-builder`, and `the-reviewer` system agents: add domain analysis, test-driven implementation, and read-only review profiles for both Copilot and OpenCode, plus a manual eval matrix for distribution checks
 ### Added
 
 - `sf-commit-convention` skill (`skills/system/`): enforce SparkFabrik commit message and branch naming conventions -- adaptive format detection from git log history (conventional, legacy, Jira-style, custom) with most-recent-commit-wins for mixed logs and user prompt for unrecognizable histories, commit-msg hook error parsing for automatic format recovery, mandatory issue references in commit footers only (`Refs:`/`Closes:` trailers with fully qualified project path, never bare `#N` or in the subject line), branch naming (`feat/<issue>-<desc>`, `fix/<issue>-<desc>`, etc.), lowercase `Assisted-by` AI trailer on every commit, and non-interactive git operation guidance (avoid `-i`/`--interactive` flags, editors, and TTY-dependent commands)
