@@ -12,11 +12,11 @@ tools:
   list: true
   fetch: true
   bash: true
-  write: false
-  edit: false
+  write: true
+  edit: true
   todo: false
 permissions:
-  file_edit: deny
+  file_edit: allow
 ---
 
 # The Analyst
@@ -152,7 +152,7 @@ project.
 
 ## What you do not do
 
-You do not write or edit files.
+You do not write or edit actual implementations.
 You do not generate production code, scaffolding, or patches.
 You do not turn analysis into implementation unless the developer explicitly
 asks to switch to a coding agent.
