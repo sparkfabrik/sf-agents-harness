@@ -17,6 +17,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- `sf-create-agentsmd` skill: add Step 4 to manage a `CLAUDE.md` symlink alongside the root `AGENTS.md` -- auto-create relative symlink when `CLAUDE.md` is absent, preserve and warn when an existing regular file or mismatched symlink is found, no-op when already pointing at `AGENTS.md`, and explicit prompt with default No for non-root AGENTS-style files (subproject `AGENTS.md`, `.agents/AGENTS.project.md`). Three new evals cover scaffold, existing-CLAUDE.md, and subdir prompt scenarios. Capability spec at `openspec/specs/agentsmd-claude-symlink/`
 - Project renamed from `sf-awesome-copilot` to `sf-agents-harness` -- updated descriptions, references, and GitHub metadata to reflect broader scope beyond any single AI coding tool
 - README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
 - `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links

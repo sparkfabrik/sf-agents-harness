@@ -15,11 +15,13 @@ Determine the mode based on what exists in the project root:
 
 1. **Pkg-managed project** (`fs-pkg.json` exists): the root AGENTS.md is managed by the infrastructure package system — **never overwrite it**. Instead, check for `.agents/AGENTS.project.md`:
 
-   a. **File exists and has real content** (not just whitespace or empty frontmatter): warn the user that both AGENTS.md and the project additions file are already populated. **Stop — do not generate.**
+   a. **File exists and has real content** (not just whitespace or empty frontmatter): warn the user that both AGENTS.md and the project additions file are already populated. **Stop generating** — but still run Step 4 (CLAUDE.md alias) against the existing root AGENTS.md.
 
    b. **File exists but is empty**: switch to **Project Additions mode** — run the normal discovery, but generate content into `.agents/AGENTS.project.md` instead of the root AGENTS.md. Focus on project-specific additions that complement the pkg-managed base (project overview, setup specifics, code style overrides, testing commands, etc.). Do not duplicate conventions already covered by the pkg-managed AGENTS.md.
 
    c. **File does not exist**: check whether the root AGENTS.md references `.agents/AGENTS.project.md`. If referenced (the slot exists but the file is missing), offer to create and populate it — same as case (b). If not referenced, warn the user that this is a pkg-managed project with no project extension point and suggest they create `.agents/AGENTS.project.md` manually or update their package to include the reference.
+
+   In every pkg-managed branch (a/b/c), Step 4 still runs against the root AGENTS.md — the alias step is independent of `.agents/AGENTS.project.md` handling.
 
 2. **No AGENTS.md exists** → **Scaffold mode**: discover the project and generate a full AGENTS.md.
 
@@ -139,6 +141,35 @@ Generate a complete AGENTS.md with all applicable sections from the blueprint be
    - **Missing OpenSpec section**: `openspec/` directory exists but not documented
 4. Present the list of gaps with specific recommendations.
 5. Offer to generate the missing sections, or rewrite the full AGENTS.md incorporating fixes.
+
+## Step 4: Ensure CLAUDE.md alias
+
+After handling AGENTS.md, ensure a `CLAUDE.md` alias at the project root points to the root `AGENTS.md`. Several tools (notably Claude Code) still look up `CLAUDE.md`; the symlink keeps a single source of truth.
+
+This step runs in **every** mode that touched the project root AGENTS.md — Scaffold mode, Review mode, and all pkg-managed sub-cases (a/b/c). It is **not** run automatically for AGENTS-style files at other paths.
+
+### Default behavior — project root
+
+Inspect `<root>/CLAUDE.md` and act as follows:
+
+1. **Absent**: create a relative symlink with `ln -s AGENTS.md CLAUDE.md` (run from the project root). Confirm in the post-action summary, e.g. `Created CLAUDE.md → AGENTS.md symlink at project root.`
+2. **Existing symlink already pointing at `AGENTS.md`**: do nothing (idempotent). No warning.
+3. **Existing regular file**: never overwrite. Warn the user: `CLAUDE.md already exists at project root as a regular file. Skipping symlink creation — reconcile manually if needed.`
+4. **Existing symlink to a different target**: never overwrite. Warn the user and quote the current target so they can reconcile manually.
+
+### Non-default cases — explicit confirmation, default No
+
+When the AGENTS-style file just handled is **not** the project root `AGENTS.md` — for example a monorepo subproject `AGENTS.md`, `.agents/AGENTS.project.md`, or an alternate filename — you MUST ask the user whether to create a `CLAUDE.md` alias alongside it. The default answer is **No**. Only create the symlink if the user explicitly confirms.
+
+If the user confirms, apply the same four existing-file rules above at the sibling location, with the relative target equal to the AGENTS-style filename actually generated (e.g. `AGENTS.md`, `AGENTS.project.md`).
+
+### Symlink target convention
+
+Always use a **relative** target (e.g. `AGENTS.md`, not `/abs/path/AGENTS.md`). Relative targets survive clones, container mounts, repository moves, and worktrees.
+
+### Cross-platform note
+
+On Windows without Developer Mode or admin rights, `ln -s` may fail. If so, surface the error and skip — do not silently fall back to a copy. The user can rerun after enabling the required permission.
 
 ## Section Blueprint
 
@@ -454,6 +485,7 @@ For monorepos with multiple packages or services under `src/`:
 - Create additional AGENTS.md files in subproject directories for package-specific instructions (language-specific linting, test commands, build steps).
 - The closest AGENTS.md file takes precedence for any given location — agents read the nearest one first.
 - Keep shared rules in the root file to avoid duplication across subproject files.
+- The CLAUDE.md alias step (Step 4) only runs automatically for the project root. For a subproject AGENTS.md, the skill MUST ask the user before creating a sibling `CLAUDE.md` symlink, with default **No**.
 
 ## Writing Guidelines
 
