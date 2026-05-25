@@ -53,6 +53,44 @@
         {"name": "targets_project_md", "type": "contains", "check": "Targets .agents/AGENTS.project.md for output, not root AGENTS.md"},
         {"name": "does_not_overwrite_root", "type": "not_contains", "check": "Does NOT overwrite or replace the pkg-managed root AGENTS.md"}
       ]
+    },
+    {
+      "id": 4,
+      "name": "scaffold-creates-claude-symlink",
+      "prompt": "I just started a new Node project with a Justfile and package.json. There is no AGENTS.md and no CLAUDE.md at the root. Please create an AGENTS.md for this project.",
+      "expected_output": "After scaffolding AGENTS.md at the project root, the skill should also create a relative symlink CLAUDE.md → AGENTS.md at the project root (e.g. `ln -s AGENTS.md CLAUDE.md`) and report the action in its post-action summary. Symlink target must be relative, not absolute.",
+      "files": [],
+      "assertions": [
+        {"name": "creates_agents_md", "type": "contains", "check": "Creates AGENTS.md at the project root"},
+        {"name": "creates_claude_symlink", "type": "behavior", "check": "Creates a CLAUDE.md symlink to AGENTS.md at the project root using ln -s"},
+        {"name": "uses_relative_target", "type": "contains", "check": "Symlink target is the relative path AGENTS.md, not an absolute path"},
+        {"name": "reports_action", "type": "contains", "check": "Mentions the CLAUDE.md symlink creation in the post-action summary"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "existing-claude-md-warns",
+      "prompt": "Please scaffold an AGENTS.md for this project. Note: the root already contains a regular CLAUDE.md file with team notes.",
+      "expected_output": "The skill should scaffold AGENTS.md normally but must NOT overwrite or delete the existing CLAUDE.md regular file. Instead it should skip symlink creation and warn the user that CLAUDE.md exists as a regular file and must be reconciled manually.",
+      "files": [],
+      "assertions": [
+        {"name": "creates_agents_md", "type": "contains", "check": "Creates AGENTS.md at the project root"},
+        {"name": "preserves_existing_claude_md", "type": "not_contains", "check": "Does NOT overwrite, rm, or replace the existing CLAUDE.md file"},
+        {"name": "warns_user", "type": "contains", "check": "Warns the user that CLAUDE.md already exists and symlink creation was skipped"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "subdir-asks-before-symlink",
+      "prompt": "We have a monorepo. The root already has an AGENTS.md. Please create a subproject AGENTS.md at packages/api/AGENTS.md tailored to that package.",
+      "expected_output": "The skill should generate packages/api/AGENTS.md. Because the AGENTS-style file is NOT at the project root, the skill MUST explicitly ask the user before creating a sibling CLAUDE.md symlink at packages/api/CLAUDE.md, with the default answer No. It must not auto-create a CLAUDE.md at the subproject path.",
+      "files": [],
+      "assertions": [
+        {"name": "creates_subproject_agents_md", "type": "contains", "check": "Creates packages/api/AGENTS.md"},
+        {"name": "asks_before_subdir_symlink", "type": "behavior", "check": "Explicitly asks the user whether to create a sibling CLAUDE.md at the subproject path"},
+        {"name": "default_no", "type": "contains", "check": "States that the default answer for the sibling CLAUDE.md is No"},
+        {"name": "no_auto_subdir_symlink", "type": "not_contains", "check": "Does NOT auto-create packages/api/CLAUDE.md without explicit user confirmation"}
+      ]
     }
   ]
 }
