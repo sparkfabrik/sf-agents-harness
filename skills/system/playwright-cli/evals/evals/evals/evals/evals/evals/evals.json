@@ -1,0 +1,100 @@
+{
+  "skill_name": "playwright-cli",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Take a screenshot of https://example.com",
+      "expected_output": "Agent uses playwright-cli screenshot with --filename pointing to .playwright-cli/ directory, not bare screenshot command",
+      "files": [],
+      "expectations": [
+        "Uses --filename= flag on the screenshot command",
+        "The filename path starts with .playwright-cli/",
+        "The filename is descriptive (not just a timestamp)",
+        "Does NOT use bare 'playwright-cli screenshot' without --filename"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Test the todo app at https://demo.playwright.dev/todomvc/ -- add two todos, check one off, and take a screenshot of each step to document the flow",
+      "expected_output": "Agent takes multiple screenshots, all with --filename paths under .playwright-cli/ using descriptive names like screenshot-add-todo.png, screenshot-check-todo.png",
+      "files": [],
+      "expectations": [
+        "All screenshot commands use --filename= flag",
+        "All screenshot filenames are under .playwright-cli/",
+        "Each screenshot has a descriptive name reflecting the step",
+        "Does NOT dump any screenshots in the project root"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Save https://example.com as a PDF for offline reading",
+      "expected_output": "Agent uses playwright-cli pdf with --filename pointing to .playwright-cli/ directory",
+      "files": [],
+      "expectations": [
+        "Uses --filename= flag on the pdf command",
+        "The filename path starts with .playwright-cli/",
+        "Does NOT use bare 'playwright-cli pdf' without --filename"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Record a video of me navigating https://example.com, clicking around, then save it",
+      "expected_output": "Agent uses video-start/video-stop with the output path under .playwright-cli/",
+      "files": [],
+      "expectations": [
+        "Uses 'playwright-cli video-start' to begin recording",
+        "Uses 'playwright-cli video-stop' with a path argument under .playwright-cli/",
+        "The video filename ends in .webm",
+        "Does NOT save the video to the project root"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I need a screenshot of just the submit button on https://example.com/form, not the full page",
+      "expected_output": "Agent uses element screenshot (playwright-cli screenshot eN) with --filename under .playwright-cli/",
+      "files": [],
+      "expectations": [
+        "Uses snapshot to discover element refs before taking the screenshot",
+        "Uses 'playwright-cli screenshot eN --filename=...' targeting a specific element",
+        "The filename path starts with .playwright-cli/",
+        "Does NOT take a full-page screenshot without targeting the element"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Debug why clicking the checkout button fails on https://shop.example.com -- enable tracing, try the click, then save the trace for analysis",
+      "expected_output": "Agent uses tracing-start/tracing-stop (default traces/ directory is fine per our conventions) and does NOT redirect traces to .playwright-cli/",
+      "files": [],
+      "expectations": [
+        "Uses 'playwright-cli tracing-start' before the action",
+        "Uses 'playwright-cli tracing-stop' after the action",
+        "Does NOT redirect trace output to .playwright-cli/ (traces/ default is correct per conventions)",
+        "Takes a snapshot before attempting the click to find the correct element ref"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Take screenshots of https://example.com on both desktop and mobile viewport sizes and save them for comparison",
+      "expected_output": "Agent takes multiple screenshots with descriptive names indicating viewport size, all under .playwright-cli/",
+      "files": [],
+      "expectations": [
+        "Uses 'playwright-cli resize' to change viewport dimensions",
+        "Takes at least two screenshots (one per viewport size)",
+        "All screenshots use --filename= under .playwright-cli/",
+        "Filenames clearly indicate which viewport size each screenshot represents"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I just finished testing a login flow, can you clean up the browser session and let me know where the screenshots ended up?",
+      "expected_output": "Agent closes the browser and mentions that output files are in .playwright-cli/ and should be cleaned up manually if no longer needed",
+      "files": [],
+      "expectations": [
+        "Uses 'playwright-cli close' to end the session",
+        "Mentions that output files are in .playwright-cli/",
+        "Mentions or suggests cleanup of output files",
+        "Does NOT claim that close removes output files"
+      ]
+    }
+  ]
+}
