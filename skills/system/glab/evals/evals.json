@@ -9,6 +9,9 @@
       "assertions": [
         "Uses `glab issue create` (not `gh issue create` or curl to the API)",
         "Includes a descriptive --title flag with relevant bug description",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`, `fix:`, `fix(login):`, etc.)",
+        "Title does NOT start with a pseudo-category prefix like `Bug:` or `Issue:` (categorization should use labels)",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
         "Includes a --description flag with meaningful content (steps to reproduce or context)",
         "Uses scoped labels for priority (e.g., `priority::high`) rather than flat labels",
         "Uses `--assignee @me` or equivalent to assign to the current user",
@@ -375,6 +378,62 @@
         "Does NOT use any short-form references in the comment body",
         "Uses `glab mr note 22` to add the comment",
         "Sets GITLAB_HOST for the self-hosted instance when resolving the cross-project path"
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Create a GitLab issue for me: our checkout page is loading really slowly on mobile devices, takes about 8 seconds to render. Probably related to the new image carousel we added. High priority.",
+      "expected_output": "The agent should create an issue with a human-readable, concise title describing the problem (e.g., 'Slow checkout page on mobile' or 'Mobile checkout load time'). The title MUST NOT use Conventional Commits format (no 'fix:', 'perf:', 'fix(checkout):' prefixes) and MUST NOT be prefixed with 'Bug:' or similar pseudo-category prefixes (use labels instead).",
+      "files": [],
+      "assertions": [
+        "Uses `glab issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`, `fix:`, `perf:`, `chore:`, `refactor:`, `docs:`, `style:`, `test:`, `build:`, `ci:`, `revert:`)",
+        "Title does NOT contain a scoped Conventional Commits prefix like `fix(checkout):` or `perf(mobile):`",
+        "Title does NOT start with a category-like prefix such as `Bug:`, `Feature:`, `Task:`, `Issue:`",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
+        "Title describes the problem/scope (something about slow checkout / mobile / performance), not the commit-style fix"
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "Open an issue on our GitLab project: we should add dark mode support to the dashboard. The design team has been asking for it. It's a feature request, label it accordingly.",
+      "expected_output": "The agent should create an issue with a human-readable title like 'Dark mode for dashboard' or 'Add dark mode to dashboard'. The title MUST NOT be in Conventional Commits format (no 'feat:', 'feat(ui):', 'feat(dashboard):' prefixes) and MUST NOT start with 'Feature:' pseudo-prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `glab issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`, `feat(scope):`, etc.)",
+        "Title does NOT contain a scoped Conventional Commits prefix like `feat(dashboard):` or `feat(ui):`",
+        "Title does NOT start with `Feature:`, `Feat:`, `Task:`, or similar pseudo-category prefix",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
+        "Title references dark mode and/or the dashboard in plain English"
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "File a GitLab issue: we need to bump our outdated npm dependencies, several have security advisories. Not super urgent but should be done this sprint.",
+      "expected_output": "The agent should create an issue with a human-readable title like 'Update outdated npm dependencies' or 'Bump npm dependencies with security advisories'. The title MUST NOT use 'chore:' or 'chore(deps):' Conventional Commits prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `glab issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `chore:`, `chore(deps):`, `build:`, `build(deps):`, etc.)",
+        "Title does NOT contain any scoped Conventional Commits prefix like `chore(deps):`",
+        "Title does NOT start with `Chore:`, `Task:`, `Maintenance:` pseudo-prefixes",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
+        "Title mentions dependencies/npm/security in plain English"
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Create a GitLab issue: our API rate limiting documentation is out of date -- it still references the old 100 req/min limit but we changed it to 500 req/min last quarter. Someone needs to fix the docs.",
+      "expected_output": "The agent should create an issue with a human-readable title like 'Rate limiting docs are out of date' or 'Update rate limiting documentation'. The title MUST NOT use 'docs:' or 'docs(api):' Conventional Commits prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `glab issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `docs:`, `docs(api):`, `fix(docs):`, etc.)",
+        "Title does NOT contain any scoped Conventional Commits prefix",
+        "Title does NOT start with `Docs:`, `Documentation:`, `Bug:`, or similar pseudo-prefix",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
+        "Title mentions rate limiting documentation in plain English"
       ]
     }
   ]
