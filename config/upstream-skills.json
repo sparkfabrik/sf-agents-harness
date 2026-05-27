@@ -30,6 +30,33 @@
       "frontmatter_overrides": {
         "description": "How to use GitHuman to review AI-generated code changes before committing. GitHuman provides a GitHub-like diff review interface for your staging area — visual diffs, inline comments, todos, and review workflows — all running locally via Docker. Use this skill whenever the user mentions \"githuman\", \"code review before commit\", \"review staged changes\", \"review AI changes\", wants to review diffs in a browser, asks about reviewing code before committing, or after completing a coding task where staged changes should be reviewed. Also trigger when you see references to sjust/ajust githuman commands."
       }
+    },
+    {
+      "name": "diagnose",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/diagnose",
+      "frontmatter_overrides": {
+        "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce, minimise, hypothesise, instrument, fix, regression-test. Use when user says \"diagnose this\", \"debug this\", reports a bug, says something is broken/throwing/failing, or describes a performance regression."
+      }
+    },
+    {
+      "name": "tdd",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/tdd",
+      "frontmatter_overrides": {
+        "description": "Test-driven development with red-green-refactor loop and vertical slices. Use when user wants to build features or fix bugs using TDD, mentions \"red-green-refactor\", wants integration tests, test-first development, or says \"write tests first\"."
+      }
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/improve-codebase-architecture",
+      "frontmatter_overrides": {
+        "description": "Find deepening opportunities in a codebase to improve testability and AI-navigability. Use when user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, reduce shallow abstractions, or make a codebase more testable."
+      }
     }
   ]
 }
