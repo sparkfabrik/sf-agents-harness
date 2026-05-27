@@ -25,6 +25,7 @@ Changes are grouped by date.
 
 ### Fixed
 
+- `glab` skill: stop generating GitLab issue titles in Conventional Commits format -- add an explicit "Issue title format" subsection requiring human-readable noun phrases (sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes), with categorization deferred to labels. Includes bad/good examples table. Four new eval cases (#27-#30) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 19/25 (76%) on the pre-fix snapshot
 - `glab` skill: document `-f` vs `-F` flag difference for `glab api` — `-f key=@file` sends the literal string while `-F key=@file` reads the file content; using the wrong flag silently corrupts note/description updates
 
 ## [2026-04-13]
