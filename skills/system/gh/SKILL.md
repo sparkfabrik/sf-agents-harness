@@ -126,8 +126,36 @@ This applies to **every** piece of content the agent creates, regardless of leng
 
 ---
 
+## Issues
+
+### Issue title format
+
+Issue titles must be **human-readable, short, and concise** — a few words that express the goal or scope of the work. Issue titles are NOT commit messages and must NOT use the Conventional Commits format (no `feat:`, `fix(scope):`, `chore:` prefixes, no imperative commit-style phrasing).
+
+The title is read by humans scanning boards, backlogs, and notifications — it should describe **what the issue is about**, not how the eventual fix will be committed. Conventional Commits belongs on PR titles and commit messages, where it drives changelogs and tooling. Issues sit upstream of that, often before the solution is even known, so a commit-shaped title is both premature and harder to scan.
+
+Style guidelines:
+
+- Sentence case, no trailing period.
+- Aim for under ~60 characters.
+- Prefer noun phrases ("Slow dashboard load on Safari") or short problem statements ("Users locked out after password reset") over imperative verbs.
+- Do not prefix with `Bug:`, `Feature:`, `Task:`, etc. — use **labels** for categorization instead.
+
+**Examples:**
+
+| Bad (commit-shaped)                              | Good (human-readable)                |
+| ------------------------------------------------ | ------------------------------------ |
+| `feat(auth): add JWT token refresh`              | `JWT token refresh`                  |
+| `fix: prevent crash on empty password`           | `Login crash with empty password`    |
+| `docs(api): update rate limiting section`        | `Rate limiting docs out of date`     |
+| `refactor(parser): simplify config validation`   | `Simplify config parser`             |
+| `chore: bump dependencies`                       | `Update dependencies`                |
+| `Bug: login broken on Safari`                    | `Login broken on Safari`             |
+
+### Issue commands
+
 ```bash
-gh issue create --title "Bug: ..." --body "..." --label bug --label "high-priority" --assignee "@me"
+gh issue create --title "Login broken on Safari" --body "..." --label bug --label "high-priority" --assignee "@me"
 gh issue list --assignee @me                      # list my issues
 gh issue list --label "bug" --search "login"      # filter and search
 gh issue view 42 --comments                       # view with comments
