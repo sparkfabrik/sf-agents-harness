@@ -9,6 +9,9 @@
       "assertions": [
         "Uses `gh issue create` (not `glab issue create` or curl to the API)",
         "Includes a descriptive --title flag with relevant bug description",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`, `fix:`, `fix(login):`, etc.)",
+        "Title does NOT start with a pseudo-category prefix like `Bug:` or `Issue:` (categorization should use labels)",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
         "Includes a --body flag with meaningful content (steps to reproduce or context)",
         "Uses `--assignee @me` or equivalent to assign to the current user",
         "Checks the git remote to confirm it's a GitHub project before running gh commands",
@@ -181,6 +184,62 @@
         "Does NOT use a generic title like 'Add new feature' or just restate the user's request verbatim",
         "Uses `--reviewer elena` to request review",
         "Pushes the branch before creating the PR"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Create a GitHub issue for me: our checkout page is loading really slowly on mobile devices, takes about 8 seconds to render. Probably related to the new image carousel we added. High priority.",
+      "expected_output": "Human-readable title (e.g. 'Slow checkout page on mobile'). No CC format, no Bug:/Feature: prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `gh issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`, `fix:`, `perf:`, `chore:`, etc.)",
+        "Title does NOT contain a scoped CC prefix like `fix(checkout):` or `perf(mobile):`",
+        "Title does NOT start with `Bug:`, `Feature:`, `Task:`, `Issue:` pseudo-prefix",
+        "Title is human-readable and concise (3-10 words, under ~60 chars)",
+        "Title references checkout, mobile, or slowness in plain English"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Open an issue on our GitHub project: we should add dark mode support to the dashboard. The design team has been asking for it. It's a feature request, label it accordingly.",
+      "expected_output": "Human-readable title like 'Dark mode for dashboard'. No `feat:` or `Feature:` prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `gh issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `feat:`)",
+        "Title does NOT contain a scoped CC prefix like `feat(dashboard):` or `feat(ui):`",
+        "Title does NOT start with `Feature:`, `Feat:`, `Task:` pseudo-prefix",
+        "Title is human-readable and concise (3-10 words, under ~60 chars)",
+        "Title references dark mode and/or the dashboard in plain English"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "File a GitHub issue: we need to bump our outdated npm dependencies, several have security advisories. Not super urgent but should be done this sprint.",
+      "expected_output": "Human-readable title. No `chore:` or `chore(deps):` prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `gh issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `chore:`, `build:`)",
+        "Title does NOT contain any scoped CC prefix like `chore(deps):`",
+        "Title does NOT start with `Chore:`, `Task:`, `Maintenance:` pseudo-prefix",
+        "Title is human-readable and concise (3-10 words, under ~60 chars)",
+        "Title mentions dependencies/npm/security in plain English"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Create a GitHub issue: our API rate limiting documentation is out of date -- it still references the old 100 req/min limit but we changed it to 500 req/min last quarter. Someone needs to fix the docs.",
+      "expected_output": "Human-readable title. No `docs:` or `docs(api):` prefix.",
+      "files": [],
+      "assertions": [
+        "Uses `gh issue create` with a --title flag",
+        "Title does NOT start with a Conventional Commits type prefix (no `docs:`, `fix:`)",
+        "Title does NOT contain any scoped CC prefix",
+        "Title does NOT start with `Docs:`, `Documentation:`, `Bug:` pseudo-prefix",
+        "Title is human-readable and concise (3-10 words, under ~60 chars)",
+        "Title mentions rate limiting documentation in plain English"
       ]
     }
   ]
