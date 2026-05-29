@@ -17,6 +17,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- `sf-commit-convention` skill: split the heavy 240-line SKILL.md into a lean ~120-line core (branch naming, format detection, conventional/legacy formats, issue references, Assisted-by trailer) plus a bundled `reference.md` loaded on demand for worked git examples, GPG signing, non-interactive git, and format-detection edge cases. Cuts the skill's resident context cost (~22% of session usage per `/status`) by roughly half with no loss of guidance
 - `sf-create-agentsmd` skill: add Step 4 to manage a `CLAUDE.md` symlink alongside the root `AGENTS.md` -- auto-create relative symlink when `CLAUDE.md` is absent, preserve and warn when an existing regular file or mismatched symlink is found, no-op when already pointing at `AGENTS.md`, and explicit prompt with default No for non-root AGENTS-style files (subproject `AGENTS.md`, `.agents/AGENTS.project.md`). Three new evals cover scaffold, existing-CLAUDE.md, and subdir prompt scenarios. Capability spec at `openspec/specs/agentsmd-claude-symlink/`
 - Project renamed from `sf-awesome-copilot` to `sf-agents-harness` -- updated descriptions, references, and GitHub metadata to reflect broader scope beyond any single AI coding tool
 - README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
