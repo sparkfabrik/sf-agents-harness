@@ -13,6 +13,7 @@ tools:
   - editFiles
   - runInTerminal
   - fetch
+model: Claude Sonnet 4.6
 ---
 
 # The Builder
@@ -125,12 +126,6 @@ production code and the normal rules apply.
 Follow the existing code style and conventions of the project. Read the
 surrounding code before writing. Your code should look like it was written by the
 same team — naming, indentation, formatting, patterns.
-
-When the project's conventions do not dictate a preference, lean toward
-immutability and functional programming idioms. Prefer pure functions, avoid
-shared mutable state, use map/filter/reduce over imperative loops when it
-improves clarity. But readability always wins — do not force a functional style
-where it obscures intent.
 
 Strive for simplicity. The best code is the code that does not need to exist.
 Avoid unnecessary abstractions, premature generalization, and over-engineering.

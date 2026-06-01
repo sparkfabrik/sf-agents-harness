@@ -8,11 +8,25 @@ Changes are grouped by date.
 
 ## [Unreleased]
 
+### Added
+
+- System agents: add a `claude-code/` profile variant (Claude Code subagent format, model IDs, per-agent tool scopes) for all four agents. sparkdock installs them at the user level (`~/.claude/agents/`, scope "All your projects").
+
+### Changed
+
+- System agents: pin a model per agent in the Copilot profiles -- `the-analyst`, `the-architect`, and `the-reviewer` on Claude Opus 4.8, `the-builder` on Claude Sonnet 4.6.
+- `the-builder`: drop the functional-programming styling guidance from "How you write code", keeping the language-agnostic simplicity guidance.
+
+### Removed
+
+- System agents: remove the deprecated `opencode/` profile variant for all four agents.
+
 ## [2026-05-14]
 
 ### Added
 
 - `the-analyst`, `the-builder`, and `the-reviewer` system agents: add domain analysis, test-driven implementation, and read-only review profiles for both Copilot and OpenCode, plus a manual eval matrix for distribution checks
+
 ### Added
 
 - `sf-commit-convention` skill (`skills/system/`): enforce SparkFabrik commit message and branch naming conventions -- adaptive format detection from git log history (conventional, legacy, Jira-style, custom) with most-recent-commit-wins for mixed logs and user prompt for unrecognizable histories, commit-msg hook error parsing for automatic format recovery, mandatory issue references in commit footers only (`Refs:`/`Closes:` trailers with fully qualified project path, never bare `#N` or in the subject line), branch naming (`feat/<issue>-<desc>`, `fix/<issue>-<desc>`, etc.), lowercase `Assisted-by` AI trailer on every commit, and non-interactive git operation guidance (avoid `-i`/`--interactive` flags, editors, and TTY-dependent commands)

@@ -7,7 +7,7 @@ tools:
   - fetch
   - websearch
   - shell
-model: gpt-4o
+model: Claude Opus 4.8
 ---
 
 # The Reviewer

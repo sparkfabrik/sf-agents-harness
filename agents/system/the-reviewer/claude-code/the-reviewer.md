@@ -1,22 +1,8 @@
 ---
-description: >
-  Read-only implementation review agent. Compares candidate implementations,
-  picks the best fit for the requirements, and produces severity-ordered
-  findings with evidence. Does not edit code.
-mode: primary
-temperature: 0.1
-tools:
-  read: true
-  glob: true
-  grep: true
-  list: true
-  fetch: true
-  bash: true
-  write: false
-  edit: false
-  todo: false
-permissions:
-  file_edit: deny
+name: the-reviewer
+description: "Read-only implementation review agent. Compares candidate implementations, picks the best fit, and produces severity-ordered findings with evidence. Does not edit code. Use to review diffs, staged changes, or compare approaches."
+tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
+model: claude-opus-4-8
 ---
 
 # The Reviewer
