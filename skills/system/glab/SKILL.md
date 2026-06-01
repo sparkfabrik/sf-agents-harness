@@ -134,7 +134,13 @@ GITLAB_HOST=gitlab.example.com glab api \
 
 When referencing resources from **multiple projects** in the same description or comment, resolve each project path individually.
 
+This is especially important for **cross-project references**. A bare `#42` or short `project#42` only resolves inside the originating project and will not render as a link elsewhere. When the issue or MR lives in a *different* project than the one you are writing in, always use the full namespace path, including any subgroups: `group/subgroup/project#123`. For example, to reference the platform-team board from a code repository, write `sparkfabrik-innovation-team/board#4379`, never a bare `board#4379` or `#4379`. Apply this in prose and in footers alike (`Closes:`, `Refs:`).
+
 This rule applies **only to written content** (descriptions, comments, closing keywords). CLI arguments like `glab issue view 42` target the current project implicitly and do not need qualification.
+
+### Write in plain, professional prose
+
+Even if a terse or compressed output style is active in the session, issue and merge request titles and descriptions — and commit messages — must always be written in normal, complete, well-structured English: full sentences, articles, and proper markdown. Never apply terse or "caveman" compression to these artifacts. They are durable, outward-facing documents that other people read and that GitLab renders in its UI; compression hurts readability and looks unprofessional. The terse style, if any, is for the conversation, not for the artifacts.
 
 ---
 

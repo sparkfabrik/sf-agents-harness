@@ -124,6 +124,14 @@ This applies to **every** piece of content the agent creates, regardless of leng
 
 > **Issue auto-linking:** GitHub renders bare `#N` as a clickable link to issue N. Use backticks (`` `#18` ``) when referring to issue numbers as text (examples, tables, logs). Leave `#N` bare only when it should link to an actual issue (e.g., `Closes #42`).
 
+### Authoring rules for descriptions and commit messages
+
+These rules apply to every issue title and description, pull request title and description, comment, review, and commit message you write.
+
+**Write in plain, professional prose.** Even if a terse or compressed output style is active in the session, issue and pull request titles and descriptions — and commit messages — must always be written in normal, complete, well-structured English: full sentences, articles, and proper markdown. Never apply terse or "caveman" compression to these artifacts. They are durable, outward-facing documents that other people read and that GitHub renders in its UI; compression hurts readability and looks unprofessional. The terse style, if any, is for the conversation, not for the artifacts.
+
+**Use the full path for cross-project references.** When you reference an issue or pull request that lives in a *different* repository than the one you are writing in, use the full `owner/repo#123` form rather than a bare `#123`. A bare `#123` (or a short form) only resolves within the same repository and will not render as a link from another repository. Apply this in prose and in footers alike (`Closes:`, `Refs:`). For example, to reference the platform-team board from a code repository, write `sparkfabrik-innovation-team/board#4379`, never a bare `board#4379` or `#4379`. Within the same repository, a bare `#123` is correct and renders as a link.
+
 ---
 
 ## Issues
