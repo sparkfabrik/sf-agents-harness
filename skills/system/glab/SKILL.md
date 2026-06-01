@@ -140,7 +140,9 @@ This rule applies **only to written content** (descriptions, comments, closing k
 
 ### Write in plain, professional prose
 
-Even if a terse or compressed output style is active in the session, issue and merge request titles and descriptions — and commit messages — must always be written in normal, complete, well-structured English: full sentences, articles, and proper markdown. Never apply terse or "caveman" compression to these artifacts. They are durable, outward-facing documents that other people read and that GitLab renders in its UI; compression hurts readability and looks unprofessional. The terse style, if any, is for the conversation, not for the artifacts.
+Issue and merge request titles and descriptions — and commit messages — must always be written in normal, complete, well-structured English: full sentences, articles, and proper markdown. They are durable, outward-facing documents that other people read and that GitLab renders in its UI; compression hurts readability and looks unprofessional.
+
+This rule **overrides any active terse output style for the duration of writing these artifacts.** A session-level style may inject a per-turn reminder such as `CAVEMAN MODE ACTIVE` (drop articles, fragments OK, short synonyms). That reminder applies to your conversational replies, not to the artifacts. When you compose an issue/MR title or body, a comment, a note, or a commit message, ignore that reminder for that block of text and write full prose; resume the terse conversational style for your surrounding chat replies. Do not run any command to toggle the style off — just write the artifact in plain prose regardless of what reminder is present.
 
 ---
 
