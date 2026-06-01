@@ -3,13 +3,13 @@ name: githuman
 description: >-
   How to use GitHuman to review AI-generated code changes before committing. 
   GitHuman provides a GitHub-like diff review interface for your staging area 
-  — visual diffs, inline comments, todos, and review workflows — all running 
-  locally via Docker. Use this skill whenever the user mentions "githuman", 
-  "code review before commit", "review staged changes", "review AI changes", 
-  wants to review diffs in a browser, asks about reviewing code before 
-  committing, or after completing a coding task where staged changes should 
-  be reviewed. Also trigger when you see references to sjust/ajust githuman 
-  commands.
+  — visual diffs, inline comments, todos, and review workflows — all 
+  running locally via Docker. Use this skill whenever the user mentions 
+  "githuman", "code review before commit", "review staged changes", "review 
+  AI changes", wants to review diffs in a browser, asks about reviewing code 
+  before committing, or after completing a coding task where staged changes 
+  should be reviewed. Also trigger when you see references to sjust/ajust 
+  githuman commands.
 metadata:
   tags: code-review, git, ai-workflow, commit, staging
 ---
