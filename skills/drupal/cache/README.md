@@ -92,15 +92,15 @@ Show me how to implement a lazy builder for user-specific content
 
 The following skills auto-activate based on your questions:
 
-| Skill | Triggers |
-|-------|----------|
-| `drupal-cache-tags` | cache tags, invalidation, entity tags |
-| `drupal-cache-contexts` | cache contexts, user.roles, variations |
-| `drupal-cache-maxage` | max-age, time-based expiration |
-| `drupal-dynamic-cache` | Dynamic Page Cache, BigPipe, UNCACHEABLE |
-| `drupal-cache-debugging` | debugging, troubleshooting, headers |
-| `drupal-lazy-builders` | lazy builders, placeholders, #lazy_builder |
-| `http-cache-tools` | curl, HTTP headers, cache inspection, SparkFabrik container |
+| Skill                    | Triggers                                                    |
+| ------------------------ | ----------------------------------------------------------- |
+| `drupal-cache-tags`      | cache tags, invalidation, entity tags                       |
+| `drupal-cache-contexts`  | cache contexts, user.roles, variations                      |
+| `drupal-cache-maxage`    | max-age, time-based expiration                              |
+| `drupal-dynamic-cache`   | Dynamic Page Cache, BigPipe, UNCACHEABLE                    |
+| `drupal-cache-debugging` | debugging, troubleshooting, headers                         |
+| `drupal-lazy-builders`   | lazy builders, placeholders, #lazy_builder                  |
+| `http-cache-tools`       | curl, HTTP headers, cache inspection, SparkFabrik container |
 
 ## File Structure
 

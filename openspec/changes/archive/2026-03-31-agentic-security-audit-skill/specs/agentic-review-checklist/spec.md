@@ -14,6 +14,7 @@ The skill SHALL include a review checklist with one category per OWASP Agentic T
 The skill SHALL check for prompt injection vulnerabilities by examining how user input flows into LLM prompts.
 
 Items to check:
+
 - User input concatenated directly into prompt strings without sanitization
 - System prompts that can be overridden by user messages
 - No instruction hierarchy enforcement (system vs user vs assistant)
@@ -30,6 +31,7 @@ Items to check:
 The skill SHALL check for overly broad or unvalidated tool definitions that agents can invoke.
 
 Items to check:
+
 - MCP tool definitions with unrestricted file system or network access
 - Tool definitions without input validation or schema constraints
 - Agents with write access to databases or file systems without approval gates
@@ -46,6 +48,7 @@ Items to check:
 The skill SHALL check for agent identity and privilege boundary issues.
 
 Items to check:
+
 - Agent running with service account or admin credentials
 - No per-user scoping of agent actions
 - Cached permissions reused across sessions
@@ -62,6 +65,7 @@ Items to check:
 The skill SHALL check for supply chain risks in AI configurations and instruction files.
 
 Items to check:
+
 - Instruction files not covered by code review process
 - Prompt templates loaded from external URLs at runtime
 - MCP tools from untrusted or unverified sources
@@ -78,6 +82,7 @@ Items to check:
 The skill SHALL check for code execution risks in agent configurations.
 
 Items to check:
+
 - Agent configured with ability to run `eval()`, `exec()`, or shell commands
 - Generated code executed without sandboxing or review
 - No static analysis applied to AI-generated code before execution
@@ -94,6 +99,7 @@ Items to check:
 The skill SHALL check for memory and RAG poisoning risks when vector DB or memory systems are detected.
 
 Items to check:
+
 - User input stored in vector DB without validation or sanitization
 - RAG retrieval results treated as authoritative without source attribution
 - No access control on memory read/write operations
@@ -110,6 +116,7 @@ Items to check:
 The skill SHALL check for insecure inter-agent communication when multi-agent frameworks are detected.
 
 Items to check:
+
 - Unsigned or unvalidated messages between agents
 - No schema enforcement on delegation payloads
 - Shared memory or context without access control between agents
@@ -125,6 +132,7 @@ Items to check:
 The skill SHALL check for hallucination propagation and cascading failure risks.
 
 Items to check:
+
 - LLM output used as input to another LLM without validation
 - No grounding or fact-checking layer between LLM calls
 - Hallucinated output persisted to database or memory
@@ -141,6 +149,7 @@ Items to check:
 The skill SHALL check for weaknesses in human oversight mechanisms.
 
 Items to check:
+
 - No approval gate on high-impact agent actions (deletes, sends, purchases)
 - Bulk approval interfaces that obscure individual action risk
 - Agent can bypass human-in-the-loop via delegation or fallback paths
@@ -157,6 +166,7 @@ Items to check:
 The skill SHALL check for rogue agent risks when dynamic agent instantiation or multi-agent systems are detected.
 
 Items to check:
+
 - No agent attestation or allowlisting mechanism
 - Dynamic agent instantiation from untrusted sources
 - No monitoring or logging of agent behavior

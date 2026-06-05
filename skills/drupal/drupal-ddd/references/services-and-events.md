@@ -17,7 +17,7 @@ DDD distinguishes three kinds of services. Understanding the difference is
 critical for keeping logic in the right place.
 
 | Type                       | Lives In             | Purpose                                            | Example                                      |
-|----------------------------|----------------------|----------------------------------------------------|----------------------------------------------|
+| -------------------------- | -------------------- | -------------------------------------------------- | -------------------------------------------- |
 | **Domain Service**         | Domain layer         | Business logic that doesn't fit an entity          | `EnrollmentEligibilityChecker`               |
 | **Application Service**    | Application layer    | Orchestrates use cases, coordinates domain objects | `PlaceOrderService`, form submit handlers    |
 | **Infrastructure Service** | Infrastructure layer | Technical concerns (HTTP, email, file I/O)         | `PaymentGatewayClient`, `OAuthTokenProvider` |
@@ -258,6 +258,7 @@ Controller / Form / Drush Command
 ```
 
 **Rules:**
+
 - Application Services accept **primitives or DTOs** (not entities)
 - Application Services return **DTOs or Value Objects** (not entities)
 - Application Services manage **transactions** (see below)
@@ -286,6 +287,7 @@ is **immutable** — a fact about the past that cannot be changed.
 ### Naming Convention
 
 Domain Events are named as **past-tense verbs**:
+
 - `StudentWasEnrolled`
 - `OrderWasPlaced`
 - `PaymentWasReceived`
@@ -360,7 +362,7 @@ final class SendEnrollmentConfirmation implements EventSubscriberInterface {
 ### Domain Events vs Drupal Hooks
 
 |                  | Drupal Hooks                                                      | Domain Events                                 |
-|------------------|-------------------------------------------------------------------|-----------------------------------------------|
+| ---------------- | ----------------------------------------------------------------- | --------------------------------------------- |
 | **Coupling**     | Tight (hook implementations know about internal entity structure) | Loose (events carry only what listeners need) |
 | **Semantics**    | Technical (`hook_entity_insert`)                                  | Domain (`StudentWasEnrolled`)                 |
 | **Cross-module** | Any module can implement any hook                                 | Events are dispatched by the owning module    |
@@ -368,10 +370,12 @@ final class SendEnrollmentConfirmation implements EventSubscriberInterface {
 | **Testing**      | Requires Drupal bootstrap                                         | Can test dispatch + handling independently    |
 
 **Use hooks when:**
+
 - You need to alter Drupal's built-in behavior (form alter, entity view, etc.)
 - The reaction is tightly coupled to Drupal's lifecycle (presave, insert, delete)
 
 **Use Domain Events when:**
+
 - The side effect is in a different Bounded Context
 - You want to decouple modules
 - The reaction can happen asynchronously
@@ -416,7 +420,7 @@ because Drupal's architecture naturally pushes logic away from entities.
 ### How to Detect It
 
 | Signal                                                                   | What It Means                     |
-|--------------------------------------------------------------------------|-----------------------------------|
+| ------------------------------------------------------------------------ | --------------------------------- |
 | Entity has only getters/setters, no business methods                     | Logic is elsewhere                |
 | `hook_entity_presave` contains `if ($entity->bundle() === 'X')` branches | Business rules leaked into hooks  |
 | A "god service" orchestrates dozens of field operations                  | Service is doing the entity's job |

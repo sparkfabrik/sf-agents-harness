@@ -36,6 +36,7 @@ Use a Value Object when you find yourself:
 - Wanting to prevent invalid states (negative prices, malformed codes)
 
 **Skip Value Objects when:**
+
 - The value is a simple scalar with no validation beyond Drupal's field constraints
 - The value is only used in one place with no behavior
 - You're modeling a Drupal config form with simple text/boolean fields
@@ -46,7 +47,7 @@ Drupal fields already provide storage-level typing and constraints. PHP Value
 Objects add **domain-level** guarantees on top:
 
 | Concern               | Drupal Field                | PHP Value Object             |
-|-----------------------|-----------------------------|------------------------------|
+| --------------------- | --------------------------- | ---------------------------- |
 | Storage type          | Yes (varchar, int, etc.)    | No (in-memory only)          |
 | Required/optional     | Yes                         | Yes (via constructor)        |
 | Format validation     | Limited (maxlength, etc.)   | Full (regex, business rules) |

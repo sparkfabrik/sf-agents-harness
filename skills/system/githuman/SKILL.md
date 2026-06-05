@@ -14,7 +14,6 @@ metadata:
   tags: code-review, git, ai-workflow, commit, staging
 ---
 
-
 ## When to use
 
 Use this skill whenever you are working with GitHuman to review AI-generated code changes before committing them. GitHuman provides a web interface for visual code review with inline comments, suggestions, and todo management.
@@ -31,6 +30,7 @@ Read individual rule files for detailed explanations and examples:
 - [rules/comments.md](rules/comments.md) - Adding inline comments and suggestions to code
 - [rules/export.md](rules/export.md) - Exporting reviews for documentation
 - [rules/tips.md](rules/tips.md) - Best practices and productivity tips
+
 ---
 
 ## Command invocation — this section overrides upstream examples
@@ -54,18 +54,18 @@ fi
 
 **Every** `npx githuman` or bare `githuman` command has a Just recipe equivalent. Never use `npx githuman` or `githuman` directly, even when the upstream rules files show `npx` in their examples:
 
-| Upstream (do NOT use) | Local (use this instead) |
-|------------------------|--------------------------|
-| `npx githuman serve` | `$JUST_CMD githuman-start [directory]` |
-| `npx githuman serve` (open browser) | `$JUST_CMD githuman-open [directory]` |
-| `npx githuman list` | `$JUST_CMD githuman-list` |
-| `npx githuman resolve <id\|last>` | `$JUST_CMD githuman-exec resolve <id\|last>` |
-| `npx githuman export <id\|last> [-o file]` | `$JUST_CMD githuman-exec export <id\|last> [-o file]` |
+| Upstream (do NOT use)                        | Local (use this instead)                                |
+| -------------------------------------------- | ------------------------------------------------------- |
+| `npx githuman serve`                         | `$JUST_CMD githuman-start [directory]`                  |
+| `npx githuman serve` (open browser)          | `$JUST_CMD githuman-open [directory]`                   |
+| `npx githuman list`                          | `$JUST_CMD githuman-list`                               |
+| `npx githuman resolve <id\|last>`            | `$JUST_CMD githuman-exec resolve <id\|last>`            |
+| `npx githuman export <id\|last> [-o file]`   | `$JUST_CMD githuman-exec export <id\|last> [-o file]`   |
 | `npx githuman todo <add\|list\|done> [args]` | `$JUST_CMD githuman-exec todo <add\|list\|done> [args]` |
-| (get container ID) | `$JUST_CMD githuman-id [directory]` |
-| (view container logs) | `$JUST_CMD githuman-logs [container-name]` |
-| (stop instance) | `$JUST_CMD githuman-stop [container-name]` |
-| (stop all + remove volumes) | `$JUST_CMD githuman-purge` |
+| (get container ID)                           | `$JUST_CMD githuman-id [directory]`                     |
+| (view container logs)                        | `$JUST_CMD githuman-logs [container-name]`              |
+| (stop instance)                              | `$JUST_CMD githuman-stop [container-name]`              |
+| (stop all + remove volumes)                  | `$JUST_CMD githuman-purge`                              |
 
 No `npx githuman` or `githuman` invocation is valid in this environment — always use `$JUST_CMD` recipes.
 
@@ -80,11 +80,10 @@ GitHuman instances run as Docker containers with these SparkFabrik-specific conv
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Container not starting | Check Docker is running: `docker info` |
-| Review not ready after 60s | Check logs: `$JUST_CMD githuman-logs` |
-| Certificate warning in browser | Install `spark-http-proxy` or accept the self-signed cert |
-| Port conflict | GitHuman uses port 3847 inside the container; the reverse proxy handles external routing |
-| Stale instance | Stop and restart: `$JUST_CMD githuman-stop` then `$JUST_CMD githuman-start` |
-
+| Problem                        | Solution                                                                                 |
+| ------------------------------ | ---------------------------------------------------------------------------------------- |
+| Container not starting         | Check Docker is running: `docker info`                                                   |
+| Review not ready after 60s     | Check logs: `$JUST_CMD githuman-logs`                                                    |
+| Certificate warning in browser | Install `spark-http-proxy` or accept the self-signed cert                                |
+| Port conflict                  | GitHuman uses port 3847 inside the container; the reverse proxy handles external routing |
+| Stale instance                 | Stop and restart: `$JUST_CMD githuman-stop` then `$JUST_CMD githuman-start`              |

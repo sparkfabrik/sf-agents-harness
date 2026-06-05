@@ -17,16 +17,16 @@ Cache contexts define request-dependent cache variations. Analogous to HTTP `Var
 
 ## Available Contexts
 
-| Context | Variations | Use Case |
-|---------|------------|----------|
-| `user` | Per-user (AVOID) | Truly personalized content only |
-| `user.roles` | Per-role combination | Role-based visibility |
-| `user.permissions` | Per-permission set | Permission-based content |
-| `url.path` | Per-path | Path-dependent content |
-| `url.query_args:key` | Per-parameter | Sort, filter, pagination |
-| `languages:language_interface` | Per-language | Translated content |
-| `theme` | Per-theme | Theme-specific rendering |
-| `session` | Per-session | Session data (triggers placeholder) |
+| Context                        | Variations           | Use Case                            |
+| ------------------------------ | -------------------- | ----------------------------------- |
+| `user`                         | Per-user (AVOID)     | Truly personalized content only     |
+| `user.roles`                   | Per-role combination | Role-based visibility               |
+| `user.permissions`             | Per-permission set   | Permission-based content            |
+| `url.path`                     | Per-path             | Path-dependent content              |
+| `url.query_args:key`           | Per-parameter        | Sort, filter, pagination            |
+| `languages:language_interface` | Per-language         | Translated content                  |
+| `theme`                        | Per-theme            | Theme-specific rendering            |
+| `session`                      | Per-session          | Session data (triggers placeholder) |
 
 ## Context Hierarchy
 
@@ -47,6 +47,7 @@ user (AVOID - per-user cache explosion)
 **Input:** "I show different content to editors vs anonymous users"
 
 **Output:**
+
 ```php
 $build = [
   '#markup' => $this->getRoleBasedContent(),
@@ -61,6 +62,7 @@ $build = [
 **Input:** "I need to show the user's own profile info"
 
 **Output:**
+
 ```php
 // WARNING: Creates cache entry per user - use lazy_builder instead
 $build = [
@@ -82,6 +84,7 @@ $build = [
 **Input:** "My listing supports ?sort=date and ?sort=title parameters"
 
 **Output:**
+
 ```php
 $sort = \Drupal::request()->query->get('sort', 'date');
 
@@ -99,6 +102,7 @@ $build = [
 **Input:** "I render translated labels in my block"
 
 **Output:**
+
 ```php
 $build = [
   '#markup' => $this->t('Welcome'),
@@ -113,6 +117,7 @@ $build = [
 **Input:** "Content varies by role AND language"
 
 **Output:**
+
 ```php
 $build = [
   '#markup' => $this->getLocalizedRoleContent(),
@@ -136,7 +141,7 @@ $build = [
 services:
   cache_context.custom_header:
     class: Drupal\my_module\Cache\CustomHeaderContext
-    arguments: ['@request_stack']
+    arguments: ["@request_stack"]
     tags:
       - { name: cache.context }
 ```
@@ -174,6 +179,7 @@ $build['#cache']['contexts'][] = 'custom_header';
 **Input:** "My block shows different actions based on permissions"
 
 **Output:**
+
 ```php
 class ActionBlock extends BlockBase {
 
@@ -196,12 +202,12 @@ class ActionBlock extends BlockBase {
 
 ## Common Mistakes
 
-| Mistake | Impact | Solution |
-|---------|--------|----------|
-| Using `user` for role checks | Cache explosion (1 entry per user) | Use `user.roles` |
-| Using `session` directly | Triggers auto-placeholder | Use lazy builder |
-| Missing context | Same cached content for all variations | Add appropriate context |
-| Too broad context | Unnecessary cache variations | Use most specific context |
+| Mistake                      | Impact                                 | Solution                  |
+| ---------------------------- | -------------------------------------- | ------------------------- |
+| Using `user` for role checks | Cache explosion (1 entry per user)     | Use `user.roles`          |
+| Using `session` directly     | Triggers auto-placeholder              | Use lazy builder          |
+| Missing context              | Same cached content for all variations | Add appropriate context   |
+| Too broad context            | Unnecessary cache variations           | Use most specific context |
 
 ## Auto-Placeholdering
 
@@ -212,8 +218,8 @@ These contexts trigger automatic placeholdering in Dynamic Page Cache:
 renderer.config:
   auto_placeholder_conditions:
     contexts:
-      - 'session'
-      - 'user'
+      - "session"
+      - "user"
 ```
 
 Content with these contexts is replaced with a placeholder and rendered separately.

@@ -24,15 +24,15 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 
 ## Core Debugging & Information Commands
 
-| Command                                                               | Purpose                                                                | Why it's useful for debugging                                                                                                                         |
-|-----------------------------------------------------------------------|------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `drush status`                                                        | Shows Drupal root, site path, database connection, Drush version, etc. | Quickly verify that Drush is pointing to the correct site and DB is connected.                                                                        |
-| `drush core-status`                                                   | Same as above but more detailed in newer versions.                     |                                                                                                                                                       |
+| Command             | Purpose                                                                | Why it's useful for debugging                                                  |
+| ------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `drush status`      | Shows Drupal root, site path, database connection, Drush version, etc. | Quickly verify that Drush is pointing to the correct site and DB is connected. |
+| `drush core-status` | Same as above but more detailed in newer versions.                     |                                                                                |
 
 ## Cache Debugging
 
 | Command                            | Purpose                                                                         |
-|------------------------------------|---------------------------------------------------------------------------------|
+| ---------------------------------- | ------------------------------------------------------------------------------- |
 | `drush cache:rebuild` / `drush cr` | Rebuilds all caches (equivalent to "drush cc all" in D7).                       |
 | `drush cache:get <bin>:<cid>`      | Retrieve a specific cache item (e.g., `drush cache:get config:core.extension`). |
 | `drush cache:clear <bin>`          | Clear only one cache bin (render, config, discovery, etc.).                     |
@@ -40,7 +40,7 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 ## Configuration Debugging
 
 | Command                                 | Purpose                                                                   |
-|-----------------------------------------|---------------------------------------------------------------------------|
+| --------------------------------------- | ------------------------------------------------------------------------- |
 | `drush config:get <name>`               | Show a single configuration value (e.g., `drush config:get system.site`). |
 | `drush config:set <name> <key> <value>` | Temporarily change a config value without using the UI.                   |
 | `drush config:export` / `drush cex`     | Export active config to sync directory.                                   |
@@ -50,7 +50,7 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 ## Module/Theming Debugging
 
 | Command                                                                                                                    | Purpose                                                        |
-|----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | `drush pm:list --type=module --status=enabled`                                                                             | List enabled modules.                                          |
 | `drush pm:enable <module>` / `drush en <module>`                                                                           | Enable a module.                                               |
 | `drush pm:uninstall <module>` / `drush puninstall <module>`                                                                | Fully uninstall a module (removes config and data).            |
@@ -60,7 +60,7 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 ## Database & Entity Debugging
 
 | Command                 | Purpose                                                                                                                                                            |
-|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `drush sql:connect`     | Outputs the CLI command to connect to the DB (useful for manual queries).                                                                                          |
 | `drush sql:query`       | Run arbitrary SQL.                                                                                                                                                 |
 | `drush entity:info`     | Show entity type definitions (useful when entity schema errors occur).                                                                                             |
@@ -70,7 +70,7 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 ## Development & Error Reproduction
 
 | Command                                                                  | Purpose                                                                 |
-|--------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | `drush php:eval "var_dump(function_exists('my_problematic_function'));"` | Quick test if a function exists or what it returns.                     |
 | `drush state:edit` / `drush state:get/set/delete`                        | Inspect or override Drupal state values (often used by broken modules). |
 | `drush variable:get/set/delete` (D7 only)                                | Legacy equivalent of state commands.                                    |
@@ -79,10 +79,10 @@ Use `docker compose logs -f drupal-php` to view logs in real time.
 
 ## Performance & Query Debugging
 
-| Command                                                                      | Purpose                                                           |
-|------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| `drush sql:query --db-prefix`                                                | See queries with table prefixes expanded (helps reading raw SQL). |
-| Enable Devel + `drush kint` or `dpm()` in code: instant output in terminal.  |                                                                   |
+| Command                                                                     | Purpose                                                           |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `drush sql:query --db-prefix`                                               | See queries with table prefixes expanded (helps reading raw SQL). |
+| Enable Devel + `drush kint` or `dpm()` in code: instant output in terminal. |                                                                   |
 
 ## Performance Profiling
 

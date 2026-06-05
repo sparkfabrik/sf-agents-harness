@@ -30,15 +30,16 @@ The skill reads well-known config files to build a stack profile before running 
 
 Detection targets per stack:
 
-| Stack | Config files | Tool indicators |
-|-------|-------------|-----------------|
-| PHP/Drupal | `composer.json`, `composer.lock` | `phpstan.neon(.dist)`, `.phpcs.xml(.dist)`, `psalm.xml`, `grumphp.yml` |
-| Node.js | `package.json`, `package-lock.json` | `.eslintrc*`, scripts in package.json |
-| Go | `go.mod`, `go.sum` | — |
-| Python | `pyproject.toml`, `requirements.txt`, `setup.py` | — |
-| IaC | `*.tf`, `Dockerfile`, `docker-compose.yml`, `k8s/` | — |
+| Stack      | Config files                                       | Tool indicators                                                        |
+| ---------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| PHP/Drupal | `composer.json`, `composer.lock`                   | `phpstan.neon(.dist)`, `.phpcs.xml(.dist)`, `psalm.xml`, `grumphp.yml` |
+| Node.js    | `package.json`, `package-lock.json`                | `.eslintrc*`, scripts in package.json                                  |
+| Go         | `go.mod`, `go.sum`                                 | —                                                                      |
+| Python     | `pyproject.toml`, `requirements.txt`, `setup.py`   | —                                                                      |
+| IaC        | `*.tf`, `Dockerfile`, `docker-compose.yml`, `k8s/` | —                                                                      |
 
 Additionally, the skill checks for execution environments:
+
 - `.ddev/config.yaml` → tools should be run via `ddev exec`
 - `.lando.yml` → tools should be run via `lando`
 - `Makefile` / `Taskfile.yml` → check for existing lint/security targets
@@ -50,13 +51,13 @@ Additionally, the skill checks for execution environments:
 
 The skill generates one Dockerfile per detected stack, plus one for universal tools. Each uses a base image matching the stack's runtime.
 
-| Stack | Base image | Stack-specific tools |
-|-------|-----------|---------------------|
-| Universal | `python:3.12-slim` | semgrep, trivy, gitleaks, grype, syft, checkov |
-| PHP | `php:8.3-cli` | composer (audit), phpcs + drupal/coder, psalm, phpstan, drupal-check |
-| Node.js | `node:22-slim` | npm (audit), retire.js |
-| Go | `golang:1.22-bookworm` | gosec, govulncheck |
-| Python | `python:3.12-slim` | bandit, pip-audit |
+| Stack     | Base image             | Stack-specific tools                                                 |
+| --------- | ---------------------- | -------------------------------------------------------------------- |
+| Universal | `python:3.12-slim`     | semgrep, trivy, gitleaks, grype, syft, checkov                       |
+| PHP       | `php:8.3-cli`          | composer (audit), phpcs + drupal/coder, psalm, phpstan, drupal-check |
+| Node.js   | `node:22-slim`         | npm (audit), retire.js                                               |
+| Go        | `golang:1.22-bookworm` | gosec, govulncheck                                                   |
+| Python    | `python:3.12-slim`     | bandit, pip-audit                                                    |
 
 **Alternative considered**: Single fat image with all runtimes. Rejected because it would be 2-3 GB, include irrelevant tools, and risk tool conflicts between package managers.
 
@@ -121,6 +122,7 @@ This directory should be gitignored. The Dockerfiles are ephemeral artifacts of 
 The new `references/php-security.md` follows the same structure as the existing Go and Node.js references: vulnerable/safe code pairs, "what to look for" grep patterns, and tool-specific rule references.
 
 Drupal-specific patterns to cover:
+
 - Unsanitized render arrays (`#markup` with user input, missing `#plain_text`)
 - Raw SQL via `Database::getConnection()->query()` without placeholders
 - Form API CSRF (forms without proper token validation)

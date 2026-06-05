@@ -10,13 +10,13 @@ The skill SHALL detect which language stacks are present in a project by reading
 
 The following mappings SHALL be used:
 
-| Config file | Detected stack |
-|-------------|---------------|
-| `composer.json` | PHP |
-| `go.mod` | Go |
-| `package.json` | Node.js |
-| `pyproject.toml`, `requirements.txt`, `setup.py` | Python |
-| `*.tf`, `Dockerfile`, `docker-compose.yml` | IaC |
+| Config file                                      | Detected stack |
+| ------------------------------------------------ | -------------- |
+| `composer.json`                                  | PHP            |
+| `go.mod`                                         | Go             |
+| `package.json`                                   | Node.js        |
+| `pyproject.toml`, `requirements.txt`, `setup.py` | Python         |
+| `*.tf`, `Dockerfile`, `docker-compose.yml`       | IaC            |
 
 The skill SHALL detect Drupal as a sub-type of PHP when `composer.json` contains `drupal/core` or `drupal/core-recommended` as a dependency.
 
@@ -41,13 +41,13 @@ The skill SHALL check for existing tool configuration files to determine which s
 
 The following tool indicators SHALL be checked:
 
-| Config file | Tool available |
-|-------------|---------------|
-| `phpstan.neon` or `phpstan.neon.dist` | phpstan |
-| `.phpcs.xml` or `phpcs.xml.dist` | phpcs |
-| `psalm.xml` or `psalm.xml.dist` | psalm |
-| `grumphp.yml` | grumphp (orchestrator for multiple tools) |
-| `.eslintrc*` | eslint |
+| Config file                           | Tool available                            |
+| ------------------------------------- | ----------------------------------------- |
+| `phpstan.neon` or `phpstan.neon.dist` | phpstan                                   |
+| `.phpcs.xml` or `phpcs.xml.dist`      | phpcs                                     |
+| `psalm.xml` or `psalm.xml.dist`       | psalm                                     |
+| `grumphp.yml`                         | grumphp (orchestrator for multiple tools) |
+| `.eslintrc*`                          | eslint                                    |
 
 #### Scenario: phpstan already configured
 

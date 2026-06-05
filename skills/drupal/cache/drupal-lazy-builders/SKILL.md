@@ -17,7 +17,7 @@ Lazy builders defer rendering of dynamic/personalized content, enabling page cac
 ## How It Works
 
 ```
-Page renders → Placeholder inserted → Page cached → 
+Page renders → Placeholder inserted → Page cached →
 Request → Cached page served → Placeholder replaced with fresh content
 ```
 
@@ -50,7 +50,7 @@ $build['greeting'] = [
 services:
   my_module.lazy_builders:
     class: Drupal\my_module\LazyBuilders
-    arguments: ['@entity_type.manager']
+    arguments: ["@entity_type.manager"]
 ```
 
 ```php
@@ -75,7 +75,7 @@ class LazyBuilders implements TrustedCallbackInterface {
 
   public function userGreeting(int $uid): array {
     $user = $this->entityTypeManager->getStorage('user')->load($uid);
-    
+
     return [
       '#markup' => t('Hello @name!', ['@name' => $user->getDisplayName()]),
       '#cache' => [
@@ -92,6 +92,7 @@ class LazyBuilders implements TrustedCallbackInterface {
 **Input:** "Show cart item count in header without breaking cache"
 
 **Output:**
+
 ```php
 $build['cart'] = [
   '#lazy_builder' => [
@@ -109,7 +110,7 @@ public static function trustedCallbacks() {
 
 public function cartCount(string $session_id): array {
   $count = $this->cartService->getItemCount($session_id);
-  
+
   return [
     '#markup' => t('@count items', ['@count' => $count]),
     '#cache' => [
@@ -125,6 +126,7 @@ public function cartCount(string $session_id): array {
 **Input:** "My page is UNCACHEABLE because of a timestamp, how do I fix it?"
 
 **Output:**
+
 ```php
 // BEFORE - breaks page cache:
 $build['timestamp'] = [
@@ -153,6 +155,7 @@ public function timestamp(): array {
 **Input:** "I need to pass node ID and view mode to my lazy builder"
 
 **Output:**
+
 ```php
 $build['related'] = [
   '#lazy_builder' => [
@@ -167,7 +170,7 @@ $build['related'] = [
 public function relatedContent(int $nid, string $view_mode, int $limit): array {
   $node = $this->entityTypeManager->getStorage('node')->load($nid);
   // ... render related content
-  
+
   return [
     '#theme' => 'item_list',
     '#items' => $items,
@@ -183,6 +186,7 @@ public function relatedContent(int $nid, string $view_mode, int $limit): array {
 **Input:** "I need to pass an array of IDs to my lazy builder"
 
 **Output:**
+
 ```php
 // WRONG - arrays not allowed:
 ['my_service:method', [[1, 2, 3]]]  // ❌ Will fail
@@ -211,6 +215,7 @@ public function multipleItems(string $ids_string): array {
 **Input:** "My block shows user-specific content, how do I make it cacheable?"
 
 **Output:**
+
 ```php
 class UserNotificationsBlock extends BlockBase {
 
@@ -242,6 +247,7 @@ class UserNotificationsBlock extends BlockBase {
 **Input:** "My lazy builder isn't being called, how do I debug?"
 
 **Output:**
+
 ```php
 // Common issues:
 
@@ -270,6 +276,7 @@ class LazyBuilders implements TrustedCallbackInterface {  // ✓ Correct
 **Input:** "Can I use lazy builder directly in Twig template?"
 
 **Output:**
+
 ```php
 // In preprocess or controller, add to variables:
 $variables['user_greeting'] = [
@@ -303,13 +310,13 @@ $build['lazy'] = [
 
 ## Common Mistakes
 
-| Mistake | Error | Fix |
-|---------|-------|-----|
-| Object argument | Serialization error | Pass ID, load in callback |
-| Array argument | Runtime error | Use `implode()` |
-| Missing `trustedCallbacks()` | Security exception | Implement interface method |
-| Method not in `trustedCallbacks()` | Security exception | Add method to array |
-| Other properties with `#lazy_builder` | Render error | Remove extra properties |
+| Mistake                               | Error               | Fix                        |
+| ------------------------------------- | ------------------- | -------------------------- |
+| Object argument                       | Serialization error | Pass ID, load in callback  |
+| Array argument                        | Runtime error       | Use `implode()`            |
+| Missing `trustedCallbacks()`          | Security exception  | Implement interface method |
+| Method not in `trustedCallbacks()`    | Security exception  | Add method to array        |
+| Other properties with `#lazy_builder` | Render error        | Remove extra properties    |
 
 ## Debugging
 

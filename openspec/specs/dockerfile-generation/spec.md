@@ -10,13 +10,13 @@ The skill SHALL generate one Dockerfile per detected stack, plus one universal D
 
 Each Dockerfile SHALL use a base image appropriate for the stack:
 
-| Stack | Base image |
-|-------|-----------|
-| Universal | `python:3.12-slim` |
-| PHP | `php:8.3-cli` |
-| Node.js | `node:22-slim` |
-| Go | `golang:1.22-bookworm` |
-| Python | `python:3.12-slim` |
+| Stack     | Base image             |
+| --------- | ---------------------- |
+| Universal | `python:3.12-slim`     |
+| PHP       | `php:8.3-cli`          |
+| Node.js   | `node:22-slim`         |
+| Go        | `golang:1.22-bookworm` |
+| Python    | `python:3.12-slim`     |
 
 #### Scenario: PHP project generates PHP and universal Dockerfiles
 
@@ -35,13 +35,13 @@ Each stack Dockerfile SHALL install only tools relevant to that stack. The unive
 
 Tool assignments:
 
-| Container | Tools |
-|-----------|-------|
-| Universal | semgrep, trivy, gitleaks, grype, syft, checkov |
-| PHP | composer (for audit), phpcs + drupal/coder, psalm, phpstan, drupal-check, local-php-security-checker |
-| Node.js | retire.js |
-| Go | gosec, govulncheck |
-| Python | bandit, pip-audit |
+| Container | Tools                                                                                                |
+| --------- | ---------------------------------------------------------------------------------------------------- |
+| Universal | semgrep, trivy, gitleaks, grype, syft, checkov                                                       |
+| PHP       | composer (for audit), phpcs + drupal/coder, psalm, phpstan, drupal-check, local-php-security-checker |
+| Node.js   | retire.js                                                                                            |
+| Go        | gosec, govulncheck                                                                                   |
+| Python    | bandit, pip-audit                                                                                    |
 
 npm audit SHALL NOT require a Docker container because it ships with npm. If Node.js is detected, the skill SHALL run `npm audit` directly in Phase 1a.
 
@@ -56,6 +56,7 @@ npm audit SHALL NOT require a Docker container because it ships with npm. If Nod
 The skill SHALL generate a `scan.sh` script alongside each Dockerfile. The scan script SHALL be a linear sequence of tool invocations with no conditional logic -- every tool listed in the Dockerfile SHALL be invoked.
 
 Each tool invocation SHALL:
+
 - Request JSON output format where the tool supports it
 - Write output to `/output/<tool-name>.json`
 - Capture the exit code and continue to the next tool even if one fails

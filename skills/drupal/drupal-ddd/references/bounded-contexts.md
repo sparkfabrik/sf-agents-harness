@@ -176,7 +176,7 @@ interface ProductProviderInterface {
 ### ACL Components
 
 | Component             | Role                          | Drupal Location                            |
-|-----------------------|-------------------------------|--------------------------------------------|
+| --------------------- | ----------------------------- | ------------------------------------------ |
 | **Domain Interface**  | Defines what the domain needs | `src/Entity/` or `src/Domain/`             |
 | **Adapter**           | Talks to the external system  | `src/Infrastructure/`                      |
 | **Translator/Mapper** | Converts external → domain    | `src/Infrastructure/` or `src/Service/`    |
@@ -255,6 +255,7 @@ class ExternalSearchIndexSubscriber implements EventSubscriberInterface {
 ```
 
 **When to use:**
+
 - Side effects that can happen later (sending emails, updating search index)
 - External system integration that might be slow or unreliable
 - Operations that should not fail the current request if they error
@@ -333,7 +334,7 @@ class ProcessExternalDataHandler {
 ### Choosing the Right Integration
 
 | Need                      | Pattern           | Drupal Tool                            |
-|---------------------------|-------------------|----------------------------------------|
+| ------------------------- | ----------------- | -------------------------------------- |
 | Simple side effect        | Symfony Event     | `EventDispatcherInterface`             |
 | Background job            | Queue             | `\Drupal::queue()`                     |
 | Reliable async with retry | Messenger         | Symfony Messenger                      |
@@ -371,14 +372,17 @@ recommended by the DDD in PHP book. It maps naturally to Drupal:
 ### Ports = Interfaces
 
 **Driving ports** (input): How the outside world triggers your domain logic
+
 - Controllers, Forms, Drush Commands, Queue Workers, Event Subscribers
 
 **Driven ports** (output): How your domain reaches the outside world
+
 - Repository interfaces, External API interfaces, Notification interfaces
 
 ### Adapters = Implementations
 
 Each port has one or more adapters:
+
 - `NodeRepositoryInterface` → `DrupalNodeRepository` (production),
   `InMemoryNodeRepository` (test)
 - `ExternalApiInterface` → `HttpExternalApiClient` (production),
@@ -445,6 +449,7 @@ my_project_crm ←──(async message)──→ External CRM System
 ```
 
 Each arrow represents a specific integration pattern:
+
 - **Service call**: direct DI injection of interfaces
 - **REST API**: Anti-Corruption Layer with adapter + translator
 - **Async message**: Symfony Messenger for reliable sync

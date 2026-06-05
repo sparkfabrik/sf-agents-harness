@@ -66,6 +66,7 @@ find . -maxdepth 4 -name "*.md" -path "*/adr/*" -o -name "*.md" -path "*/ADR/*" 
 ```
 
 If found, scan existing ADRs to determine:
+
 - The current numbering (so the next ADR gets the right number)
 - The naming convention used (e.g., `0001-title.md` vs `adr-001-title.md`)
 - A brief summary of each existing ADR (title + status) — you'll need this
@@ -141,6 +142,7 @@ Ask the user:
 > tension.
 
 Guide them toward specifics:
+
 - What technology or architectural area does this affect?
 - What constraints or requirements are driving this?
 - Were there alternatives considered? (These become forces in the Context)
@@ -188,6 +190,7 @@ of what changes.
 Ask the user:
 
 > What are the consequences of this decision? Think about:
+>
 > - What becomes easier or better?
 > - What becomes harder or more complex?
 > - What new constraints does this introduce?
@@ -203,6 +206,7 @@ Ask the user:
 > What's the status of this decision?
 
 Offer these options:
+
 - **Proposed** — stakeholders haven't agreed yet
 - **Accepted** — the team has agreed and will proceed
 - **Deprecated** — the decision is being phased out (rare for new ADRs)
@@ -215,12 +219,12 @@ For most new ADRs, the answer will be Proposed or Accepted.
 ### Title
 
 ADR titles are **short noun phrases** — not sentences, not verbs. They describe
-*what* was decided, not the action of deciding.
+_what_ was decided, not the action of deciding.
 
 Good: "LDAP for Multitenant Integration"
 Good: "Deployment on Ruby on Rails 3.0.10"
-Bad:  "We decided to use LDAP"
-Bad:  "Choosing a deployment platform"
+Bad: "We decided to use LDAP"
+Bad: "Choosing a deployment platform"
 
 ### Creating the file
 
@@ -314,10 +318,10 @@ and are **non-negotiable**:
   be split into multiple ADRs. Nobody reads large documents.
 - **Numbers are permanent**: ADRs are numbered sequentially and monotonically.
   Numbers are never reused. If a decision is reversed, keep the old record but
-  mark it as superseded — it's still relevant to know what *was* the decision.
-- **Keep justification in Context, not Decision**: The Context describes *why*
-  (the forces); the Decision states *what* (the response). Don't re-argue
+  mark it as superseded — it's still relevant to know what _was_ the decision.
+- **Keep justification in Context, not Decision**: The Context describes _why_
+  (the forces); the Decision states _what_ (the response). Don't re-argue
   the rationale inside the Decision section.
 - **Don't restate requirements as consequences**: "The database will support
-  JSON" is a requirement. A consequence is what *changes* as a result:
+  JSON" is a requirement. A consequence is what _changes_ as a result:
   migration effort, new operational needs, doors opened or closed.

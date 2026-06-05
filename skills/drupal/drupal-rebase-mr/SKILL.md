@@ -81,11 +81,11 @@ points to
 - **If yes**: Tell the user: "Your current directory appears to be a clone of
   `<project-name>`. I'll use this." Then run `git fetch origin` to update.
 - **If no**: **STOP and ask the user** (present these choices explicitly):
-    1. "Do you already have a local clone of `<project-name>`? If so, provide
-       the path."
-    2. "Should I clone it to a temp directory? (default:
-       `/tmp/<project-name>-<ISSUE_NUMBER>`)"
-    3. "Should I clone it somewhere else? Provide the path."
+  1. "Do you already have a local clone of `<project-name>`? If so, provide
+     the path."
+  2. "Should I clone it to a temp directory? (default:
+     `/tmp/<project-name>-<ISSUE_NUMBER>`)"
+  3. "Should I clone it somewhere else? Provide the path."
 
 **Wait for the user's answer.** Do not proceed until you have it.
 
@@ -107,14 +107,15 @@ git status --short
 
 - **If clean** (no output): Proceed to Step 4.
 - **If dirty** (uncommitted changes): **STOP** and tell the user:
+
   > "The working tree has uncommitted changes. We need a clean state before
-  rebasing."
+  > rebasing."
 
   Present options:
-    1. `git stash` — stash changes and continue (will remind to `git stash pop`
-       at the end)
-    2. `git checkout .` — discard changes
-    3. Abort — let the user handle it manually
+  1. `git stash` — stash changes and continue (will remind to `git stash pop`
+     at the end)
+  2. `git checkout .` — discard changes
+  3. Abort — let the user handle it manually
 
   **Wait for the user's choice before proceeding.**
 
@@ -152,8 +153,9 @@ git reset --hard drupal-<ISSUE_NUMBER>/<BRANCH_NAME>
 ### Step 6: Ask Rebase Type
 
 Ask the user:
+
 > "Rebase on the **same target branch** (default), or onto a **newer version
-branch**?"
+> branch**?"
 
 - **Same branch** (default): The target branch is whatever the MR is targeting (
   e.g., `11.x`, `2.0.x`).
@@ -205,6 +207,7 @@ If the rebase encounters conflicts:
    together, one file at a time."
 
 2. Show which files have conflicts:
+
    ```bash
    git status
    ```
@@ -213,19 +216,21 @@ If the rebase encounters conflicts:
    a. Show the conflict markers and surrounding context (use `git diff` or show
    the file section).
    b. Explain what each side represents:
-    - "OURS (HEAD / target branch)" = upstream changes
-    - "THEIRS (the MR branch)" = the patch/MR author's changes
-      c. **Propose** a resolution and explain your reasoning.
-      d. **STOP and ask**: "Does this resolution look correct? Should I apply
-      it, or would you prefer something different?"
-      e. **Wait for the user's approval** before writing the resolved file.
+   - "OURS (HEAD / target branch)" = upstream changes
+   - "THEIRS (the MR branch)" = the patch/MR author's changes
+     c. **Propose** a resolution and explain your reasoning.
+     d. **STOP and ask**: "Does this resolution look correct? Should I apply
+     it, or would you prefer something different?"
+     e. **Wait for the user's approval** before writing the resolved file.
 
 4. Only after the user approves the resolution for a file:
+
    ```bash
    git add <resolved-file>
    ```
 
 5. After all conflicts in the current rebase step are resolved:
+
    ```bash
    git rebase --continue
    ```
@@ -248,15 +253,18 @@ helps the user verify everything is correct.
 Show:
 
 1. **What was done** (one-liner summary):
+
    > "Rebased branch `<BRANCH_NAME>` onto `<TARGET_BRANCH>` (same-branch /
-   cross-version from `<OLD>`)."
+   > cross-version from `<OLD>`)."
 
 2. **Commit log** after rebase:
+
    ```bash
    git log --oneline <TARGET_BRANCH>..<BRANCH_NAME>
    ```
 
 3. **Files changed** (diff stats):
+
    ```bash
    git diff --stat <TARGET_BRANCH>..<BRANCH_NAME>
    ```

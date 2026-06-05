@@ -41,6 +41,7 @@ Example output:
 **Files**: 5 changed
 
 ## Files Changed
+
 - src/auth/login.ts
 - src/auth/logout.ts
 - tests/auth.test.ts
@@ -48,12 +49,14 @@ Example output:
 ## Comments
 
 ### src/auth/login.ts:42
+
 > Consider adding rate limiting here
-Status: Resolved
+> Status: Resolved
 
 ### src/auth/login.ts:67
+
 > Suggestion: Use optional chaining
-Status: Applied
+> Status: Applied
 ```
 
 ## Use Cases

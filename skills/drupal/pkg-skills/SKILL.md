@@ -54,6 +54,7 @@ docker compose ps
 **Common pattern:** Service names in `docker compose ps` correspond to their hostnames inside the container network (e.g., `drupal-nginx` → `http://drupal-nginx`).
 
 **Example:**
+
 ```bash
 # From inside container
 curl -sI http://drupal-nginx/node/1
@@ -74,6 +75,7 @@ fs-cli pkg:get-urls | grep drupal-nginx | awk '{ print $2 }'
 ```
 
 **Example:**
+
 ```bash
 # From host machine
 curl -sI https://drupal.projectname.sparkfabrik.loc/
@@ -111,9 +113,9 @@ drush cim
 
 ## Quick Reference
 
-| Task | From Container | From Host |
-|------|----------------|-----------|
-| Access Drupal | `curl http://drupal-nginx/` | `curl https://drupal.project.sparkfabrik.loc/` |
-| Get URLs | N/A | `fs-cli pkg:get-urls` |
-| Open shell | N/A | `make drupal-cli` |
-| Run drush | `drush <cmd>` | `docker compose run --rm drupal-tools drush <cmd>` |
+| Task          | From Container              | From Host                                          |
+| ------------- | --------------------------- | -------------------------------------------------- |
+| Access Drupal | `curl http://drupal-nginx/` | `curl https://drupal.project.sparkfabrik.loc/`     |
+| Get URLs      | N/A                         | `fs-cli pkg:get-urls`                              |
+| Open shell    | N/A                         | `make drupal-cli`                                  |
+| Run drush     | `drush <cmd>`               | `docker compose run --rm drupal-tools drush <cmd>` |

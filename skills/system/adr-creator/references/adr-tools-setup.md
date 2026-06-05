@@ -43,13 +43,13 @@ Follow the "from release package" instructions above inside your WSL shell.
 
 ## Key commands
 
-| Command | Description |
-|---------|-------------|
+| Command                | Description                        |
+| ---------------------- | ---------------------------------- |
 | `adr init <directory>` | Create ADR directory with ADR 0001 |
-| `adr new "Title"` | Create a new numbered ADR |
-| `adr new -s N "Title"` | Create ADR that supersedes ADR N |
-| `adr list` | List all ADRs |
-| `adr help` | Show help |
+| `adr new "Title"`      | Create a new numbered ADR          |
+| `adr new -s N "Title"` | Create ADR that supersedes ADR N   |
+| `adr list`             | List all ADRs                      |
+| `adr help`             | Show help                          |
 
 ## Verification
 

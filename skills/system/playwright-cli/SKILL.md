@@ -9,7 +9,6 @@ description: >-
 allowed-tools: Bash(playwright-cli:*) Bash(npx:*) Bash(npm:*)
 ---
 
-
 # Browser Automation with playwright-cli
 
 ## Quick start
@@ -199,11 +198,13 @@ playwright-cli --raw localstorage-get theme
 ```
 
 For structured output wrapping every reply as JSON, pass --json
+
 ```bash
 playwright-cli list --json
 ```
 
 ## Open parameters
+
 ```bash
 # Use specific browser when creating session
 playwright-cli open --browser=chrome
@@ -382,16 +383,17 @@ playwright-cli show --annotate
 
 ## Specific tasks
 
-* **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
-* **Request mocking** [references/request-mocking.md](references/request-mocking.md)
-* **Running Playwright code** [references/running-code.md](references/running-code.md)
-* **Browser session management** [references/session-management.md](references/session-management.md)
-* **Spec-driven testing (plan / generate / heal)** [references/spec-driven-testing.md](references/spec-driven-testing.md)
-* **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
-* **Test generation** [references/test-generation.md](references/test-generation.md)
-* **Tracing** [references/tracing.md](references/tracing.md)
-* **Video recording** [references/video-recording.md](references/video-recording.md)
-* **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
+- **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
+- **Request mocking** [references/request-mocking.md](references/request-mocking.md)
+- **Running Playwright code** [references/running-code.md](references/running-code.md)
+- **Browser session management** [references/session-management.md](references/session-management.md)
+- **Spec-driven testing (plan / generate / heal)** [references/spec-driven-testing.md](references/spec-driven-testing.md)
+- **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
+- **Test generation** [references/test-generation.md](references/test-generation.md)
+- **Tracing** [references/tracing.md](references/tracing.md)
+- **Video recording** [references/video-recording.md](references/video-recording.md)
+- **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
+
 ---
 
 ## Tool availability
@@ -423,14 +425,14 @@ By default, playwright-cli writes screenshots, PDFs, and other output files to t
 
 ### Per-type examples
 
-| Type | Command |
-|------|---------|
-| Screenshot | `playwright-cli screenshot --filename=.playwright-cli/screenshot-login.png` |
-| Element screenshot | `playwright-cli screenshot e5 --filename=.playwright-cli/button-detail.png` |
-| PDF | `playwright-cli pdf --filename=.playwright-cli/page.pdf` |
-| Video | `playwright-cli video-stop .playwright-cli/session-recording.webm` |
-| Snapshot | Already defaults to `.playwright-cli/` -- no change needed |
-| Trace | `playwright-cli tracing-stop` writes to `traces/` by default -- keep this default |
+| Type               | Command                                                                           |
+| ------------------ | --------------------------------------------------------------------------------- |
+| Screenshot         | `playwright-cli screenshot --filename=.playwright-cli/screenshot-login.png`       |
+| Element screenshot | `playwright-cli screenshot e5 --filename=.playwright-cli/button-detail.png`       |
+| PDF                | `playwright-cli pdf --filename=.playwright-cli/page.pdf`                          |
+| Video              | `playwright-cli video-stop .playwright-cli/session-recording.webm`                |
+| Snapshot           | Already defaults to `.playwright-cli/` -- no change needed                        |
+| Trace              | `playwright-cli tracing-stop` writes to `traces/` by default -- keep this default |
 
 ### Naming
 
@@ -457,4 +459,3 @@ traces/
 ### Cleanup
 
 `playwright-cli close` does not remove output files. When output files are no longer needed, remove them or inform the user where they were saved so they can decide.
-

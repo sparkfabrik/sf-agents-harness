@@ -29,13 +29,13 @@ present and what tools are already available.
 Detect which language stacks are present by reading configuration files in the
 project root:
 
-| Config file | Detected stack |
-|-------------|---------------|
-| `composer.json` | PHP |
-| `go.mod` | Go |
-| `package.json` | Node.js |
-| `pyproject.toml`, `requirements.txt`, `setup.py` | Python |
-| `*.tf`, `Dockerfile`, `docker-compose.yml` | IaC |
+| Config file                                      | Detected stack |
+| ------------------------------------------------ | -------------- |
+| `composer.json`                                  | PHP            |
+| `go.mod`                                         | Go             |
+| `package.json`                                   | Node.js        |
+| `pyproject.toml`, `requirements.txt`, `setup.py` | Python         |
+| `*.tf`, `Dockerfile`, `docker-compose.yml`       | IaC            |
 
 Detect Drupal as a sub-type of PHP when `composer.json` contains `drupal/core`
 or `drupal/core-recommended` as a dependency.
@@ -48,14 +48,14 @@ Detect all of them.
 Check for existing tool configuration files to determine which security-relevant
 tools the project already has set up:
 
-| Config file | Tool available |
-|-------------|---------------|
-| `phpstan.neon` or `phpstan.neon.dist` | phpstan |
-| `.phpcs.xml` or `phpcs.xml.dist` | phpcs |
-| `psalm.xml` or `psalm.xml.dist` | psalm |
-| `grumphp.yml` | grumphp (orchestrates multiple tools) |
-| `.eslintrc*` or `eslint.config.*` | eslint |
-| `.golangci.yml` | golangci-lint |
+| Config file                           | Tool available                        |
+| ------------------------------------- | ------------------------------------- |
+| `phpstan.neon` or `phpstan.neon.dist` | phpstan                               |
+| `.phpcs.xml` or `phpcs.xml.dist`      | phpcs                                 |
+| `psalm.xml` or `psalm.xml.dist`       | psalm                                 |
+| `grumphp.yml`                         | grumphp (orchestrates multiple tools) |
+| `.eslintrc*` or `eslint.config.*`     | eslint                                |
+| `.golangci.yml`                       | golangci-lint                         |
 
 When a tool is found with project configuration, record it as available for
 Phase 3. Use the project's own configuration when running it.
@@ -92,6 +92,7 @@ After completing detection, present a structured report to the user:
 
 **Detected stacks**: PHP/Drupal, Node.js
 **Available tools**:
+
 - phpcs (via .phpcs.xml)
 - phpstan (via phpstan.neon)
 
@@ -120,13 +121,13 @@ First, check that Docker is available. If it is not:
 
 ### Base image selection
 
-| Stack | Base image |
-|-------|-----------|
-| Universal | `python:3.12-slim` |
-| PHP | `php:8.3-cli` |
-| Node.js | `node:22-slim` |
-| Go | `golang:1.22-bookworm` |
-| Python | `python:3.12-slim` |
+| Stack     | Base image             |
+| --------- | ---------------------- |
+| Universal | `python:3.12-slim`     |
+| PHP       | `php:8.3-cli`          |
+| Node.js   | `node:22-slim`         |
+| Go        | `golang:1.22-bookworm` |
+| Python    | `python:3.12-slim`     |
 
 ### Output directory structure
 
@@ -248,26 +249,26 @@ tools the project does not already have.
 
 Pick scanners based on the detected stack. The universal container always runs.
 
-| Tool | Container | Scope | When to use |
-|------|-----------|-------|-------------|
-| **semgrep** | universal | SAST (multi-language) | Always |
-| **trivy** | universal | Dependency CVEs, FS, config | Always -- runs `trivy fs .` on the repo |
-| **gitleaks** | universal | Secret detection in git history | Always |
-| **grype** | universal | Dependency CVE matching | Always |
-| **syft** | universal | SBOM generation | Always |
-| **checkov** | universal | IaC misconfiguration | When IaC files detected |
-| **composer audit** | php | PHP dependency CVEs | PHP projects |
-| **phpcs** (drupal/coder) | php | Drupal coding standards + security sniffs | PHP/Drupal projects |
-| **psalm** (taint analysis) | php | Data flow / taint tracking | PHP projects (needs vendor/) |
-| **phpstan** | php | Static analysis with security extensions | PHP projects (needs vendor/) |
-| **drupal-check** | php | Deprecated API + Drupal-specific checks | Drupal projects |
-| **local-php-security-checker** | php | Symfony advisory DB | PHP projects |
-| **npm audit** | -- | Node.js dependency CVEs | Node.js (runs directly, ships with npm) |
-| **retire.js** | node | Known-vulnerable JS libraries | Node.js projects |
-| **gosec** | go | Go-specific SAST | Go projects |
-| **govulncheck** | go | Go dependency CVEs | Go projects |
-| **bandit** | python | Python SAST | Python projects |
-| **pip-audit** | python | Python dependency CVEs | Python projects |
+| Tool                           | Container | Scope                                     | When to use                             |
+| ------------------------------ | --------- | ----------------------------------------- | --------------------------------------- |
+| **semgrep**                    | universal | SAST (multi-language)                     | Always                                  |
+| **trivy**                      | universal | Dependency CVEs, FS, config               | Always -- runs `trivy fs .` on the repo |
+| **gitleaks**                   | universal | Secret detection in git history           | Always                                  |
+| **grype**                      | universal | Dependency CVE matching                   | Always                                  |
+| **syft**                       | universal | SBOM generation                           | Always                                  |
+| **checkov**                    | universal | IaC misconfiguration                      | When IaC files detected                 |
+| **composer audit**             | php       | PHP dependency CVEs                       | PHP projects                            |
+| **phpcs** (drupal/coder)       | php       | Drupal coding standards + security sniffs | PHP/Drupal projects                     |
+| **psalm** (taint analysis)     | php       | Data flow / taint tracking                | PHP projects (needs vendor/)            |
+| **phpstan**                    | php       | Static analysis with security extensions  | PHP projects (needs vendor/)            |
+| **drupal-check**               | php       | Deprecated API + Drupal-specific checks   | Drupal projects                         |
+| **local-php-security-checker** | php       | Symfony advisory DB                       | PHP projects                            |
+| **npm audit**                  | --        | Node.js dependency CVEs                   | Node.js (runs directly, ships with npm) |
+| **retire.js**                  | node      | Known-vulnerable JS libraries             | Node.js projects                        |
+| **gosec**                      | go        | Go-specific SAST                          | Go projects                             |
+| **govulncheck**                | go        | Go dependency CVEs                        | Go projects                             |
+| **bandit**                     | python    | Python SAST                               | Python projects                         |
+| **pip-audit**                  | python    | Python dependency CVEs                    | Python projects                         |
 
 ### Running the containers
 
@@ -348,7 +349,7 @@ container) for each scanner.
 ## Scan Results Summary
 
 | Scanner | Source | Findings | Critical | High | Medium | Low |
-|---------|--------|----------|----------|------|--------|-----|
+| ------- | ------ | -------- | -------- | ---- | ------ | --- |
 | phpcs   | native | 3        | 0        | 1    | 2      | 0   |
 | semgrep | docker | 5        | 1        | 2    | 1      | 1   |
 | trivy   | docker | 2        | 0        | 0    | 1      | 1   |
@@ -358,15 +359,15 @@ container) for each scanner.
 ### Skipped tools
 
 | Tool    | Reason                                    |
-|---------|-------------------------------------------|
-| phpstan | vendor/ not found -- run composer install  |
+| ------- | ----------------------------------------- |
+| phpstan | vendor/ not found -- run composer install |
 | gosec   | not applicable (no Go stack detected)     |
 
 ### Critical / High findings
 
 1. **[semgrep] SQL injection in buildQuery** -- `src/Repository/NodeRepository.php:42`
 2. **[psalm] Tainted input in render array** -- `src/Controller/PageController.php:87`
-...
+   ...
 ```
 
 Present this summary to the user and ask whether to proceed to Phase 5.
@@ -473,13 +474,13 @@ For each checklist category:
 
 ### Severity classification
 
-| Severity | Definition |
-|----------|-----------|
-| **Critical** | Remote code execution, authentication bypass, SQL injection with data exfiltration |
-| **High** | Stored XSS, CSRF on critical actions, authorization bypass, sensitive data exposure |
-| **Medium** | Reflected XSS, missing security headers, information disclosure |
-| **Low** | Missing best practices, verbose errors in non-production, minor hardening gaps |
-| **Info** | Recommendations and defense-in-depth improvements |
+| Severity     | Definition                                                                          |
+| ------------ | ----------------------------------------------------------------------------------- |
+| **Critical** | Remote code execution, authentication bypass, SQL injection with data exfiltration  |
+| **High**     | Stored XSS, CSRF on critical actions, authorization bypass, sensitive data exposure |
+| **Medium**   | Reflected XSS, missing security headers, information disclosure                     |
+| **Low**      | Missing best practices, verbose errors in non-production, minor hardening gaps      |
+| **Info**     | Recommendations and defense-in-depth improvements                                   |
 
 ## Final report
 
@@ -495,13 +496,13 @@ Use the following structure:
 ```markdown
 # Security Audit Report
 
-| | |
-|---|---|
-| **Project** | <project name> |
-| **Date** | <YYYY-MM-DD> |
-| **Scope** | <what was audited: application code, dependencies, IaC, etc.> |
-| **Stacks detected** | <e.g. PHP/Drupal 10, Node.js 22> |
-| **Audit type** | Full (scan + manual review) / Scan-only |
+|                     |                                                               |
+| ------------------- | ------------------------------------------------------------- |
+| **Project**         | <project name>                                                |
+| **Date**            | <YYYY-MM-DD>                                                  |
+| **Scope**           | <what was audited: application code, dependencies, IaC, etc.> |
+| **Stacks detected** | <e.g. PHP/Drupal 10, Node.js 22>                              |
+| **Audit type**      | Full (scan + manual review) / Scan-only                       |
 
 ## Executive summary
 
@@ -520,48 +521,48 @@ This audit followed a structured multi-phase approach:
 4. **Docker-augmented scans** -- ran additional scanners via containers to
    fill coverage gaps.
 5. **Manual review** -- LLM-guided deep review of the codebase using the
-   OWASP-based checklist. *(omit if scan-only)*
+   OWASP-based checklist. _(omit if scan-only)_
 
 ## Tools and coverage
 
 ### Tools executed
 
-| Tool | Version | Source | Stack | Status |
-|------|---------|--------|-------|--------|
-| phpcs | 3.7.2 | native | PHP | completed |
+| Tool    | Version | Source | Stack     | Status    |
+| ------- | ------- | ------ | --------- | --------- |
+| phpcs   | 3.7.2   | native | PHP       | completed |
 | semgrep | 1.156.0 | docker | universal | completed |
-| trivy | 0.69.3 | docker | universal | completed |
-| psalm | 6.16.1 | docker | PHP | completed |
-| ... | | | | |
+| trivy   | 0.69.3  | docker | universal | completed |
+| psalm   | 6.16.1  | docker | PHP       | completed |
+| ...     |         |        |           |           |
 
 ### Tools skipped
 
-| Tool | Reason |
-|------|--------|
-| phpstan | vendor/ not found |
-| gosec | no Go stack detected |
+| Tool    | Reason               |
+| ------- | -------------------- |
+| phpstan | vendor/ not found    |
+| gosec   | no Go stack detected |
 
 ## Findings summary
 
-| Severity | Count |
-|----------|-------|
-| Critical | 0 |
-| High | 2 |
-| Medium | 5 |
-| Low | 3 |
-| Info | 4 |
+| Severity  | Count  |
+| --------- | ------ |
+| Critical  | 0      |
+| High      | 2      |
+| Medium    | 5      |
+| Low       | 3      |
+| Info      | 4      |
 | **Total** | **14** |
 
 ## Findings
 
 ### Finding 1: <title>
 
-| | |
-|---|---|
-| **Severity** | Critical / High / Medium / Low / Info |
-| **Location** | `path/to/file.php:42` |
-| **Tool** | <scanner that found it, or "manual review"> |
-| **Category** | <e.g. SQL injection, XSS, access control> |
+|              |                                             |
+| ------------ | ------------------------------------------- |
+| **Severity** | Critical / High / Medium / Low / Info       |
+| **Location** | `path/to/file.php:42`                       |
+| **Tool**     | <scanner that found it, or "manual review"> |
+| **Category** | <e.g. SQL injection, XSS, access control>   |
 
 **Description**
 
@@ -585,27 +586,27 @@ This audit followed a structured multi-phase approach:
 
 ...
 
-*(Repeat for each finding. Order by severity -- Critical first, then High,
-Medium, Low, Info.)*
+_(Repeat for each finding. Order by severity -- Critical first, then High,
+Medium, Low, Info.)_
 
 ## Checklist coverage
 
-*(Include only for full audits, omit for scan-only runs.)*
+_(Include only for full audits, omit for scan-only runs.)_
 
 Show each checklist category and its status:
 
-| Category | Status | Notes |
-|----------|--------|-------|
-| 5.1 Input validation and injection | Reviewed | 2 findings |
-| 5.2 Cross-site scripting (XSS) | Reviewed | 1 finding |
-| 5.3 Authentication and session management | Reviewed | No issues |
-| 5.4 Authorization | Reviewed | 1 finding |
-| 5.5 CSRF and request integrity | Reviewed | No issues |
-| 5.6 Sensitive data exposure | Reviewed | No issues |
-| 5.7 Security headers and configuration | Reviewed | 3 findings |
-| 5.8 Dependency and supply chain | Reviewed | From scan results |
-| 5.9 Error handling and logging | Reviewed | 1 finding |
-| 5.10 Server and runtime hardening | Not reviewed | Out of scope |
+| Category                                  | Status       | Notes             |
+| ----------------------------------------- | ------------ | ----------------- |
+| 5.1 Input validation and injection        | Reviewed     | 2 findings        |
+| 5.2 Cross-site scripting (XSS)            | Reviewed     | 1 finding         |
+| 5.3 Authentication and session management | Reviewed     | No issues         |
+| 5.4 Authorization                         | Reviewed     | 1 finding         |
+| 5.5 CSRF and request integrity            | Reviewed     | No issues         |
+| 5.6 Sensitive data exposure               | Reviewed     | No issues         |
+| 5.7 Security headers and configuration    | Reviewed     | 3 findings        |
+| 5.8 Dependency and supply chain           | Reviewed     | From scan results |
+| 5.9 Error handling and logging            | Reviewed     | 1 finding         |
+| 5.10 Server and runtime hardening         | Not reviewed | Out of scope      |
 
 ## Recommendations
 

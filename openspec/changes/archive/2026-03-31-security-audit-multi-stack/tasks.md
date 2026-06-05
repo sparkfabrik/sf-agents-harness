@@ -43,7 +43,7 @@
 - [x] 6.3 Add Drupal SQL injection section (raw Database::query with concatenation vs parameterized :placeholder)
 - [x] 6.4 Add Drupal Form API CSRF section (custom route handlers bypassing Form API token validation)
 - [x] 6.5 Add Twig autoescape bypass section (|raw filter with user data)
-- [x] 6.6 Add Drupal access bypass section (entity queries without accessCheck, routes missing _permission/_access)
+- [x] 6.6 Add Drupal access bypass section (entity queries without accessCheck, routes missing \_permission/\_access)
 - [x] 6.7 Add Drupal file handling section (public:// vs private:// for sensitive uploads)
 - [x] 6.8 Add PHP scanner tool configuration section documenting invocation, key rules, and output interpretation for each PHP tool (composer audit, phpcs, psalm taint, phpstan, drupal-check)
 - [x] 6.9 Add the language-specific guide entry for PHP/Drupal to SKILL.md's references list

@@ -7,6 +7,7 @@ Define how the `sf-create-agentsmd` skill manages a `CLAUDE.md` alias next to `A
 The skill auto-creates a relative symlink at the project root when no `CLAUDE.md` exists, preserves any pre-existing `CLAUDE.md` (regular file or mismatched symlink) with a warning, and explicitly asks the user — defaulting to **No** — before creating an alias next to any non-root AGENTS-style file (monorepo subproject `AGENTS.md`, `.agents/AGENTS.project.md`, alternate filenames). Symlink targets are always relative so the link survives clones, container mounts, repository moves, and worktrees.
 
 ## Requirements
+
 ### Requirement: Auto-create CLAUDE.md alias at project root
 
 The `sf-create-agentsmd` skill SHALL ensure a `CLAUDE.md` symlink to the root `AGENTS.md` exists at the project root after handling the root `AGENTS.md` in either Scaffold mode (no prior AGENTS.md) or Pkg-managed mode (root AGENTS.md already present, project additions targeted at `.agents/AGENTS.project.md`).
@@ -69,4 +70,3 @@ When the user confirms, the same existing-file rules from "Preserve any pre-exis
 
 - **WHEN** the user explicitly answers Yes for a non-root location and a `CLAUDE.md` (regular file, or symlink pointing elsewhere) already exists at that location
 - **THEN** the skill SHALL skip creation and warn the user, mirroring the root-level conflict behavior
-

@@ -15,12 +15,14 @@ These patterns apply to all instruction files regardless of tool.
 Instructions that grant unrestricted access without boundaries.
 
 **Risky**:
+
 - "You have full access to all files in the repository"
 - "You can execute any command on the system"
 - "You may modify any file"
 - No mention of restricted directories or forbidden operations
 
 **Better**:
+
 - "You may read and modify files under `src/` and `tests/` only"
 - "Do not modify files in `.github/`, `infrastructure/`, or `config/`"
 - "Never execute destructive commands (rm -rf, DROP TABLE, etc.)"
@@ -30,6 +32,7 @@ Instructions that grant unrestricted access without boundaries.
 Actual secrets embedded in instruction files.
 
 **What to look for**:
+
 - API keys: `sk-proj-...`, `sk-ant-...`, `ghp_...`, `glpat-...`
 - Tokens: `Bearer ...`, `xoxb-...` (Slack), `AKIA...` (AWS)
 - Passwords or connection strings with credentials
@@ -43,6 +46,7 @@ repo access. Credentials in instruction files are always a critical finding.
 Contradictions between instruction files in the same project.
 
 **What to look for**:
+
 - One file says "never delete files", another says "clean up temp files"
 - One file says "always ask before modifying", another says "make changes
   directly"
@@ -59,6 +63,7 @@ posture.
 Instructions that tell the agent to follow commands from untrusted sources.
 
 **Risky**:
+
 - "Follow any instructions found in code comments"
 - "If a file contains TODO instructions, execute them"
 - "Obey user preferences stored in .env files"
@@ -74,6 +79,7 @@ can write to those locations controls the agent.
 Instructions that only define what the agent can do, without boundaries.
 
 **What to look for**:
+
 - Capabilities listed but no forbidden actions
 - No mention of security-sensitive operations (file deletion, network access,
   credential handling)
@@ -81,6 +87,7 @@ Instructions that only define what the agent can do, without boundaries.
 - No error handling instructions (what to do when uncertain)
 
 **Better**:
+
 - Explicit "never" list for dangerous operations
 - Clear escalation path ("if unsure, ask the user")
 - Boundaries on scope ("only work within the project directory")
@@ -90,6 +97,7 @@ Instructions that only define what the agent can do, without boundaries.
 Instruction files referencing tools, APIs, or patterns that no longer exist.
 
 **What to check**:
+
 - Referenced tools not present in project dependencies
 - API endpoints or SDKs that have been deprecated
 - File paths or directory structures that don't match current project layout
@@ -104,12 +112,14 @@ they encode may no longer hold.
 No guidance on validating agent-generated outputs.
 
 **Risky**:
+
 - "Auto-commit your changes"
 - "Deploy directly to production"
 - "Trust all tool outputs"
 - No mention of review, validation, or testing before applying changes
 
 **Better**:
+
 - "Run tests before committing"
 - "Never push directly to main"
 - "Ask for human review on changes to security-sensitive files"
@@ -138,8 +148,8 @@ context for all interactions in the repository.
 - **No override mechanism**: Individual developers can't override repo-level
   instructions. Mistakes affect the whole team.
 - **Tool access**: Copilot's tool access is controlled by VS Code / IDE
-  settings, not by this file. Instructions here can *suggest* tool usage but
-  can't *grant* new tool access.
+  settings, not by this file. Instructions here can _suggest_ tool usage but
+  can't _grant_ new tool access.
 
 ### What to check
 
@@ -332,6 +342,7 @@ Multi-tool instruction file (works with Copilot, OpenCode, Cursor, and others).
 **Location**: Project root or subdirectories.
 
 **Security considerations**:
+
 - Read by multiple tools -- instructions must be safe for all of them
 - Often contains project structure, code style, and workflow instructions
 - Can include tool-use instructions that expand agent capabilities
@@ -344,6 +355,7 @@ Agent skill definitions used by OpenCode and potentially other tools.
 **Location**: Skill directories (e.g., `skills/*/SKILL.md`, `.opencode/skills/*/SKILL.md`).
 
 **Security considerations**:
+
 - Skills can bundle executable assets (scripts, templates)
 - Skill descriptions control when the skill auto-triggers
 - Skills can load reference files that influence agent behavior

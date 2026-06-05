@@ -11,6 +11,7 @@ npx githuman serve
 ```
 
 Options:
+
 - `--port <number>` - Use a custom port (default: 3847)
 - `--no-open` - Don't open the browser automatically
 

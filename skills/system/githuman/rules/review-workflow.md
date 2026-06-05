@@ -27,6 +27,7 @@ The home page shows all unstaged changes. You can:
 ### 4. Stage Files for Review
 
 Either:
+
 - Click the stage button in GitHuman's UI next to each file
 - Use git commands: `git add <files>`
 
@@ -37,6 +38,7 @@ Navigate to "Staged Changes" to see what will be committed. This is your final r
 ### 6. Add Comments and Suggestions
 
 Click on any line to add:
+
 - Comments for questions or notes
 - Suggestions for code improvements
 - Todos for follow-up work

@@ -37,20 +37,20 @@ A third phase (report generation) writes the findings to a file.
 
 The skill detects AI/agentic integration by checking for:
 
-| Indicator | What it means |
-|-----------|--------------|
-| `.github/copilot-instructions.md` | GitHub Copilot instructions |
-| `AGENTS.md` | Agent instructions (multi-tool) |
-| `.cursorrules` / `.cursorignore` | Cursor AI configuration |
-| `.opencode/` directory | OpenCode configuration and skills |
-| `.aider.conf.yml` | Aider configuration |
-| `.mcp.json`, `mcp.config.*` | MCP server configurations |
-| `SKILL.md` files in project | Custom agent skills |
-| `openai`, `anthropic`, `langchain`, `llamaindex`, `crewai` in dependencies | LLM SDK usage |
-| `drupal/ai`, `drupal/openai` in composer.json | Drupal AI modules |
-| `chromadb`, `pinecone-client`, `weaviate-client`, `pgvector` in dependencies | Vector DB / RAG |
-| `.env` with `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc. | LLM API credentials |
-| Prompt template files (`prompts/`, `*.prompt`, `*.prompt.md`) | Prompt templates |
+| Indicator                                                                    | What it means                     |
+| ---------------------------------------------------------------------------- | --------------------------------- |
+| `.github/copilot-instructions.md`                                            | GitHub Copilot instructions       |
+| `AGENTS.md`                                                                  | Agent instructions (multi-tool)   |
+| `.cursorrules` / `.cursorignore`                                             | Cursor AI configuration           |
+| `.opencode/` directory                                                       | OpenCode configuration and skills |
+| `.aider.conf.yml`                                                            | Aider configuration               |
+| `.mcp.json`, `mcp.config.*`                                                  | MCP server configurations         |
+| `SKILL.md` files in project                                                  | Custom agent skills               |
+| `openai`, `anthropic`, `langchain`, `llamaindex`, `crewai` in dependencies   | LLM SDK usage                     |
+| `drupal/ai`, `drupal/openai` in composer.json                                | Drupal AI modules                 |
+| `chromadb`, `pinecone-client`, `weaviate-client`, `pgvector` in dependencies | Vector DB / RAG                   |
+| `.env` with `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.                      | LLM API credentials               |
+| Prompt template files (`prompts/`, `*.prompt`, `*.prompt.md`)                | Prompt templates                  |
 
 Discovery does not require user input about invocation methods (unlike `security-audit`) since there are no tools to run — the LLM reads the files directly.
 
@@ -60,18 +60,18 @@ The Phase 2 review checklist has one category per ASI item (ASI01-ASI10). Each c
 
 Not all categories will apply to every project. The skill determines applicability based on discovery results:
 
-| Category | Applies when |
-|----------|-------------|
-| ASI01 Behaviour Hijack | LLM integration code found (prompt construction) |
-| ASI02 Tool Misuse | MCP configs or tool definitions found |
-| ASI03 Identity & Privilege | LLM integration with auth/session context |
-| ASI04 Supply Chain | Instruction files, MCP configs, prompt templates |
-| ASI05 Code Execution | Agent with code generation/execution capability |
-| ASI06 Memory Poisoning | Vector DB dependencies or RAG pipelines |
-| ASI07 Inter-Agent Comms | Multi-agent framework dependencies (crewai, autogen) |
-| ASI08 Cascading Failures | LLM output used as input to another LLM/tool |
-| ASI09 Human-Agent Trust | HITL patterns in code (approval gates, confirmations) |
-| ASI10 Rogue Agents | Multi-agent framework or dynamic agent instantiation |
+| Category                   | Applies when                                          |
+| -------------------------- | ----------------------------------------------------- |
+| ASI01 Behaviour Hijack     | LLM integration code found (prompt construction)      |
+| ASI02 Tool Misuse          | MCP configs or tool definitions found                 |
+| ASI03 Identity & Privilege | LLM integration with auth/session context             |
+| ASI04 Supply Chain         | Instruction files, MCP configs, prompt templates      |
+| ASI05 Code Execution       | Agent with code generation/execution capability       |
+| ASI06 Memory Poisoning     | Vector DB dependencies or RAG pipelines               |
+| ASI07 Inter-Agent Comms    | Multi-agent framework dependencies (crewai, autogen)  |
+| ASI08 Cascading Failures   | LLM output used as input to another LLM/tool          |
+| ASI09 Human-Agent Trust    | HITL patterns in code (approval gates, confirmations) |
+| ASI10 Rogue Agents         | Multi-agent framework or dynamic agent instantiation  |
 
 Categories that don't apply are marked "Not applicable" in the report, not silently skipped.
 

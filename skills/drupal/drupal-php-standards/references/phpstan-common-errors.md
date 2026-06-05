@@ -176,6 +176,7 @@ comparison (`==`). The strict rules require explicit `true`.
 ```
 
 Same requirement applies to:
+
 - `\array_search($needle, $haystack, true)`
 - `\array_keys($array, $search_value, true)` (when using the search parameter)
 - `\base64_decode($string, true)`
@@ -355,6 +356,7 @@ because the dot is unexpected syntax. Wrap it in double quotes:
 ```
 
 This applies to all PHPMD suppression annotations:
+
 - `@SuppressWarnings("PHPMD.CyclomaticComplexity")`
 - `@SuppressWarnings("PHPMD.NPathComplexity")`
 - `@SuppressWarnings("PHPMD.ExcessiveMethodLength")`

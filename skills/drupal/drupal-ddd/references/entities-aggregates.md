@@ -59,7 +59,7 @@ class Order extends ContentEntityBase implements OrderInterface {
 ### When to Choose Which
 
 | Approach                    | When to Use                                                                                                                                           |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Anemic** (Drupal default) | Simple CRUD, content types with no business logic beyond display                                                                                      |
 | **Rich** (DDD)              | Business rules exist (state machines, calculations, validations that go beyond field constraints), complex entity interactions, external integrations |
 
@@ -75,7 +75,7 @@ DDD entities are identified by a unique identity that persists over time. Drupal
 already handles this:
 
 | DDD Concept           | Drupal Equivalent    | Notes                                     |
-|-----------------------|----------------------|-------------------------------------------|
+| --------------------- | -------------------- | ----------------------------------------- |
 | Entity ID             | `$entity->id()`      | Auto-increment integer (surrogate ID)     |
 | UUID                  | `$entity->uuid()`    | Universally unique, used for content sync |
 | Identity Value Object | Not typically needed | Drupal's built-in ID system is sufficient |
@@ -251,7 +251,7 @@ access to child entities goes through it.
 Drupal already has implicit aggregate patterns:
 
 | Aggregate Root | Children           | Why It's an Aggregate                                                     |
-|----------------|--------------------|---------------------------------------------------------------------------|
+| -------------- | ------------------ | ------------------------------------------------------------------------- |
 | Node           | Paragraphs         | Paragraphs don't exist independently; they're saved/deleted with the node |
 | Webform        | WebformSubmissions | Submissions belong to a specific form                                     |
 | Menu           | MenuLinkContent    | Links exist within a menu structure                                       |

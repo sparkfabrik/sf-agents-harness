@@ -199,8 +199,8 @@ How to get the project running locally. Adapt based on execution environment con
 Everything runs in Docker. No local [language] or [package manager] required.
 
 \`\`\`bash
-just build      # Build the Docker image
-just install    # Install dependencies
+just build # Build the Docker image
+just install # Install dependencies
 \`\`\`
 
 Run `just` or `just --list` to see all available commands.
@@ -212,8 +212,8 @@ Run `just` or `just --list` to see all available commands.
 ## Setup
 
 \`\`\`bash
-just install    # Install dependencies
-just dev        # Start development server
+just install # Install dependencies
+just dev # Start development server
 \`\`\`
 
 Run `just` or `just --list` to see all available commands.
@@ -429,7 +429,7 @@ The project uses [CI system] with stages: [list stages].
 ### Key Jobs
 
 | Job | Stage | Purpose |
-|-----|-------|---------|
+| --- | ----- | ------- |
 | ... | ...   | ...     |
 ```
 

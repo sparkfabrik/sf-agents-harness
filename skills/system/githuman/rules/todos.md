@@ -26,6 +26,7 @@ npx githuman todo list --all
 ```
 
 Example output:
+
 ```
 Pending todos:
   1. [ ] Write tests for the new endpoint

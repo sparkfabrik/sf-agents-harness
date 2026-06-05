@@ -10,17 +10,17 @@ The skill SHALL scan the project for known AI instruction file patterns and repo
 
 The following file patterns SHALL be detected:
 
-| Pattern | Tool / Purpose |
-|---------|---------------|
-| `.github/copilot-instructions.md` | GitHub Copilot |
-| `AGENTS.md` | Multi-tool agent instructions |
-| `.cursorrules` | Cursor AI |
-| `.cursorignore` | Cursor AI ignore patterns |
-| `.opencode/` directory | OpenCode config and skills |
-| `.aider.conf.yml` | Aider configuration |
-| `.mcp.json`, `mcp.config.*` | MCP server configurations |
-| `**/SKILL.md` | Custom agent skills |
-| `**/prompts/**`, `**/*.prompt`, `**/*.prompt.md` | Prompt templates |
+| Pattern                                          | Tool / Purpose                |
+| ------------------------------------------------ | ----------------------------- |
+| `.github/copilot-instructions.md`                | GitHub Copilot                |
+| `AGENTS.md`                                      | Multi-tool agent instructions |
+| `.cursorrules`                                   | Cursor AI                     |
+| `.cursorignore`                                  | Cursor AI ignore patterns     |
+| `.opencode/` directory                           | OpenCode config and skills    |
+| `.aider.conf.yml`                                | Aider configuration           |
+| `.mcp.json`, `mcp.config.*`                      | MCP server configurations     |
+| `**/SKILL.md`                                    | Custom agent skills           |
+| `**/prompts/**`, `**/*.prompt`, `**/*.prompt.md` | Prompt templates              |
 
 #### Scenario: Drupal project with Copilot and MCP
 
@@ -38,16 +38,16 @@ The skill SHALL check package manager files for LLM-related dependencies.
 
 The following dependency indicators SHALL be checked:
 
-| Dependency | Language | Indicates |
-|-----------|----------|-----------|
-| `openai` | Python/Node.js | OpenAI API integration |
-| `anthropic` | Python/Node.js | Anthropic API integration |
-| `langchain`, `langchain-*` | Python/Node.js | LangChain agent framework |
-| `llamaindex`, `llama-index` | Python | LlamaIndex RAG framework |
-| `crewai` | Python | CrewAI multi-agent framework |
-| `autogen`, `pyautogen` | Python | AutoGen multi-agent framework |
-| `drupal/ai`, `drupal/openai` | PHP (Composer) | Drupal AI modules |
-| `@modelcontextprotocol/*` | Node.js | MCP SDK |
+| Dependency                   | Language       | Indicates                     |
+| ---------------------------- | -------------- | ----------------------------- |
+| `openai`                     | Python/Node.js | OpenAI API integration        |
+| `anthropic`                  | Python/Node.js | Anthropic API integration     |
+| `langchain`, `langchain-*`   | Python/Node.js | LangChain agent framework     |
+| `llamaindex`, `llama-index`  | Python         | LlamaIndex RAG framework      |
+| `crewai`                     | Python         | CrewAI multi-agent framework  |
+| `autogen`, `pyautogen`       | Python         | AutoGen multi-agent framework |
+| `drupal/ai`, `drupal/openai` | PHP (Composer) | Drupal AI modules             |
+| `@modelcontextprotocol/*`    | Node.js        | MCP SDK                       |
 
 #### Scenario: PHP project with Drupal AI module
 

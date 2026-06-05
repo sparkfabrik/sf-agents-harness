@@ -39,6 +39,7 @@ loaded in the current session.
 3. **Browser automation tool.** This skill uses `playwright-cli` for all browser
    interactions. Load the `playwright-cli` skill if not already loaded. Check
    availability:
+
    ```bash
    command -v playwright-cli 2>/dev/null || npx -y @playwright/cli --version
    ```
@@ -95,15 +96,15 @@ navigating the site's main menu and sampling subpages.
 After frontend testing, log in with the credentials provided by the user and test
 these fixed admin paths:
 
-| Test               | URL Path                                | Checks                                                    |
-|--------------------|-----------------------------------------|-----------------------------------------------------------|
-| Admin login        | `/user/login`                           | Login form works, redirects to dashboard                  |
-| Content list       | `/admin/content`                        | Table renders with content items                          |
+| Test               | URL Path                                | Checks                                                                          |
+| ------------------ | --------------------------------------- | ------------------------------------------------------------------------------- |
+| Admin login        | `/user/login`                           | Login form works, redirects to dashboard                                        |
+| Content list       | `/admin/content`                        | Table renders with content items                                                |
 | Create content     | `/node/add/<first-type>`                | Form renders, all fields present (actual submission tested in editorial checks) |
-| Site configuration | `/admin/config/system/site-information` | Settings page renders                                     |
-| Status report      | `/admin/reports/status`                 | Check for errors and warnings (see below)                 |
-| Modules list       | `/admin/modules`                        | Module list renders                                       |
-| Media library      | `/admin/content/media`                  | Media grid/table renders (if enabled)                     |
+| Site configuration | `/admin/config/system/site-information` | Settings page renders                                                           |
+| Status report      | `/admin/reports/status`                 | Check for errors and warnings (see below)                                       |
+| Modules list       | `/admin/modules`                        | Module list renders                                                             |
+| Media library      | `/admin/content/media`                  | Media grid/table renders (if enabled)                                           |
 
 #### Status Report Check
 
@@ -154,12 +155,14 @@ Before touching any branch, gather project context from the
 **Goal:** Capture the current site's behavior as the reference baseline.
 
 1. **Switch to stable branch:**
+
    ```bash
    git stash  # if needed
    git checkout <stable-branch>
    ```
 
 2. **Build the environment:**
+
    ```bash
    docker compose build
    docker compose up -d
@@ -178,6 +181,7 @@ Before touching any branch, gather project context from the
 5. **Run the test plan** using `playwright-cli`:
 
    Create a directory for baseline screenshots:
+
    ```bash
    mkdir -p .playwright-cli/baseline
    ```
@@ -217,11 +221,13 @@ Before touching any branch, gather project context from the
 **Goal:** Switch to the upgrade branch and get the new version running.
 
 1. **Switch to upgrade branch:**
+
    ```bash
    git checkout <upgrade-branch>
    ```
 
 2. **Rebuild the environment:**
+
    ```bash
    docker compose build
    docker compose up -d
@@ -251,6 +257,7 @@ Before touching any branch, gather project context from the
 **Goal:** Run the identical test plan against the upgraded site.
 
 1. **Create validation screenshot directory:**
+
    ```bash
    mkdir -p .playwright-cli/validation
    ```
@@ -260,6 +267,7 @@ Before touching any branch, gather project context from the
    or re-sample subpages -- use the recorded manifest so the comparison is
    apples-to-apples. Save full-page screenshots to the `validation/` directory
    using the same `run-code` technique from Phase 2:
+
    ```bash
    playwright-cli run-code "async page => {
      await page.screenshot({ path: '.playwright-cli/validation/NN-test-name.png', fullPage: true });
@@ -270,69 +278,68 @@ Before touching any branch, gather project context from the
    after the upgrade. All test content created in this step is deleted at the end.
 
    a. **Discover a content type:** Run `drush entity:list --type=node_type` (or
-      visit `/admin/structure/types`) to find available content types. Pick the
-      most common one (e.g., `article`, `page`, or the project's primary type).
+   visit `/admin/structure/types`) to find available content types. Pick the
+   most common one (e.g., `article`, `page`, or the project's primary type).
 
    b. **Create a test node:** Navigate to `/node/add/<type>` with `playwright-cli`.
-      Fill in the required fields (at minimum the title, e.g.,
-      `[UPGRADE-TEST] Editorial Check`). If a body field exists, enter a short
-      paragraph. Submit the form. Verify the node saves and the canonical page
-      renders. Take a screenshot and record the new node's ID from the URL.
+   Fill in the required fields (at minimum the title, e.g.,
+   `[UPGRADE-TEST] Editorial Check`). If a body field exists, enter a short
+   paragraph. Submit the form. Verify the node saves and the canonical page
+   renders. Take a screenshot and record the new node's ID from the URL.
 
    c. **Upload a test media item:** Navigate to `/admin/content/media` and use
-      the "Add media" action (or `/media/add/image` if known). Upload a small
-      test image, fill in required fields (name:
-      `[UPGRADE-TEST] Media Check`), and save. Verify the media entity appears
-      in the media library. Record the media ID.
+   the "Add media" action (or `/media/add/image` if known). Upload a small
+   test image, fill in required fields (name:
+   `[UPGRADE-TEST] Media Check`), and save. Verify the media entity appears
+   in the media library. Record the media ID.
 
    d. **Edit the test node:** Navigate to `/node/<nid>/edit`. Change the title
-      (e.g., append ` - Edited`). Save and verify the updated title renders on
-      the canonical page. Take a screenshot.
+   (e.g., append ` - Edited`). Save and verify the updated title renders on
+   the canonical page. Take a screenshot.
 
    e. **Custom module smoke tests:** Custom modules are the most likely source of
-      upgrade regressions. Perform lightweight checks on each custom module:
+   upgrade regressions. Perform lightweight checks on each custom module:
 
-      i. **Discover custom modules:** List modules under `web/modules/custom/`
-         (and `addons/` if it exists). For each enabled custom module, gather:
-         - Routes: check `<module>.routing.yml` for custom page/form routes
-         - Entity types: check for `@ContentEntityType` or `@ConfigEntityType`
-           annotations/attributes in `src/Entity/`
-         - Plugins: check for block, field formatter, or field widget plugins
-           in `src/Plugin/`
+   i. **Discover custom modules:** List modules under `web/modules/custom/`
+   (and `addons/` if it exists). For each enabled custom module, gather: - Routes: check `<module>.routing.yml` for custom page/form routes - Entity types: check for `@ContentEntityType` or `@ConfigEntityType`
+   annotations/attributes in `src/Entity/` - Plugins: check for block, field formatter, or field widget plugins
+   in `src/Plugin/`
 
-      ii. **Visit custom routes:** For each route that defines an accessible
-          page (not an API endpoint or callback), navigate to it with
-          `playwright-cli`. Verify the page renders without a fatal error
-          (no white screen, no Drupal error page). Take a screenshot.
+   ii. **Visit custom routes:** For each route that defines an accessible
+   page (not an API endpoint or callback), navigate to it with
+   `playwright-cli`. Verify the page renders without a fatal error
+   (no white screen, no Drupal error page). Take a screenshot.
 
-      iii. **Test custom entity forms:** If a custom module defines content
-           entities with add/edit forms, navigate to the add form. Verify
-           the form renders and all fields are present. If the entity is
-           simple enough (just a title/label), create a test entity with
-           the `[UPGRADE-TEST]` prefix, verify it saves, then add it to
-           the cleanup list. Do not attempt complex multi-field entity
-           creation -- the goal is a smoke test, not exhaustive testing.
+   iii. **Test custom entity forms:** If a custom module defines content
+   entities with add/edit forms, navigate to the add form. Verify
+   the form renders and all fields are present. If the entity is
+   simple enough (just a title/label), create a test entity with
+   the `[UPGRADE-TEST]` prefix, verify it saves, then add it to
+   the cleanup list. Do not attempt complex multi-field entity
+   creation -- the goal is a smoke test, not exhaustive testing.
 
-      iv. **Verify custom blocks:** If a custom module provides block plugins,
-          check that the blocks appear on the block layout page
-          (`/admin/structure/block`) and are instantiable.
+   iv. **Verify custom blocks:** If a custom module provides block plugins,
+   check that the blocks appear on the block layout page
+   (`/admin/structure/block`) and are instantiable.
 
-      Record pass/fail per custom module. If a module has no routes, entities,
-      or visible plugins, note it as "no testable surface" and skip.
+   Record pass/fail per custom module. If a module has no routes, entities,
+   or visible plugins, note it as "no testable surface" and skip.
 
    f. **Cleanup -- delete test content:** Delete all test content created in this
-      phase: the test node, test media item, and any custom entities created
-      during the custom module smoke tests. Use the admin UI or drush commands:
-      ```
-      drush entity:delete node <nid>
-      drush entity:delete media <mid>
-      drush entity:delete <entity_type> <id>  # for each custom entity
-      ```
-      Verify each is gone by confirming 404/403 on their canonical URLs.
+   phase: the test node, test media item, and any custom entities created
+   during the custom module smoke tests. Use the admin UI or drush commands:
+
+   ```
+   drush entity:delete node <nid>
+   drush entity:delete media <mid>
+   drush entity:delete <entity_type> <id>  # for each custom entity
+   ```
+
+   Verify each is gone by confirming 404/403 on their canonical URLs.
 
    g. **Record editorial results:** Note pass/fail for each step (create, upload,
-      edit, custom module checks, cleanup). If any step fails, record the error
-      and take a screenshot.
+   edit, custom module checks, cleanup). If any step fails, record the error
+   and take a screenshot.
 
 4. **Record validation results** with the same structure as the baseline, plus
    the editorial check results.
@@ -357,7 +364,7 @@ the following structure:
 ## Summary
 
 | Metric                 | Baseline | Upgraded | Status         |
-|------------------------|----------|----------|----------------|
+| ---------------------- | -------- | -------- | -------------- |
 | Drupal version         | X.Y.Z    | X.Y.Z    | --             |
 | Pages tested           | N        | N        | --             |
 | Pages passed           | N        | N        | PASS/FAIL      |
@@ -377,33 +384,35 @@ the following structure:
 
 ## Page-by-Page Comparison
 
-| #  | Page     | Baseline Title | Upgraded Title | Baseline Errors | Upgraded Errors | Visual            | Status |
-|----|----------|----------------|----------------|-----------------|-----------------|-------------------|--------|
-| 1  | Homepage | ...            | ...            | N               | N               | identical/changed | PASS   |
-| 2  | ...      | ...            | ...            | ...             | ...             | ...               | ...    |
+| #   | Page     | Baseline Title | Upgraded Title | Baseline Errors | Upgraded Errors | Visual            | Status |
+| --- | -------- | -------------- | -------------- | --------------- | --------------- | ----------------- | ------ |
+| 1   | Homepage | ...            | ...            | N               | N               | identical/changed | PASS   |
+| 2   | ...      | ...            | ...            | ...             | ...             | ...               | ...    |
 
 ## Editorial Checks (Upgraded Version Only)
 
-| Step          | Action                                       | Status    | Notes |
-|---------------|----------------------------------------------|-----------|-------|
-| Create node   | Created `<type>` node (nid: N)               | PASS/FAIL | ...   |
-| Upload media  | Uploaded test image (mid: N)                  | PASS/FAIL | ...   |
-| Edit node     | Changed title, verified update                | PASS/FAIL | ...   |
-| Cleanup       | Deleted all test content                      | PASS/FAIL | ...   |
+| Step         | Action                         | Status    | Notes |
+| ------------ | ------------------------------ | --------- | ----- |
+| Create node  | Created `<type>` node (nid: N) | PASS/FAIL | ...   |
+| Upload media | Uploaded test image (mid: N)   | PASS/FAIL | ...   |
+| Edit node    | Changed title, verified update | PASS/FAIL | ...   |
+| Cleanup      | Deleted all test content       | PASS/FAIL | ...   |
 
 ## Custom Module Smoke Tests (Upgraded Version Only)
 
-| Module              | Routes | Entities | Blocks | Status    | Notes |
-|---------------------|--------|----------|--------|-----------|-------|
-| `my_custom_module`  | 2/2    | 1/1      | 0      | PASS/FAIL | ...   |
-| `another_module`    | --     | --       | --     | skipped   | no testable surface |
+| Module             | Routes | Entities | Blocks | Status    | Notes               |
+| ------------------ | ------ | -------- | ------ | --------- | ------------------- |
+| `my_custom_module` | 2/2    | 1/1      | 0      | PASS/FAIL | ...                 |
+| `another_module`   | --     | --       | --     | skipped   | no testable surface |
 
 ## Console Errors
 
 ### Baseline (Drupal X)
+
 <list any console errors per page, or "None">
 
 ### Upgraded (Drupal X)
+
 <list any console errors per page, or "None">
 
 ## Screenshots
@@ -422,6 +431,7 @@ Validation screenshots: `.playwright-cli/validation/`
 (GitLab issues, GitHub PRs, Slack, etc.) without explicit human approval.**
 
 Before posting:
+
 1. Show the full report content to the user in the conversation.
 2. Ask for explicit confirmation to post (e.g., "Shall I post this to issue #N?").
 3. Only post after the user approves. If the user requests changes, revise and

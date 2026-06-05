@@ -180,18 +180,18 @@ from multiple goroutines without `sync.Mutex` or `sync.Map`.
 
 Key gosec rules to watch for:
 
-| Rule | Description |
-|------|-------------|
-| G101 | Hardcoded credentials |
-| G102 | Binding to all interfaces |
-| G104 | Unhandled errors |
+| Rule | Description                                 |
+| ---- | ------------------------------------------- |
+| G101 | Hardcoded credentials                       |
+| G102 | Binding to all interfaces                   |
+| G104 | Unhandled errors                            |
 | G107 | URL provided to HTTP request as taint input |
-| G108 | Profiling endpoint exposed |
-| G110 | Decompression bomb |
-| G201 | SQL string concatenation |
-| G202 | SQL string formatting |
+| G108 | Profiling endpoint exposed                  |
+| G110 | Decompression bomb                          |
+| G201 | SQL string concatenation                    |
+| G202 | SQL string formatting                       |
 | G301 | Poor file permissions on directory creation |
-| G302 | Poor file permissions on file creation |
-| G304 | File path provided as taint input |
+| G302 | Poor file permissions on file creation      |
+| G304 | File path provided as taint input           |
 | G401 | Use of weak crypto (MD5, SHA1 for security) |
-| G501 | Blacklisted crypto import |
+| G501 | Blacklisted crypto import                   |

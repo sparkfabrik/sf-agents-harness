@@ -16,13 +16,13 @@ Cache tags enable targeted cache invalidation across all cache bins when underly
 
 ## Tag Naming Conventions
 
-| Type | Pattern | Examples |
-|------|---------|----------|
-| Entity | `entity_type:id` | `node:1`, `user:5`, `taxonomy_term:42` |
-| Entity list | `entity_type_list` | `node_list`, `user_list` |
-| Bundle list | `entity_type_list:bundle` | `node_list:article`, `node_list:page` |
-| Config | `config:config_name` | `config:system.site`, `config:views.view.frontpage` |
-| Custom | `module:identifier` | `weather:location:milan`, `stock:AAPL` |
+| Type        | Pattern                   | Examples                                            |
+| ----------- | ------------------------- | --------------------------------------------------- |
+| Entity      | `entity_type:id`          | `node:1`, `user:5`, `taxonomy_term:42`              |
+| Entity list | `entity_type_list`        | `node_list`, `user_list`                            |
+| Bundle list | `entity_type_list:bundle` | `node_list:article`, `node_list:page`               |
+| Config      | `config:config_name`      | `config:system.site`, `config:views.view.frontpage` |
+| Custom      | `module:identifier`       | `weather:location:milan`, `stock:AAPL`              |
 
 ## Step-by-Step: Adding Cache Tags
 
@@ -39,6 +39,7 @@ Cache tags enable targeted cache invalidation across all cache bins when underly
 **Input:** "I'm rendering a node title, how do I add cache tags?"
 
 **Output:**
+
 ```php
 $build['title'] = [
   '#markup' => $node->getTitle(),
@@ -53,6 +54,7 @@ $build['title'] = [
 **Input:** "My block shows node info plus site name, what tags do I need?"
 
 **Output:**
+
 ```php
 use Drupal\Core\Cache\Cache;
 
@@ -72,6 +74,7 @@ $build = [
 **Input:** "I have a custom block listing recent articles, what tags should I use?"
 
 **Output:**
+
 ```php
 $build = [
   '#theme' => 'item_list',
@@ -87,21 +90,22 @@ $build = [
 **Input:** "I'm caching computed data based on a node, how do I set it up?"
 
 **Output:**
+
 ```php
 public function getComputedData(int $nid): array {
   $cid = 'my_module:computed:' . $nid;
   $cache = \Drupal::cache('data');
-  
+
   if ($cached = $cache->get($cid)) {
     return $cached->data;
   }
-  
+
   $data = $this->expensiveComputation($nid);
   $cache->set($cid, $data, Cache::PERMANENT, [
     'node:' . $nid,           // Invalidate when node changes
     'my_module:computed',     // Custom tag for bulk invalidation
   ]);
-  
+
   return $data;
 }
 ```
@@ -111,6 +115,7 @@ public function getComputedData(int $nid): array {
 **Input:** "External API data changed, how do I invalidate related caches?"
 
 **Output:**
+
 ```php
 use Drupal\Core\Cache\Cache;
 
@@ -126,6 +131,7 @@ $node->save(); // Automatically invalidates node:ID and node_list tags
 **Input:** "My block depends on the current node, how do I add tags dynamically?"
 
 **Output:**
+
 ```php
 class RelatedContentBlock extends BlockBase {
 
@@ -149,12 +155,12 @@ class RelatedContentBlock extends BlockBase {
 
 ## Common Mistakes
 
-| Mistake | Problem | Fix |
-|---------|---------|-----|
-| `my_module:all` | Too broad, invalidates everything | Use specific IDs: `my_module:item:123` |
-| Missing list tags | New content doesn't appear in listings | Add `entity_type_list` tag |
-| Forgetting config | Theme changes don't reflect | Add `config:block.block.X` |
-| Manual entity invalidation | Redundant, Drupal handles it | Remove manual `Cache::invalidateTags()` on entity save |
+| Mistake                    | Problem                                | Fix                                                    |
+| -------------------------- | -------------------------------------- | ------------------------------------------------------ |
+| `my_module:all`            | Too broad, invalidates everything      | Use specific IDs: `my_module:item:123`                 |
+| Missing list tags          | New content doesn't appear in listings | Add `entity_type_list` tag                             |
+| Forgetting config          | Theme changes don't reflect            | Add `config:block.block.X`                             |
+| Manual entity invalidation | Redundant, Drupal handles it           | Remove manual `Cache::invalidateTags()` on entity save |
 
 ## Debugging
 

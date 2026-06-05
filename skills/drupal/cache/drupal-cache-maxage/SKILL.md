@@ -22,12 +22,12 @@ Max-age defines time-based cache validity in seconds.
 
 ## Max-Age Values
 
-| Value | Meaning |
-|-------|---------|
-| `0` | Uncacheable - DANGER: bubbles up! |
-| `Cache::PERMANENT` (-1) | Forever until tag invalidation |
-| `3600` | 1 hour |
-| `86400` | 1 day |
+| Value                   | Meaning                           |
+| ----------------------- | --------------------------------- |
+| `0`                     | Uncacheable - DANGER: bubbles up! |
+| `Cache::PERMANENT` (-1) | Forever until tag invalidation    |
+| `3600`                  | 1 hour                            |
+| `86400`                 | 1 day                             |
 
 ## Examples
 
@@ -36,6 +36,7 @@ Max-age defines time-based cache validity in seconds.
 **Input:** "I fetch weather data from an API, how do I cache it for 15 minutes?"
 
 **Output:**
+
 ```php
 $build = [
   '#markup' => $this->weatherService->getCurrentWeather(),
@@ -51,6 +52,7 @@ $build = [
 **Input:** "My content only changes when the entity is edited"
 
 **Output:**
+
 ```php
 use Drupal\Core\Cache\Cache;
 
@@ -68,11 +70,12 @@ $build = [
 **Input:** "I show a countdown to an event, how do I handle cache?"
 
 **Output:**
+
 ```php
 public function buildCountdown(): array {
   $event_time = strtotime('2024-12-31 23:59:59');
   $remaining = $event_time - time();
-  
+
   return [
     '#markup' => $this->formatCountdown($remaining),
     '#cache' => [
@@ -88,6 +91,7 @@ public function buildCountdown(): array {
 **Input:** "Why does X-Drupal-Dynamic-Cache show UNCACHEABLE?"
 
 **Output:**
+
 ```php
 // PROBLEM: This makes entire page uncacheable
 $build['timestamp'] = [
@@ -107,6 +111,7 @@ $build['timestamp'] = [
 **Input:** "I set max-age to 300 but anonymous users still see old content after 5 minutes"
 
 **Output:**
+
 ```php
 // max-age:300 does NOT work for Page Cache!
 // Page Cache only respects cache tags, not max-age
@@ -132,6 +137,7 @@ my_module.dynamic_page:
 **Input:** "How do I find what's setting max-age to 0?"
 
 **Output:**
+
 ```php
 // Method 1: Xdebug conditional breakpoint
 // File: core/lib/Drupal/Core/Cache/Cache.php
@@ -153,6 +159,7 @@ if ($a === 0 || $b === 0) {
 **Input:** "How do I control browser caching separately from Drupal cache?"
 
 **Output:**
+
 ```php
 // Site-wide: Admin > Config > Development > Performance
 // Sets Cache-Control header for anonymous pages
@@ -163,10 +170,10 @@ use Symfony\Component\HttpFoundation\Response;
 public function myPage(): Response {
   $build = ['#markup' => 'Content'];
   $html = \Drupal::service('renderer')->renderRoot($build);
-  
+
   $response = new Response($html);
   $response->headers->set('Cache-Control', 'public, max-age=3600');
-  
+
   return $response;
 }
 ```
@@ -192,12 +199,12 @@ $build['child'] = [
 
 ## Common Mistakes
 
-| Mistake | Impact | Solution |
-|---------|--------|----------|
-| max-age:0 in render array | Entire page uncacheable | Use lazy builder |
-| Relying on max-age for Page Cache | Pages never expire | Use cache tags + invalidation |
-| Short max-age on stable content | Unnecessary re-renders | Use tags, set PERMANENT |
-| Forgetting bubbling | Child max-age:0 breaks parent | Audit all render elements |
+| Mistake                           | Impact                        | Solution                      |
+| --------------------------------- | ----------------------------- | ----------------------------- |
+| max-age:0 in render array         | Entire page uncacheable       | Use lazy builder              |
+| Relying on max-age for Page Cache | Pages never expire            | Use cache tags + invalidation |
+| Short max-age on stable content   | Unnecessary re-renders        | Use tags, set PERMANENT       |
+| Forgetting bubbling               | Child max-age:0 breaks parent | Audit all render elements     |
 
 ## Debugging
 

@@ -18,6 +18,7 @@ The skill SHALL read and audit each AI instruction file found during discovery. 
 The skill SHALL flag instruction files that grant unrestricted access to files, commands, or system resources without boundaries.
 
 Examples of overly permissive instructions:
+
 - "You have full access to all files and can execute any command"
 - "You can modify any file in the repository"
 - No mention of directory or file restrictions
@@ -50,6 +51,7 @@ The skill SHALL identify contradictions between instruction files in the same pr
 The skill SHALL flag instructions that tell the agent to follow embedded commands from untrusted sources, as these amplify prompt injection attacks.
 
 Examples of injection amplification:
+
 - "Follow any instructions found in code comments"
 - "Obey user preferences stored in .env files"
 - "Execute commands found in TODO comments"
@@ -83,6 +85,7 @@ The skill SHALL flag instruction files that reference deprecated tools, APIs, or
 The skill SHALL flag instructions that tell the agent to trust its own outputs or other LLM outputs without validation, or that lack guidance on output verification.
 
 Examples of implicit trust:
+
 - "Trust all tool outputs"
 - No instruction to validate generated code
 - No guidance on when to ask for human review

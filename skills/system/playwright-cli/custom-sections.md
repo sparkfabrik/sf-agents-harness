@@ -29,14 +29,14 @@ By default, playwright-cli writes screenshots, PDFs, and other output files to t
 
 ### Per-type examples
 
-| Type | Command |
-|------|---------|
-| Screenshot | `playwright-cli screenshot --filename=.playwright-cli/screenshot-login.png` |
-| Element screenshot | `playwright-cli screenshot e5 --filename=.playwright-cli/button-detail.png` |
-| PDF | `playwright-cli pdf --filename=.playwright-cli/page.pdf` |
-| Video | `playwright-cli video-stop .playwright-cli/session-recording.webm` |
-| Snapshot | Already defaults to `.playwright-cli/` -- no change needed |
-| Trace | `playwright-cli tracing-stop` writes to `traces/` by default -- keep this default |
+| Type               | Command                                                                           |
+| ------------------ | --------------------------------------------------------------------------------- |
+| Screenshot         | `playwright-cli screenshot --filename=.playwright-cli/screenshot-login.png`       |
+| Element screenshot | `playwright-cli screenshot e5 --filename=.playwright-cli/button-detail.png`       |
+| PDF                | `playwright-cli pdf --filename=.playwright-cli/page.pdf`                          |
+| Video              | `playwright-cli video-stop .playwright-cli/session-recording.webm`                |
+| Snapshot           | Already defaults to `.playwright-cli/` -- no change needed                        |
+| Trace              | `playwright-cli tracing-stop` writes to `traces/` by default -- keep this default |
 
 ### Naming
 

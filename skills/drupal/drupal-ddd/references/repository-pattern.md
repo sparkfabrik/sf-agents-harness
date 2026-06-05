@@ -28,7 +28,7 @@ and plugins NEVER interact with the entity storage layer directly.
 You **MUST NEVER** do any of the following outside of a Repository class:
 
 | Forbidden Action                                     | Where It Must Not Appear                                                                                               |
-|------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Inject `EntityTypeManagerInterface`                  | Controllers, Forms, Services, Event Subscribers, Plugins, Message Handlers                                             |
 | Inject `EntityStorageInterface`                      | Controllers, Forms, Services, Event Subscribers, Plugins, Message Handlers                                             |
 | Call `\Drupal::entityTypeManager()`                  | Anywhere (static calls are always forbidden)                                                                           |
@@ -241,24 +241,22 @@ In `my_module.services.yml`:
 
 ```yaml
 services:
-    # Concrete repository (autowired)
-    Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository: ~
+  # Concrete repository (autowired)
+  Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository: ~
 
-    # Interface alias — consumers inject the INTERFACE, resolved to the concrete class
-    Drupal\my_module\Entity\Project\ProjectRepositoryInterface:
-        '@Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository'
+  # Interface alias — consumers inject the INTERFACE, resolved to the concrete class
+  Drupal\my_module\Entity\Project\ProjectRepositoryInterface: '@Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository'
 ```
 
 For repositories needing constructor arguments (e.g., entity type ID):
 
 ```yaml
 services:
-    Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository:
-        arguments:
-            $entityTypeId: 'my_module_project'
+  Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository:
+    arguments:
+      $entityTypeId: "my_module_project"
 
-    Drupal\my_module\Entity\Project\ProjectRepositoryInterface:
-        '@Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository'
+  Drupal\my_module\Entity\Project\ProjectRepositoryInterface: '@Drupal\my_module\Infrastructure\Persistence\Repository\Entity\ProjectRepository'
 ```
 
 ### Step 4: Inject Into Consumers
@@ -474,7 +472,7 @@ class WebpageSyncService {
 Before generating any entity-related code, ask yourself:
 
 | Question                                                          | If YES                                                               |
-|-------------------------------------------------------------------|----------------------------------------------------------------------|
+| ----------------------------------------------------------------- | -------------------------------------------------------------------- |
 | Does this class need to load an entity?                           | Inject a `RepositoryInterface`                                       |
 | Does this class need to query entities by conditions?             | Add a method to the `RepositoryInterface`, implement in `Repository` |
 | Does this class need to create/save/delete entities?              | Add a method to the `RepositoryInterface`, implement in `Repository` |

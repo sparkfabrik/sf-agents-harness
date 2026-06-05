@@ -105,7 +105,7 @@ my_project_content/      → Core Content context (Pages, Navigation, Layout)
 When modules need to communicate, choose the right integration pattern:
 
 | Pattern                   | When to Use                                  | Drupal Implementation                                                      |
-|---------------------------|----------------------------------------------|----------------------------------------------------------------------------|
+| ------------------------- | -------------------------------------------- | -------------------------------------------------------------------------- |
 | **Published Language**    | Modules agree on a shared data format        | Shared interfaces in a base module                                         |
 | **Customer-Supplier**     | One module serves another's needs            | Service interface in supplier, consumer injects it                         |
 | **Anti-Corruption Layer** | Integrating with external/legacy systems     | Adapter service that translates external API responses into domain objects |
@@ -188,6 +188,7 @@ function sendEmail(EmailAddress $to, Subject $subject): void;
 ```
 
 **When to use in Drupal:**
+
 - Complex field values (Money = amount + currency, DateRange = start + end)
 - Domain concepts that appear in multiple places (PostalCode, IsoLanguageCode)
 - Anything where validation rules exist (email format, currency codes)
@@ -254,6 +255,7 @@ final readonly class OrderWasPlaced {
 ```
 
 **When to use instead of hooks:**
+
 - When the side-effect is in a different Bounded Context
 - When you need an audit trail of domain changes
 - When the reaction can happen asynchronously
@@ -285,6 +287,7 @@ final readonly class PlaceOrderService {
 ```
 
 **Rules:**
+
 - No business logic in application services — delegate to entities/domain services
 - Accept primitive types or DTOs as input (not entities)
 - Return DTOs or Value Objects (not entities) to the presentation layer
@@ -339,6 +342,7 @@ web/modules/custom/my_module/
 ```
 
 **Key principles:**
+
 - Group by domain concept within `Entity/`, not by architectural role
 - `Entity/ValueObject/` holds pure PHP classes with no Drupal dependency
 - Repository interfaces live next to the entities they serve
@@ -388,6 +392,7 @@ complex business logic in separate domain classes when possible.
 ## Anti-Patterns to Avoid
 
 ### 1. Anemic Domain Model
+
 **Symptom:** Entities are data bags with getters/setters. All logic lives in
 services, hooks, or form handlers.
 
@@ -402,6 +407,7 @@ $order->accept(); // internally sets status + timestamp + records event
 ```
 
 ### 2. Fat Controllers / Fat Hooks
+
 **Symptom:** Controllers or hook implementations contain 50+ lines of business
 logic, entity queries, and conditional branching.
 
@@ -409,6 +415,7 @@ logic, entity queries, and conditional branching.
 The controller just calls the service and returns a response.
 
 ### 3. Primitive Obsession
+
 **Symptom:** Passing `string $email`, `float $amount`, `string $currency_code`
 everywhere instead of typed Value Objects.
 
@@ -416,6 +423,7 @@ everywhere instead of typed Value Objects.
 self-validate on construction. Invalid values can't exist.
 
 ### 4. Shared Database / Shared Kernel Creep
+
 **Symptom:** Module A directly queries Module B's database tables or reaches
 into its entity storage.
 
@@ -424,6 +432,7 @@ interface. If the integration is with an external system, use an
 Anti-Corruption Layer.
 
 ### 5. Event Handlers with Business Logic
+
 **Symptom:** An event subscriber contains complex business rules instead of
 simply reacting to an event.
 

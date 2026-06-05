@@ -29,6 +29,7 @@ Accepted
 We will use Redis as the caching backend, replacing Drupal's default database cache.
 
 Redis was chosen over Memcached because:
+
 - We also need queue processing
 - Redis supports both caching and queues
 - Memcached doesn't support queues
@@ -51,8 +52,8 @@ Redis was chosen over Memcached because:
   explain the tension between them. Why is 200ms a problem? What trade-offs
   exist? A future reader gets data points but no story.
 - **Decision mixes in justification.** "Redis was chosen over Memcached because…"
-  belongs in the Context section. The Decision should state *what* was decided,
-  not re-argue *why*.
+  belongs in the Context section. The Decision should state _what_ was decided,
+  not re-argue _why_.
 - **Consequences are all one-liners.** No exploration of how each consequence
   affects the project. "Additional infrastructure dependency" — so what? What
   does that mean in practice?
@@ -169,14 +170,14 @@ best option given the requirements.
   memo. Nygard's format demands active voice: "We will use PostgreSQL."
 - **Context is procedural, not descriptive.** It describes the decision-making
   process ("options were considered," "it was determined") instead of the forces
-  at play. Context should explain *why* the decision matters, not *how* the
+  at play. Context should explain _why_ the decision matters, not _how_ the
   meeting went.
 - **Decision is backward-looking.** "Has been selected" is past tense and
   passive. The Decision section should be forward-looking and active: "We will
   migrate to PostgreSQL" or "We will use PostgreSQL 16 as the primary database."
 - **Consequences are bullet fragments restating requirements.** "The database
   will support JSON" isn't a consequence — it's a requirement that was already
-  mentioned. Consequences should describe what *changes* as a result of the
+  mentioned. Consequences should describe what _changes_ as a result of the
   decision: migration effort, new operational requirements, doors opened or
   closed.
 
@@ -191,13 +192,13 @@ paragraphs exploring real impacts — both positive and negative.
 
 ## Quick Reference: Common Mistakes
 
-| Mistake | Why It's Bad | Fix |
-|---------|-------------|-----|
-| Bullet-list sections | Encourages sentence fragments, loses narrative flow | Write full paragraphs |
-| Advocacy in Context | Biases the reader, makes reassessment harder | State facts and tensions neutrally |
-| Only positive consequences | Hides trade-offs, useless for future decisions | Always include negatives and neutrals |
-| Passive voice in Decision | Hides ownership, sounds bureaucratic | Use "We will…" with active verbs |
-| Sentence/verb titles | Hard to scan, pre-judges the outcome | Use short noun phrases |
-| Mixing justification into Decision | Muddies the boundary between why and what | Keep "why" in Context, "what" in Decision |
-| One-sentence Decision | Leaves scope ambiguous | Include enough detail for a future reader |
-| Restating requirements as Consequences | Adds no information | Describe what changes, not what was wanted |
+| Mistake                                | Why It's Bad                                        | Fix                                        |
+| -------------------------------------- | --------------------------------------------------- | ------------------------------------------ |
+| Bullet-list sections                   | Encourages sentence fragments, loses narrative flow | Write full paragraphs                      |
+| Advocacy in Context                    | Biases the reader, makes reassessment harder        | State facts and tensions neutrally         |
+| Only positive consequences             | Hides trade-offs, useless for future decisions      | Always include negatives and neutrals      |
+| Passive voice in Decision              | Hides ownership, sounds bureaucratic                | Use "We will…" with active verbs           |
+| Sentence/verb titles                   | Hard to scan, pre-judges the outcome                | Use short noun phrases                     |
+| Mixing justification into Decision     | Muddies the boundary between why and what           | Keep "why" in Context, "what" in Decision  |
+| One-sentence Decision                  | Leaves scope ambiguous                              | Include enough detail for a future reader  |
+| Restating requirements as Consequences | Adds no information                                 | Describe what changes, not what was wanted |

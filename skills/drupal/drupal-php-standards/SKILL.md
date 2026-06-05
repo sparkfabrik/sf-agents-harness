@@ -19,7 +19,7 @@ all four checks on the first attempt.
 The four tools and what they care about:
 
 | Tool        | Focus                                | Level                                                        |
-|-------------|--------------------------------------|--------------------------------------------------------------|
+| ----------- | ------------------------------------ | ------------------------------------------------------------ |
 | **PHPCS**   | Code style and formatting            | Drupal + PreviousNextDrupal + SparkFabrikCS + DrupalPractice |
 | **PHPStan** | Static type analysis                 | Level 8 (strictest) with `phpstan-strict-rules`              |
 | **PHPMD**   | Code complexity and design           | All rulesets except cleancode                                |
@@ -187,6 +187,7 @@ Enforced by `SlevomatCodingStandard.TypeHints.ReturnTypeHint`.
 ## Documentation Rules
 
 The project **disables** most mandatory docblock rules. You do NOT need:
+
 - Class docblocks (`Drupal.Commenting.ClassComment.Missing` is off)
 - Function docblocks (`Drupal.Commenting.FunctionComment.Missing` is off)
 - File docblocks (`Drupal.Commenting.FileComment.Missing` is off)
@@ -230,6 +231,7 @@ This tells PHPStan the precise types without conflicting with the parent's
 docblock.
 
 This is critical for:
+
 - Plugin constructors extending `PluginBase`, `ProcessPluginBase`, etc.
 - `create()` factory methods from `ContainerFactoryPluginInterface`
 - `getDerivativeDefinitions()` from `DeriverInterface`
@@ -493,7 +495,7 @@ except `cleancode`, with some customized thresholds.
 ### Complexity Limits
 
 | Metric                   | Limit         | What it means                      |
-|--------------------------|---------------|------------------------------------|
+| ------------------------ | ------------- | ---------------------------------- |
 | Cyclomatic complexity    | 10 (default)  | Max branches/conditions per method |
 | NPath complexity         | 200 (default) | Max execution paths per method     |
 | Too many fields          | 18            | Max properties per class           |
@@ -524,7 +526,7 @@ private function buildResult(array $data): mixed {
 ### Naming Rules
 
 | Rule                     | Constraint                                                                        |
-|--------------------------|-----------------------------------------------------------------------------------|
+| ------------------------ | --------------------------------------------------------------------------------- |
 | Short method name        | Minimum 2 characters                                                              |
 | Long class name          | Maximum 60 characters (subtracting Controller/Service/Interface/Manager suffixes) |
 | Short/Long variable name | **Not enforced** (excluded)                                                       |
@@ -556,6 +558,7 @@ CSpell would flag, add it to the project dictionary:
 Add one word per line. Keep it alphabetically sorted.
 
 Common categories of words to add:
+
 - Drupal contrib module names (`metatag`, `pathauto`, `linkit`)
 - External service names and acronyms
 - Domain-specific Italian terms
@@ -612,6 +615,7 @@ final readonly class NodeHooks {
 ```
 
 Key points:
+
 - `final readonly class` when no mutable state
 - Constructor promotion with `private readonly`
 - One blank line before `return`

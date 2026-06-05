@@ -20,6 +20,7 @@ Practical tools and commands for inspecting HTTP cache headers and debugging Dru
 For container access and service URLs in SparkFabrik projects, see the [pkg-skills](../drupal/pkg-skills/SKILL.md) reference.
 
 **Quick reminder:**
+
 - Inside container: `http://drupal-nginx`
 - From host: Use `fs-cli pkg:get-urls` to get external URL
 
@@ -94,6 +95,7 @@ curl -sI -w "\nTotal time: %{time_total}s\n" https://example.com/
 **Input:** "Check if the homepage is being cached"
 
 **Output:**
+
 ```bash
 # From SparkFabrik container
 make drupal-cli
@@ -112,9 +114,10 @@ curl -sI http://drupal-nginx/ | grep -iE 'x-drupal|cache-control'
 **Input:** "Check caching difference between anonymous and logged-in users"
 
 **Output:**
+
 ```bash
 # Anonymous request
-echo "=== Anonymous ===" 
+echo "=== Anonymous ==="
 curl -sI http://drupal-nginx/node/1 | grep -iE 'x-drupal|cache-control|set-cookie'
 
 # Authenticated request (with session cookie)
@@ -131,6 +134,7 @@ curl -sI -H "Cookie: SESSxyz=abc123" http://drupal-nginx/node/1 | grep -iE 'x-dr
 **Input:** "Find out why the page shows UNCACHEABLE"
 
 **Output:**
+
 ```bash
 # Enable debug headers first (in settings.local.php):
 # $settings['http.response.debug_cacheability_headers'] = TRUE;
@@ -149,6 +153,7 @@ curl -sI http://drupal-nginx/node/1 | grep -iE 'x-drupal'
 **Input:** "Verify cache clears after content edit"
 
 **Output:**
+
 ```bash
 # Step 1: Check current cache status
 curl -sI http://drupal-nginx/node/1 | grep 'X-Drupal-Cache'
@@ -171,6 +176,7 @@ curl -sI http://drupal-nginx/node/1 | grep 'X-Drupal-Cache'
 **Input:** "See what the page varies on"
 
 **Output:**
+
 ```bash
 curl -sI http://drupal-nginx/ | grep -iE 'vary|x-drupal-cache-contexts'
 
@@ -187,6 +193,7 @@ curl -sI http://drupal-nginx/ | grep -iE 'vary|x-drupal-cache-contexts'
 **Input:** "Give me a complete cache debug for a URL"
 
 **Output:**
+
 ```bash
 #!/bin/bash
 # cache-debug.sh - Run from inside drupal-tools container
@@ -226,6 +233,7 @@ docker compose run --rm -it drupal-tools bash -c 'URL="http://drupal-nginx/node/
 **Input:** "Monitor cache status during development"
 
 **Output:**
+
 ```bash
 # Watch cache status every 2 seconds
 watch -n 2 'curl -sI http://drupal-nginx/ | grep -iE "x-drupal|cache-control"'
@@ -243,6 +251,7 @@ done
 **Input:** "Check cache status for multiple pages"
 
 **Output:**
+
 ```bash
 # List of URLs to check
 URLS=(
@@ -303,24 +312,24 @@ For visual debugging:
 
 ### DevTools Cache Headers to Check
 
-| Header | Location | Meaning |
-|--------|----------|---------|
-| `X-Drupal-Cache` | Response | Page Cache status |
-| `X-Drupal-Dynamic-Cache` | Response | Dynamic Cache status |
-| `Cache-Control` | Response | Browser/proxy caching rules |
-| `Age` | Response | Seconds since cached by proxy |
-| `Vary` | Response | What causes cache variations |
+| Header                   | Location | Meaning                       |
+| ------------------------ | -------- | ----------------------------- |
+| `X-Drupal-Cache`         | Response | Page Cache status             |
+| `X-Drupal-Dynamic-Cache` | Response | Dynamic Cache status          |
+| `Cache-Control`          | Response | Browser/proxy caching rules   |
+| `Age`                    | Response | Seconds since cached by proxy |
+| `Vary`                   | Response | What causes cache variations  |
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Check cache status | `curl -sI URL \| grep -i x-drupal` |
-| Full headers | `curl -sI URL` |
-| Authenticated | `curl -sI -H "Cookie: SESS=x" URL` |
-| Bypass cache | `curl -sI -H "Cache-Control: no-cache" URL` |
-| Timing | `curl -sI -w "TTFB: %{time_starttransfer}s\n" URL` |
-| Follow redirects | `curl -sIL URL` |
+| Task               | Command                                            |
+| ------------------ | -------------------------------------------------- |
+| Check cache status | `curl -sI URL \| grep -i x-drupal`                 |
+| Full headers       | `curl -sI URL`                                     |
+| Authenticated      | `curl -sI -H "Cookie: SESS=x" URL`                 |
+| Bypass cache       | `curl -sI -H "Cache-Control: no-cache" URL`        |
+| Timing             | `curl -sI -w "TTFB: %{time_starttransfer}s\n" URL` |
+| Follow redirects   | `curl -sIL URL`                                    |
 
 ## Anonymous vs Authenticated Cache Analysis
 
@@ -364,13 +373,13 @@ curl -sI -H "Cookie: SESSxxxxxxx=yyyyyyyy" "$URL" | grep -iE 'http/|x-drupal|cac
 
 **Key headers to analyze:**
 
-| Header | Anonymous (expected) | Authenticated (expected) | Meaning |
-|--------|---------------------|-------------------------|---------|
-| `X-Drupal-Cache` | `HIT` or `MISS` | Not present | Page Cache (only for anonymous) |
-| `X-Drupal-Dynamic-Cache` | `HIT` | `HIT` or `UNCACHEABLE` | Dynamic Page Cache |
-| `Cache-Control` | `max-age=X, public` | `max-age=0, private, no-cache` | Browser/proxy caching |
-| `Vary` | `Cookie, Accept-Encoding` | `Cookie, Accept-Encoding` | Cache variations |
-| `Set-Cookie` | May set session | Should not set new session | Session handling |
+| Header                   | Anonymous (expected)      | Authenticated (expected)       | Meaning                         |
+| ------------------------ | ------------------------- | ------------------------------ | ------------------------------- |
+| `X-Drupal-Cache`         | `HIT` or `MISS`           | Not present                    | Page Cache (only for anonymous) |
+| `X-Drupal-Dynamic-Cache` | `HIT`                     | `HIT` or `UNCACHEABLE`         | Dynamic Page Cache              |
+| `Cache-Control`          | `max-age=X, public`       | `max-age=0, private, no-cache` | Browser/proxy caching           |
+| `Vary`                   | `Cookie, Accept-Encoding` | `Cookie, Accept-Encoding`      | Cache variations                |
+| `Set-Cookie`             | May set session           | Should not set new session     | Session handling                |
 
 ### Understanding Cache Behavior
 
@@ -381,6 +390,7 @@ X-Drupal-Cache: HIT
 X-Drupal-Dynamic-Cache: HIT
 Cache-Control: max-age=3600, public
 ```
+
 ✅ **Good:** Page is fully cached, served from Page Cache.
 
 #### Scenario 2: Dynamic Cache Only (Anonymous)
@@ -390,6 +400,7 @@ X-Drupal-Cache: MISS
 X-Drupal-Dynamic-Cache: HIT
 Cache-Control: max-age=3600, public
 ```
+
 ⚠️ **Partial:** Page uses Dynamic Cache but not Page Cache. Check if there are session cookies being set.
 
 #### Scenario 3: Uncacheable (Anonymous)
@@ -399,7 +410,9 @@ X-Drupal-Cache: MISS
 X-Drupal-Dynamic-Cache: UNCACHEABLE
 Cache-Control: must-revalidate, no-cache, private
 ```
+
 ❌ **Problem:** Page cannot be cached. Check for:
+
 - `max-age: 0` on render elements
 - High-cardinality cache contexts (e.g., `user`)
 - Session being started unexpectedly
@@ -410,6 +423,7 @@ Cache-Control: must-revalidate, no-cache, private
 X-Drupal-Dynamic-Cache: HIT
 Cache-Control: max-age=0, private, no-cache
 ```
+
 ✅ **Expected:** Authenticated pages should be private, Dynamic Cache can still help.
 
 #### Scenario 5: Authenticated User Uncacheable
@@ -418,6 +432,7 @@ Cache-Control: max-age=0, private, no-cache
 X-Drupal-Dynamic-Cache: UNCACHEABLE
 Cache-Control: must-revalidate, no-cache, private
 ```
+
 ⚠️ **Check:** Even for authenticated users, Dynamic Cache should work. Look for `max-age: 0` issues.
 
 ### Full Comparison Script
@@ -490,7 +505,7 @@ if [ -n "$SESSION_COOKIE" ]; then
   elif [ "$AUTH_DYN_CACHE" = "UNCACHEABLE" ]; then
     echo "⚠️  Authenticated: Dynamic Cache not working"
   fi
-  
+
   if echo "$AUTH_CACHE_CTRL" | grep -q "private"; then
     echo "✅ Authenticated: Correctly marked as private"
   else
@@ -500,6 +515,7 @@ fi
 ```
 
 **Usage:**
+
 ```bash
 # Anonymous only
 ./cache-compare.sh http://drupal-nginx/node/1
@@ -510,13 +526,13 @@ fi
 
 ### Common Issues and Solutions
 
-| Symptom | Likely Cause | Solution |
-|---------|--------------|----------|
-| Anonymous gets `UNCACHEABLE` | Something sets `max-age: 0` | Enable debug headers, check for bad cache metadata |
-| Anonymous gets `Set-Cookie` | Session started for anonymous | Check for code that calls `\Drupal::currentUser()` early |
-| Anonymous `Cache-Control: private` | Session or user context | Look for `user` cache context being added |
-| Page Cache always `MISS` | Vary on Cookie + session exists | Ensure anonymous users don't get sessions |
-| Authenticated `UNCACHEABLE` | `max-age: 0` in render array | Find element setting zero max-age |
+| Symptom                            | Likely Cause                    | Solution                                                 |
+| ---------------------------------- | ------------------------------- | -------------------------------------------------------- |
+| Anonymous gets `UNCACHEABLE`       | Something sets `max-age: 0`     | Enable debug headers, check for bad cache metadata       |
+| Anonymous gets `Set-Cookie`        | Session started for anonymous   | Check for code that calls `\Drupal::currentUser()` early |
+| Anonymous `Cache-Control: private` | Session or user context         | Look for `user` cache context being added                |
+| Page Cache always `MISS`           | Vary on Cookie + session exists | Ensure anonymous users don't get sessions                |
+| Authenticated `UNCACHEABLE`        | `max-age: 0` in render array    | Find element setting zero max-age                        |
 
 ### Debug Headers
 
@@ -527,6 +543,7 @@ $settings['http.response.debug_cacheability_headers'] = TRUE;
 ```
 
 This exposes additional headers:
+
 - `X-Drupal-Cache-Tags` - Cache tags for invalidation
 - `X-Drupal-Cache-Contexts` - What the page varies on
 - `X-Drupal-Cache-Max-Age` - Minimum max-age from all elements

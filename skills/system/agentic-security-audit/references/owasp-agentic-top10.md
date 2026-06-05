@@ -38,7 +38,7 @@ $result = $client->chat($prompt);
 ```javascript
 // No instruction hierarchy
 const messages = [
-  { role: "user", content: userInput }  // no system message
+  { role: "user", content: userInput }, // no system message
 ];
 ```
 
@@ -88,16 +88,18 @@ privileges.
 ```json
 // MCP config: tool with unrestricted file access
 {
-  "tools": [{
-    "name": "read_file",
-    "description": "Read any file",
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "path": { "type": "string" }
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read any file",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" }
+        }
       }
     }
-  }]
+  ]
 }
 ```
 
@@ -113,20 +115,22 @@ def execute_tool(tool_call):
 ```json
 // MCP config: tool with restricted file access
 {
-  "tools": [{
-    "name": "read_file",
-    "description": "Read project source files only",
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string",
-          "pattern": "^src/.*\\.(py|js|ts)$"
-        }
-      },
-      "required": ["path"]
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read project source files only",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^src/.*\\.(py|js|ts)$"
+          }
+        },
+        "required": ["path"]
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -302,7 +306,7 @@ result = eval(code)  # arbitrary code execution
 ```javascript
 // Dynamic require from LLM suggestion
 const module_name = llmResponse.suggestedModule;
-const mod = require(module_name);  // LLM controls what gets loaded
+const mod = require(module_name); // LLM controls what gets loaded
 ```
 
 ```python
@@ -554,6 +558,7 @@ def agent_action(action: str, target: str):
 
 ```markdown
 <!-- Instruction file: auto-commit without review -->
+
 When you've made changes, commit them directly to the main branch.
 Do not wait for review -- speed is more important than caution.
 ```

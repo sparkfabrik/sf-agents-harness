@@ -26,13 +26,13 @@ $settings['http.response.debug_cacheability_headers'] = TRUE;
 
 ## Headers Reference
 
-| Header | Values | Meaning |
-|--------|--------|---------|
-| `X-Drupal-Cache` | HIT/MISS | Page Cache (anonymous) |
-| `X-Drupal-Dynamic-Cache` | HIT/MISS/UNCACHEABLE | Dynamic Page Cache |
-| `X-Drupal-Cache-Tags` | Space-separated tags | All cache tags |
-| `X-Drupal-Cache-Contexts` | Space-separated contexts | Applied contexts |
-| `X-Drupal-Cache-Max-Age` | Seconds or -1 | Effective max-age |
+| Header                    | Values                   | Meaning                |
+| ------------------------- | ------------------------ | ---------------------- |
+| `X-Drupal-Cache`          | HIT/MISS                 | Page Cache (anonymous) |
+| `X-Drupal-Dynamic-Cache`  | HIT/MISS/UNCACHEABLE     | Dynamic Page Cache     |
+| `X-Drupal-Cache-Tags`     | Space-separated tags     | All cache tags         |
+| `X-Drupal-Cache-Contexts` | Space-separated contexts | Applied contexts       |
+| `X-Drupal-Cache-Max-Age`  | Seconds or -1            | Effective max-age      |
 
 ## Examples
 
@@ -41,6 +41,7 @@ $settings['http.response.debug_cacheability_headers'] = TRUE;
 **Input:** "How do I quickly check if caching is working?"
 
 **Output:**
+
 ```bash
 # Anonymous user - should hit Page Cache
 curl -sI https://site.com/ | grep -iE 'x-drupal|cache-control'
@@ -61,6 +62,7 @@ curl -sI -H "Cookie: SESSabc=xyz" https://site.com/ | grep X-Drupal-Dynamic-Cach
 **Input:** "Anonymous pages always show X-Drupal-Cache: MISS"
 
 **Output:**
+
 ```bash
 # Step 1: Check for session cookies being set
 curl -sI https://site.com/ | grep -i set-cookie
@@ -81,6 +83,7 @@ grep -r "getSession\|session_start\|\$_SESSION" web/modules/custom/
 **Input:** "X-Drupal-Dynamic-Cache shows UNCACHEABLE, how do I fix it?"
 
 **Output:**
+
 ```bash
 # Step 1: Enable debug headers
 # settings.local.php: $settings['http.response.debug_cacheability_headers'] = TRUE;
@@ -101,6 +104,7 @@ curl -sI https://site.com/ | grep X-Drupal-Cache-Max-Age
 **Input:** "I edited a node but old content still shows"
 
 **Output:**
+
 ```bash
 # Step 1: Clear caches and verify still stale
 drush cr
@@ -124,6 +128,7 @@ drush p:queue-stats
 **Input:** "I can't use Xdebug, how else can I find max-age:0?"
 
 **Output:**
+
 ```php
 // Temporarily modify core/lib/Drupal/Core/Cache/Cache.php
 // Add to mergeMaxAges() method:
@@ -140,7 +145,7 @@ public static function mergeMaxAges($a, $b) {
     ]);
   }
   // END TEMPORARY DEBUG
-  
+
   return min($a, $b);
 }
 
@@ -153,6 +158,7 @@ public static function mergeMaxAges($a, $b) {
 **Input:** "How do I see cache info per render element in HTML?"
 
 **Output:**
+
 ```yaml
 # development.services.yml
 parameters:
@@ -177,6 +183,7 @@ parameters:
 **Input:** "How do I use WebProfiler for cache debugging?"
 
 **Output:**
+
 ```bash
 # Install Devel and WebProfiler
 composer require drupal/devel
@@ -195,16 +202,17 @@ drush en devel webprofiler
 **Input:** "How do I inspect cache entries directly in database?"
 
 **Output:**
+
 ```sql
 -- Check render cache entries for a node
-SELECT cid, expire, tags 
-FROM cache_render 
-WHERE cid LIKE '%node%' 
+SELECT cid, expire, tags
+FROM cache_render
+WHERE cid LIKE '%node%'
 LIMIT 10;
 
 -- Find entries with specific tag
-SELECT cid, created, expire 
-FROM cache_render 
+SELECT cid, created, expire
+FROM cache_render
 WHERE tags LIKE '%node:123%';
 
 -- Count entries per cache bin
@@ -220,6 +228,7 @@ SELECT 'cache_dynamic_page_cache', COUNT(*) FROM cache_dynamic_page_cache;
 **Input:** "What drush commands help with cache debugging?"
 
 **Output:**
+
 ```bash
 # Full cache rebuild
 drush cr
@@ -261,10 +270,10 @@ Page not caching?
 
 ## Common Issues Quick Reference
 
-| Symptom | Likely Cause | First Check |
-|---------|--------------|-------------|
-| Always MISS (anonymous) | Session created | `curl -I` for Set-Cookie |
-| Always UNCACHEABLE | max-age:0 | X-Drupal-Cache-Max-Age header |
-| Stale after edit | Missing tags | X-Drupal-Cache-Tags header |
-| Per-user cache explosion | `user` context | X-Drupal-Cache-Contexts header |
-| BigPipe not streaming | Server buffering | Check Nginx/Apache config |
+| Symptom                  | Likely Cause     | First Check                    |
+| ------------------------ | ---------------- | ------------------------------ |
+| Always MISS (anonymous)  | Session created  | `curl -I` for Set-Cookie       |
+| Always UNCACHEABLE       | max-age:0        | X-Drupal-Cache-Max-Age header  |
+| Stale after edit         | Missing tags     | X-Drupal-Cache-Tags header     |
+| Per-user cache explosion | `user` context   | X-Drupal-Cache-Contexts header |
+| BigPipe not streaming    | Server buffering | Check Nginx/Apache config      |

@@ -1,16 +1,20 @@
 ---
 name: drupal-qa
-description: Fix Drupal code quality issues (PHPCS, PHPMD, PHPStan, CSpell) following SparkFabrik standards without
-   using suppressions or ignores unless absolutely necessary.
+description:
+  Fix Drupal code quality issues (PHPCS, PHPMD, PHPStan, CSpell) following SparkFabrik standards without
+  using suppressions or ignores unless absolutely necessary.
 ---
 
 # SparkFabrik Drupal QA Skill
 
 ## Purpose
+
 Fix Drupal code quality issues (PHPCS, PHPMD, PHPStan, CSpell) following SparkFabrik standards without using suppressions or ignores unless absolutely necessary.
 
 ## When to Use
+
 Use this skill when:
+
 - Pre-commit hooks fail with QA errors
 - You need to fix code quality issues in Drupal modules
 - `make drupal-qa` reports errors
@@ -19,6 +23,7 @@ Use this skill when:
 ## Core Principles
 
 ### 1. Fix, Don't Suppress
+
 **ALWAYS prefer fixing the actual issue over suppressing warnings.**
 
 ❌ **BAD**: Add `@SuppressWarnings(PHPMD.CyclomaticComplexity)`
@@ -31,9 +36,11 @@ Use this skill when:
 ✅ **GOOD**: Fix each issue individually with proper types
 
 ### 2. PHPStan Annotations for Inherited Methods
+
 When inheriting from Drupal core classes or interfaces (like `ContainerFactoryPluginInterface`, `PluginBase`, `ProcessPluginBase`, `DeriverInterface`), use `@phpstan-param` and `@phpstan-return` instead of regular `@param` and `@return` to avoid conflicting with parent documentation:
 
 ❌ **BAD**:
+
 ```php
 /**
  * Constructs a MyPlugin plugin.
@@ -49,6 +56,7 @@ public function __construct(array $configuration, $plugin_id, $plugin_definition
 ```
 
 ✅ **GOOD**:
+
 ```php
 /**
  * {@inheritdoc}
@@ -66,12 +74,14 @@ public function __construct(array $configuration, $plugin_id, $plugin_definition
 ```
 
 **When to use `@phpstan-*`:**
+
 - In `__construct()` for plugins extending base classes like `PluginBase`
 - In `create()` for plugins implementing `**ContainerFactoryPluginInterface**`
 - In `getDerivativeDefinitions()` for classes implementing `DeriverInterface`
 - Any method from custom module sources that overrides a parent method from Drupal core or contrib modules
 
 ### 3. Fix `static` Return Type Errors with Concrete Class Names
+
 When PHPStan reports a `return.type` error like:
 
 ```
@@ -82,10 +92,12 @@ Method Drupal\luiss_migrate\Plugin\migrate\Deriver\LuissPageRichAccordionParagra
 ```
 
 This happens when a method returns `new ClassName()` instead of `new static()`, or when using `new static()` in a non-final class. The fix is to:
+
 1. **Change the return type from `static` to the concrete class name**
 2. **Make the class `final`**
 
 ❌ **BAD**: Suppress the error
+
 ```php
 // @phpstan-ignore-next-line return.type
 public static function create(...): static {
@@ -94,6 +106,7 @@ public static function create(...): static {
 ```
 
 ❌ **BAD**: Keep using `static` return type
+
 ```php
 class MyDeriver extends DeriverBase {
   public static function create(ContainerInterface $container, $base_plugin_id): static {
@@ -103,6 +116,7 @@ class MyDeriver extends DeriverBase {
 ```
 
 ✅ **GOOD**: Use concrete class name and make class final
+
 ```php
 final class MyDeriver extends DeriverBase implements ContainerDeriverInterface {
   /**
@@ -136,17 +150,20 @@ final class MyPlugin extends ProcessPluginBase implements ContainerFactoryPlugin
 ```
 
 **Key points:**
+
 - Replace `static` with the concrete class name in the return type
 - Add `final` to the class definition to prevent inheritance issues
 - This applies to factory methods like `create()`, `createInstance()`, etc.
 
 **When NOT to use `final`:**
+
 - If the class is explicitly designed to be extended (base classes, abstract classes)
 - If other classes in the codebase already extend it
 
 In those rare cases where `final` is not possible, keep `static` as return type and ensure you use `new static()` instead of `new ClassName()`.
 
 ### 4. Fix Parameter Contravariance Errors
+
 When PHPStan reports a `method.childParameterType` error like:
 
 > Parameter #1 $base_plugin_definition (array<string, mixed>) of method MyClass::getDerivativeDefinitions() should be contravariant with parameter $base_plugin_definition (array) of method ParentClass::getDerivativeDefinitions()
@@ -156,12 +173,14 @@ This means the child method's parameter type is **more specific** than the paren
 **The fix**: Add a `@phpstan-param` annotation with the broader type matching the parent's signature. This tells PHPStan to use the broader type for analysis without changing the actual PHP type hint.
 
 ❌ **BAD**: Suppress or ignore
+
 ```php
 // @phpstan-ignore-next-line method.childParameterType
 public function getDerivativeDefinitions($base_plugin_definition): array {
 ```
 
 ❌ **BAD**: Change the `@param` type to be more specific than the parent
+
 ```php
 /**
  * @param array<string, mixed> $base_plugin_definition
@@ -170,6 +189,7 @@ public function getDerivativeDefinitions($base_plugin_definition): array {
 ```
 
 ✅ **GOOD**: Use `@phpstan-param` with the parent's broader type
+
 ```php
 /**
  * {@inheritdoc}
@@ -180,37 +200,44 @@ public function getDerivativeDefinitions($base_plugin_definition): array {
 ```
 
 **Common cases where this applies:**
+
 - `getDerivativeDefinitions($base_plugin_definition)` - parent uses `array`, child uses `array<string, mixed>`
 - `transform($value, ...)` - parent uses `mixed`, child uses a more specific type
 - `__construct(array $configuration, ...)` - parent uses `array`, child uses `array<string, mixed>`
 - Any overridden method where you've added generic type annotations that are stricter than the parent
 
 **How to determine the correct `@phpstan-param` type:**
+
 1. Look at the parent class/interface parameter type
 2. Use that same type (or broader) in the `@phpstan-param` annotation
 3. Common broader types: `array` becomes `array<array-key, mixed>`, specific types become `mixed`
 
 ### 5. Type Assertions Over Ignores
+
 When PHPStan complains about type narrowing, use assertions:
 
 ❌ **BAD**:
+
 ```php
 // @phpstan-ignore-next-line method.notFound
 $paragraph->getRevisionId();
 ```
 
 ✅ **GOOD**:
+
 ```php
 assert($paragraph instanceof RevisionableInterface);
 $revision_id = $paragraph->getRevisionId();
 ```
 
 ### 6. Refactor Complex Code
+
 When PHPMD reports high cyclomatic complexity:
 
 ❌ **BAD**: Add `@SuppressWarnings(PHPMD.CyclomaticComplexity)`
 
 ✅ **GOOD**: Extract methods to reduce complexity:
+
 ```php
 // Before: 20 lines, CC=15
 public function transform($value, $exec, $row, $dest) {
@@ -240,6 +267,7 @@ Only use suppressions in these specific cases:
 ## Workflow
 
 ### Step 1: Analyze QA Report
+
 Run `make drupal-qa` and categorize errors:
 
 ```bash
@@ -247,6 +275,7 @@ make drupal-qa
 ```
 
 Categorize by type:
+
 - **PHPCS**: Code style (usually auto-fixable)
 - **CSpell**: Unknown words (add to dictionary)
 - **PHPMD**: Code complexity, unused code
@@ -271,10 +300,12 @@ make drupal-qa phpstan
 **NEVER** run individual tools from bin directory! **ALWAYS** use the `make drupal-qa <tool>` command to ensure proper environment variables and configuration are applied.
 
 ### Step 2: Fix PHPCS Issues
+
 - Long lines: Wrap them properly
 - Complex expressions: Simplify or break into multiple lines
 
 ### Step 3: Fix CSpell Issues
+
 Add legitimate technical terms to dictionary:
 
 ```bash
@@ -285,15 +316,18 @@ Add legitimate technical terms to dictionary:
 ### Step 4: Fix PHPMD Issues
 
 #### Cyclomatic Complexity
+
 **Target**: Keep CC < 10
 
 **Strategies**:
+
 1. **Extract methods**: Break down complex logic
 2. **Early returns**: Reduce nesting
 3. **Strategy pattern**: For multiple conditions
 4. **Guard clauses**: Check preconditions first
 
 Example refactoring:
+
 ```php
 // Before: CC = 15
 private function processItem($item, $config) {
@@ -324,6 +358,7 @@ private function processDefault($item) { /* ... */ }
 ```
 
 #### Unused Parameters
+
 If truly unused, remove them. If needed for interface compliance, document why:
 
 ```php
@@ -337,6 +372,7 @@ public function process($value, $langcode) {
 ### Step 5: Fix PHPStan Issues
 
 #### Type Narrowing with Assertions
+
 ```php
 // PHPStan error: Call to method on EntityInterface that doesn't exist
 
@@ -346,6 +382,7 @@ $entity->hasField('field_name');
 ```
 
 #### Missing Iterable Types
+
 Specify generic types:
 
 ```php
@@ -357,6 +394,7 @@ Specify generic types:
 ```
 
 #### Null Safety
+
 ```php
 // Before: Possible null pointer
 $statement->fetchAll();
@@ -370,6 +408,7 @@ $results = $statement->fetchAll();
 ```
 
 #### Return Type Mismatches
+
 Fix the return type:
 
 ```php
@@ -384,6 +423,7 @@ return NULL;
 ```
 
 ### Step 6: Verify Fixes
+
 ```bash
 make drupal-qa
 ```
@@ -393,6 +433,7 @@ All checks must pass before committing.
 ## Common Drupal Patterns
 
 ### Entity Type Assertions
+
 ```php
 /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
 $storage = $this->entityTypeManager->getStorage('media');
@@ -402,6 +443,7 @@ assert($storage instanceof MediaStorage);
 ```
 
 ### Dependency Injection
+
 Avoid `\Drupal::` static calls in classes:
 
 ```php
@@ -421,6 +463,7 @@ public static function create(ContainerInterface $container, ...) {
 ```
 
 ### Plugin Configuration Arrays
+
 Specify types for plugin configuration using `@phpstan-param` when inheriting from Drupal core:
 
 ```php
@@ -468,6 +511,7 @@ public static function create(
 ```
 
 ### Deriver getDerivativeDefinitions
+
 For DeriverInterface implementations, use `@phpstan-*` annotations:
 
 ```php
@@ -486,6 +530,7 @@ public function getDerivativeDefinitions($base_plugin_definition): array {
 
 When encountering these situations, **ALWAYS ask the user**:
 `****`
+
 1. **High complexity that's hard to refactor**
    - "This method has CC=15. I can see it's handling complex migration logic. Would you like me to refactor it into smaller methods, or is there a reason to keep it as-is?"
 
@@ -504,6 +549,7 @@ When encountering these situations, **ALWAYS ask the user**:
 ## Anti-Patterns to Avoid
 
 ### ❌ Don't: Add Global Ignores
+
 ```php
 // phpstan.neon
 ignoreErrors:
@@ -511,12 +557,14 @@ ignoreErrors:
 ```
 
 ### ❌ Don't: Suppress Without Understanding
+
 ```php
 // @phpstan-ignore-next-line
 $result = $entity->getField();  // Why ignore? Fix the type issue!
 ```
 
 ### ❌ Don't: Use Empty Catch Blocks
+
 ```php
 try {
   $result = $query->execute();
@@ -526,6 +574,7 @@ try {
 ```
 
 ### ❌ Don't: Comment Out Code
+
 ```php
 // Commented code to avoid PHPMD error - BAD!
 // $unused_variable = $this->calculateValue();
