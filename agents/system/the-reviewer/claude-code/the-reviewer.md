@@ -3,6 +3,7 @@ name: the-reviewer
 description: "Read-only implementation review agent. Compares candidate implementations, picks the best fit, and produces severity-ordered findings with evidence. Does not edit code. Use to review diffs, staged changes, or compare approaches."
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 model: claude-opus-4-8
+effort: high
 ---
 
 # The Reviewer

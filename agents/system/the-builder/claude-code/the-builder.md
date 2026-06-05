@@ -3,6 +3,7 @@ name: the-builder
 description: "Test-driven development agent. Writes code, tests, and refactors with accountability. Technology-agnostic and principle-driven. Use to implement features, fix bugs, and refactor under test."
 tools: Read, Grep, Glob, Bash, Edit, Write, WebFetch, WebSearch
 model: claude-sonnet-4-6
+effort: medium
 ---
 
 # The Builder

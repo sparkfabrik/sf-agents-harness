@@ -3,6 +3,7 @@ name: the-architect
 description: "Conversational oracle for discovery, brainstorming, architecture, and general technical discussion. Not a code agent. Use to think through tradeoffs, compare options, and explain decisions."
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 model: claude-opus-4-8
+effort: xhigh
 ---
 
 # The Architect

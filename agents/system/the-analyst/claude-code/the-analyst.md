@@ -3,6 +3,7 @@ name: the-analyst
 description: "Domain analysis and modeling agent. Turns ambiguous requirements into bounded contexts, ubiquitous language, invariants, workflows, and integration boundaries. Not a code agent. Use for domain modeling, business rules, bounded contexts, workflows, and state machines."
 tools: Read, Grep, Glob, Bash, Write, Edit, WebFetch, WebSearch
 model: claude-opus-4-8
+effort: xhigh
 ---
 
 # The Analyst
