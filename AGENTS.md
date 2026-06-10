@@ -12,6 +12,7 @@ This content is largely AI-generated and experimental.
 .
 ├── agents/           # Agent definitions (.agent.md files)
 ├── skills/           # Agent Skills folders (each with SKILL.md and optional bundled assets)
+├── provisioners/     # Executable scripts for CLI-generated tool integrations (not static files)
 ```
 
 ## Distribution
@@ -37,6 +38,17 @@ sjust sf-agents-status           # show installed resources and update status
 
 The sync is SHA-tracked via a manifest at `~/.cache/sparkdock/sf-skills-manifest.json`.
 Local modifications are detected and preserved unless `--force` is used.
+
+### Provisioners
+
+Some tools ship their agent integration inside a CLI binary and generate it on
+demand instead of distributing static files. Vendoring a snapshot of that output
+would drift from the installed CLI. For these, `provisioners/<tool>.sh` generates
+the integration from the locally installed CLI on every sync. After the file copy,
+the sparkdock runner executes each provisioner's `sync` verb; `sf-harness-status`
+runs `status`. See `provisioners/README.md` for the contract. The `openspec.sh`
+provisioner installs OpenSpec skills and `/opsx:*` commands globally for Claude
+Code and OpenCode this way.
 
 ### Implications for contributors
 
