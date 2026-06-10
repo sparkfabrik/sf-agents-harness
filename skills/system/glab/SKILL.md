@@ -136,6 +136,8 @@ When referencing resources from **multiple projects** in the same description or
 
 This is especially important for **cross-project references**. A bare `#42` or short `project#42` only resolves inside the originating project and will not render as a link elsewhere. When the issue or MR lives in a _different_ project than the one you are writing in, always use the full namespace path, including any subgroups: `group/subgroup/project#123`. For example, to reference the platform-team board from a code repository, write `sparkfabrik-innovation-team/board#4379`, never a bare `board#4379` or `#4379`. Apply this in prose and in footers alike (`Closes:`, `Refs:`).
 
+**Bare, not backticked.** A reference only autolinks when written bare. Wrapping it in backticks renders it as inline code, not a link, so keep file paths, flags, and identifiers in backticks but leave issue and merge request references bare. A GitHub-style reference such as `owner/repo#12` is not a GitLab project path and will not autolink on GitLab at all; use an explicit markdown link to the GitHub URL instead.
+
 This rule applies **only to written content** (descriptions, comments, closing keywords). CLI arguments like `glab issue view 42` target the current project implicitly and do not need qualification.
 
 ### Write in plain, professional prose
@@ -209,7 +211,7 @@ This applies to **every** piece of content the agent creates, regardless of leng
 > )"
 > ```
 
-> **Issue auto-linking:** GitLab renders bare `#N` as a clickable link to issue N. Use backticks (`` `#18` ``) when referring to issue numbers as text (examples, tables, logs). Leave `#N` bare only when it should link to an actual issue (e.g., `Closes #42`).
+> **Issue auto-linking:** GitLab renders a bare reference as a clickable link, but a backticked one renders as inline code and does not link. Use backticks when referring to a number as text (examples, tables, logs), and leave it bare when it should link to an actual issue (e.g., `Closes #42`). See "Fully-qualified references" above for the full rule, including cross-project paths and GitHub-style refs.
 
 ---
 
