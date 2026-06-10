@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # OpenSpec provisioner — installs OpenSpec skills and commands globally for
-# Claude Code and OpenCode, keeping them in sync with the installed CLI.
+# Claude Code, keeping them in sync with the installed CLI.
 #
 # OpenSpec skills/commands are NOT vendored as static files: their bodies are
 # compiled into the `openspec` binary and change between versions. Vendoring a
@@ -12,10 +12,11 @@ set -euo pipefail
 # on every sync, so the skills always match the binary — zero drift.
 #
 # Strategy: generate into a staging workspace under the cache dir (so the
-# OpenSpec workspace, which `init`/`update` require, never pollutes $HOME),
-# then symlink the generated skills and commands into each tool's global
-# directory. Symlinks mean a later `openspec update` of the staging area is
-# picked up with no redeploy.
+# OpenSpec workspace, which `init`/`update` require, never pollutes $HOME and
+# the generated AGENTS.md/CLAUDE.md instruction files never overwrite the
+# user's global ones), then symlink the generated skills and commands into
+# Claude Code's global directories. Symlinks mean a later `openspec update` of
+# the staging area is picked up with no redeploy.
 #
 # Contract (shared by all harness provisioners):
 #   sync       generate + (re)link into global tool dirs. Idempotent.
@@ -33,23 +34,20 @@ SCRIPT_NAME="openspec"
 
 # --- Configuration (env-overridable, mainly for tests) ---
 
-# Staging workspace: holds the OpenSpec workspace + generated .claude/.opencode
-# trees. Lives in cache, never in $HOME.
+# Staging workspace: holds the OpenSpec workspace + generated .claude tree.
+# Lives in cache, never in $HOME.
 OPENSPEC_STAGING="${OPENSPEC_STAGING:-${HOME}/.cache/sparkdock/openspec}"
 
-# Tools to generate integration for (OpenSpec --tools names).
-OPENSPEC_TOOLS="${OPENSPEC_TOOLS:-claude,opencode}"
+# Tool to generate integration for (OpenSpec --tools name).
+OPENSPEC_TOOLS="${OPENSPEC_TOOLS:-claude}"
 
-# Global target directories per tool.
+# Global target directories for Claude Code.
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-${HOME}/.claude/skills}"
 CLAUDE_COMMANDS_DIR="${CLAUDE_COMMANDS_DIR:-${HOME}/.claude/commands}"
-OPENCODE_SKILLS_DIR="${OPENCODE_SKILLS_DIR:-${HOME}/.config/opencode/skills}"
-OPENCODE_COMMANDS_DIR="${OPENCODE_COMMANDS_DIR:-${HOME}/.config/opencode/commands}"
 
 # Naming markers used to recognize resources owned by OpenSpec.
-SKILL_PREFIX="openspec-"   # generated skill folder prefix (both tools)
+SKILL_PREFIX="openspec-"   # generated skill folder prefix
 CLAUDE_CMD_DIR_NAME="opsx"  # Claude commands live in a nested opsx/ dir
-OPENCODE_CMD_PREFIX="opsx-" # OpenCode commands are flat opsx-*.md files
 
 # --- Logging ---
 
@@ -116,11 +114,11 @@ unlink_skills() {
     done
 }
 
-# --- Tool deployers ---
+# --- Claude Code deploy ---
 
 deploy_claude() {
     local stage="${OPENSPEC_STAGING}/.claude"
-    [[ -d "${stage}" ]] || { log_warn "no generated .claude tree, skipping Claude"; return 0; }
+    [[ -d "${stage}" ]] || { log_warn "no generated .claude tree, skipping"; return 0; }
     link_skills "${stage}/skills" "${CLAUDE_SKILLS_DIR}"
     # Commands: a single nested opsx/ directory.
     if [[ -d "${stage}/commands/${CLAUDE_CMD_DIR_NAME}" ]]; then
@@ -136,49 +134,6 @@ undeploy_claude() {
     [[ -L "${cmd}" ]] && rm -f "${cmd}" || true
 }
 
-deploy_opencode() {
-    local stage="${OPENSPEC_STAGING}/.opencode"
-    [[ -d "${stage}" ]] || { log_warn "no generated .opencode tree, skipping OpenCode"; return 0; }
-    link_skills "${stage}/skills" "${OPENCODE_SKILLS_DIR}"
-    # Commands: flat opsx-*.md files.
-    if [[ -d "${stage}/commands" ]]; then
-        mkdir -p "${OPENCODE_COMMANDS_DIR}"
-        local f name count=0
-        for f in "${stage}/commands/${OPENCODE_CMD_PREFIX}"*.md; do
-            [[ -f "${f}" ]] || continue
-            name="$(basename "${f}")"
-            link_one "${f}" "${OPENCODE_COMMANDS_DIR}/${name}"
-            count=$((count + 1))
-        done
-        log_info "linked ${count} commands -> ${OPENCODE_COMMANDS_DIR}"
-    fi
-}
-
-undeploy_opencode() {
-    unlink_skills "${OPENCODE_SKILLS_DIR}"
-    local l
-    [[ -d "${OPENCODE_COMMANDS_DIR}" ]] || return 0
-    for l in "${OPENCODE_COMMANDS_DIR}/${OPENCODE_CMD_PREFIX}"*.md; do
-        [[ -L "${l}" ]] || continue
-        case "$(readlink "${l}")" in
-            "${OPENSPEC_STAGING}"/*) rm -f "${l}" ;;
-        esac
-    done
-}
-
-# Run a deployer function for each configured tool.
-for_each_tool() {
-    local action="$1" tool
-    IFS=',' read -ra tools <<< "${OPENSPEC_TOOLS}"
-    for tool in "${tools[@]}"; do
-        case "${tool}" in
-            claude) "${action}_claude" ;;
-            opencode) "${action}_opencode" ;;
-            *) log_warn "unsupported tool '${tool}', skipping" ;;
-        esac
-    done
-}
-
 # --- Verbs ---
 
 cmd_sync() {
@@ -188,7 +143,7 @@ cmd_sync() {
     fi
     log_info "openspec $(cli_version)"
     generate_staging
-    for_each_tool deploy
+    deploy_claude
     log_info "sync complete"
 }
 
@@ -199,17 +154,14 @@ cmd_status() {
     fi
     log_info "CLI version: $(cli_version)"
     log_info "staging: ${OPENSPEC_STAGING}"
-    local claude_skills=0 opencode_skills=0
+    local claude_skills=0
     [[ -d "${CLAUDE_SKILLS_DIR}" ]] && claude_skills=$(find "${CLAUDE_SKILLS_DIR}" -maxdepth 1 -type l -name "${SKILL_PREFIX}*" 2>/dev/null | wc -l | tr -d ' ')
-    [[ -d "${OPENCODE_SKILLS_DIR}" ]] && opencode_skills=$(find "${OPENCODE_SKILLS_DIR}" -maxdepth 1 -type l -name "${SKILL_PREFIX}*" 2>/dev/null | wc -l | tr -d ' ')
     log_info "Claude: ${claude_skills} skills linked"
-    log_info "OpenCode: ${opencode_skills} skills linked"
 }
 
 cmd_uninstall() {
-    log_info "removing OpenSpec symlinks from global tool dirs"
+    log_info "removing OpenSpec symlinks from Claude Code dirs"
     undeploy_claude
-    undeploy_opencode
     log_info "uninstall complete (staging workspace at ${OPENSPEC_STAGING} left intact)"
 }
 
@@ -218,12 +170,12 @@ usage() {
 Usage: openspec.sh [sync|status|uninstall]
 
   sync       Generate OpenSpec skills/commands from the installed CLI and link
-             them into the global Claude Code and OpenCode directories. Default.
+             them into the global Claude Code directories. Default.
   status     Show CLI version and how many skills are currently linked.
   uninstall  Remove the symlinks created by this provisioner.
 
 Environment overrides: OPENSPEC_STAGING, OPENSPEC_TOOLS, CLAUDE_SKILLS_DIR,
-CLAUDE_COMMANDS_DIR, OPENCODE_SKILLS_DIR, OPENCODE_COMMANDS_DIR.
+CLAUDE_COMMANDS_DIR.
 EOF
 }
 

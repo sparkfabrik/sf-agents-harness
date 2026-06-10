@@ -60,15 +60,14 @@ here, with no further sparkdock changes.
 
 | Script        | Tool     | What it installs                                               |
 | ------------- | -------- | -------------------------------------------------------------- |
-| `openspec.sh` | OpenSpec | OpenSpec skills + `/opsx:*` commands for Claude Code, OpenCode |
+| `openspec.sh` | OpenSpec | OpenSpec skills + `/opsx:*` commands for Claude Code |
 
 ### `openspec.sh`
 
 Generates OpenSpec skills and commands from the installed `openspec` CLI into a
-staging workspace under `~/.cache/sparkdock/openspec`, then symlinks them into:
-
-- Claude Code: `~/.claude/skills/openspec-*`, `~/.claude/commands/opsx`
-- OpenCode: `~/.config/opencode/skills/openspec-*`, `~/.config/opencode/commands/opsx-*.md`
+staging workspace under `~/.cache/sparkdock/openspec`, then symlinks them into
+Claude Code's global directories: `~/.claude/skills/openspec-*` and
+`~/.claude/commands/opsx`.
 
 Symlinks mean a later `openspec update` of the staging area is picked up with no
 redeploy. The CLI must be installed separately (via `sf-harness-upgrade`); if it

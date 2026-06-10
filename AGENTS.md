@@ -48,7 +48,7 @@ the integration from the locally installed CLI on every sync. After the file cop
 the sparkdock runner executes each provisioner's `sync` verb; `sf-harness-status`
 runs `status`. See `provisioners/README.md` for the contract. The `openspec.sh`
 provisioner installs OpenSpec skills and `/opsx:*` commands globally for Claude
-Code and OpenCode this way.
+Code this way.
 
 ### Implications for contributors
 
