@@ -13,6 +13,7 @@ This content is largely AI-generated and experimental.
 ├── agents/           # Agent definitions (.agent.md files)
 ├── skills/           # Agent Skills folders (each with SKILL.md and optional bundled assets)
 ├── provisioners/     # Executable scripts for CLI-generated tool integrations (not static files)
+├── hooks/            # Hook scripts deployed to workstations by provisioners
 ```
 
 ## Distribution
@@ -48,7 +49,9 @@ the integration from the locally installed CLI on every sync. After the file cop
 the sparkdock runner executes each provisioner's `sync` verb; `sf-harness-status`
 runs `status`. See `provisioners/README.md` for the contract. The `openspec.sh`
 provisioner installs OpenSpec skills and `/opsx:*` commands globally for Claude
-Code this way.
+Code this way, and deploys the `hooks/openspec-guard.sh` guard hook (registered
+in `~/.claude/settings.json`) that blocks OpenSpec usage outside an
+`openspec/`-initialized project.
 
 ### Implications for contributors
 

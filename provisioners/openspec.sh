@@ -31,6 +31,7 @@ set -euo pipefail
 # Usage: openspec.sh [sync|status|uninstall]
 
 SCRIPT_NAME="openspec"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- Configuration (env-overridable, mainly for tests) ---
 
@@ -44,6 +45,12 @@ OPENSPEC_TOOLS="${OPENSPEC_TOOLS:-claude}"
 # Global target directories for Claude Code.
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-${HOME}/.claude/skills}"
 CLAUDE_COMMANDS_DIR="${CLAUDE_COMMANDS_DIR:-${HOME}/.claude/commands}"
+CLAUDE_HOOKS_DIR="${CLAUDE_HOOKS_DIR:-${HOME}/.claude/hooks}"
+CLAUDE_SETTINGS="${CLAUDE_SETTINGS:-${HOME}/.claude/settings.json}"
+
+# Source of the guard hook, shipped alongside this provisioner in the repo.
+OPENSPEC_GUARD_SRC="${OPENSPEC_GUARD_SRC:-${SCRIPT_DIR}/../hooks/openspec-guard.sh}"
+GUARD_NAME="openspec-guard.sh"
 
 # Naming markers used to recognize resources owned by OpenSpec.
 SKILL_PREFIX="openspec-"   # generated skill folder prefix
@@ -58,6 +65,8 @@ log_error() { printf '  [%s] ERROR: %s\n' "${SCRIPT_NAME}" "$*" >&2; }
 # --- Helpers ---
 
 has_cli() { command -v openspec >/dev/null 2>&1; }
+
+has_jq() { command -v jq >/dev/null 2>&1; }
 
 cli_version() { openspec --version 2>/dev/null | head -1; }
 
@@ -134,6 +143,74 @@ undeploy_claude() {
     [[ -L "${cmd}" ]] && rm -f "${cmd}" || true
 }
 
+# --- Guard hook (Claude Code settings.json) ---
+#
+# Copies openspec-guard.sh into ~/.claude/hooks and registers it on the
+# UserPromptSubmit and PreToolUse events. The guard blocks OpenSpec slash
+# commands / CLI / skills when the cwd has no openspec/ directory. Registration
+# is idempotent: any prior openspec-guard entry is stripped before re-adding.
+
+# Edit settings.json in place with a jq program. Creates the file as {} if
+# missing; writes atomically.
+settings_edit() {
+    local prog="$1"; shift
+    local current tmp
+    if [[ -f "${CLAUDE_SETTINGS}" ]]; then
+        current="$(cat "${CLAUDE_SETTINGS}")"
+    else
+        current="{}"
+        mkdir -p "$(dirname "${CLAUDE_SETTINGS}")"
+    fi
+    tmp="$(mktemp)"
+    if printf '%s' "${current}" | jq "$@" "${prog}" >"${tmp}" 2>/dev/null; then
+        mv "${tmp}" "${CLAUDE_SETTINGS}"
+    else
+        rm -f "${tmp}"
+        log_warn "could not update ${CLAUDE_SETTINGS} (invalid JSON?) — skipping hook registration"
+        return 1
+    fi
+}
+
+deploy_hook() {
+    if ! has_jq; then
+        log_warn "jq not found — skipping guard hook registration"
+        return 0
+    fi
+    if [[ ! -f "${OPENSPEC_GUARD_SRC}" ]]; then
+        log_warn "guard source ${OPENSPEC_GUARD_SRC} not found — skipping hook"
+        return 0
+    fi
+    mkdir -p "${CLAUDE_HOOKS_DIR}"
+    cp -f "${OPENSPEC_GUARD_SRC}" "${CLAUDE_HOOKS_DIR}/${GUARD_NAME}"
+    chmod +x "${CLAUDE_HOOKS_DIR}/${GUARD_NAME}"
+
+    # Quoted command so a space in $HOME is handled by the hook shell.
+    local cmd="\"${CLAUDE_HOOKS_DIR}/${GUARD_NAME}\""
+    settings_edit '
+      def strip(ev): (ev // []) | map(select((.hooks // []) | any((.command // "") | test("openspec-guard\\.sh")) | not));
+      .UserPromptSubmit = (strip(.UserPromptSubmit) + [
+        { hooks: [ { type: "command", command: $cmd, timeout: 5, statusMessage: "Checking openspec..." } ] }
+      ])
+      | .PreToolUse = (strip(.PreToolUse) + [
+        { matcher: "Bash|Skill", hooks: [ { type: "command", command: $cmd, timeout: 5, statusMessage: "Checking openspec..." } ] }
+      ])
+    ' --arg cmd "${cmd}" \
+      && log_info "guard hook installed -> ${CLAUDE_HOOKS_DIR}/${GUARD_NAME} (UserPromptSubmit, PreToolUse)"
+}
+
+undeploy_hook() {
+    if has_jq && [[ -f "${CLAUDE_SETTINGS}" ]]; then
+        settings_edit '
+          def strip(ev): (ev // []) | map(select((.hooks // []) | any((.command // "") | test("openspec-guard\\.sh")) | not));
+          .UserPromptSubmit = strip(.UserPromptSubmit)
+          | .PreToolUse = strip(.PreToolUse)
+          | if (.UserPromptSubmit | length) == 0 then del(.UserPromptSubmit) else . end
+          | if (.PreToolUse | length) == 0 then del(.PreToolUse) else . end
+        ' && log_info "guard hook unregistered from ${CLAUDE_SETTINGS}"
+    fi
+    rm -f "${CLAUDE_HOOKS_DIR}/${GUARD_NAME}"
+}
+
 # --- Verbs ---
 
 cmd_sync() {
@@ -144,6 +221,7 @@ cmd_sync() {
     log_info "openspec $(cli_version)"
     generate_staging
     deploy_claude
+    deploy_hook
     log_info "sync complete"
 }
 
@@ -157,11 +235,17 @@ cmd_status() {
     local claude_skills=0
     [[ -d "${CLAUDE_SKILLS_DIR}" ]] && claude_skills=$(find "${CLAUDE_SKILLS_DIR}" -maxdepth 1 -type l -name "${SKILL_PREFIX}*" 2>/dev/null | wc -l | tr -d ' ')
     log_info "Claude: ${claude_skills} skills linked"
+    if [[ -f "${CLAUDE_HOOKS_DIR}/${GUARD_NAME}" ]]; then
+        log_info "guard hook: installed"
+    else
+        log_info "guard hook: not installed"
+    fi
 }
 
 cmd_uninstall() {
     log_info "removing OpenSpec symlinks from Claude Code dirs"
     undeploy_claude
+    undeploy_hook
     log_info "uninstall complete (staging workspace at ${OPENSPEC_STAGING} left intact)"
 }
 
@@ -169,13 +253,14 @@ usage() {
     cat <<EOF
 Usage: openspec.sh [sync|status|uninstall]
 
-  sync       Generate OpenSpec skills/commands from the installed CLI and link
-             them into the global Claude Code directories. Default.
-  status     Show CLI version and how many skills are currently linked.
-  uninstall  Remove the symlinks created by this provisioner.
+  sync       Generate OpenSpec skills/commands from the installed CLI, link them
+             into the global Claude Code directories, and install the guard
+             hook. Default.
+  status     Show CLI version, how many skills are linked, and hook state.
+  uninstall  Remove the symlinks and guard hook created by this provisioner.
 
 Environment overrides: OPENSPEC_STAGING, OPENSPEC_TOOLS, CLAUDE_SKILLS_DIR,
-CLAUDE_COMMANDS_DIR.
+CLAUDE_COMMANDS_DIR, CLAUDE_HOOKS_DIR, CLAUDE_SETTINGS, OPENSPEC_GUARD_SRC.
 EOF
 }
 

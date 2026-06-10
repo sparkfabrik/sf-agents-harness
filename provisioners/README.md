@@ -58,9 +58,9 @@ here, with no further sparkdock changes.
 
 ## Available provisioners
 
-| Script        | Tool     | What it installs                                               |
-| ------------- | -------- | -------------------------------------------------------------- |
-| `openspec.sh` | OpenSpec | OpenSpec skills + `/opsx:*` commands for Claude Code |
+| Script        | Tool     | What it installs                                                |
+| ------------- | -------- | --------------------------------------------------------------- |
+| `openspec.sh` | OpenSpec | OpenSpec skills + `/opsx:*` commands + guard hook for Claude Code |
 
 ### `openspec.sh`
 
@@ -72,6 +72,14 @@ Claude Code's global directories: `~/.claude/skills/openspec-*` and
 Symlinks mean a later `openspec update` of the staging area is picked up with no
 redeploy. The CLI must be installed separately (via `sf-harness-upgrade`); if it
 is absent, `sync` logs a hint and exits cleanly.
+
+It also installs a guard hook: `hooks/openspec-guard.sh` is copied to
+`~/.claude/hooks/` and registered in `~/.claude/settings.json` on the
+`UserPromptSubmit` and `PreToolUse` events. The guard blocks OpenSpec slash
+commands, the `openspec` CLI, and OpenSpec skills when the current directory has
+no `openspec/` folder. Registration is idempotent and preserves any other hooks;
+`uninstall` removes the entries and the script. Requires `jq` (skipped with a
+warning if absent).
 
 Run manually:
 
