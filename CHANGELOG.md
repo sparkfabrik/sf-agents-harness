@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-25]
+
+### Added
+
+- `security-assessment` skill: orchestrate a Vulnerability Assessment track (static code and dependency scanning, Docker scan containers, manual review) and a Penetration Testing track (live recon and exploitation, hardened Nuclei runner, Drupal runbook) into one standalone branded HTML report with per-check pass/fail evidence.
+
+### Removed
+
+- `code-security-audit` skill: replaced by `security-assessment`, which absorbs its scan workflow and stack references.
+
 ## [2026-07-23]
 
 ### Added

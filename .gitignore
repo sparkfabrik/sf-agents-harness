@@ -1,3 +1,8 @@
 skills/**/*-workspace/
 __pycache__/
 .tmp/
+
+# editor / local scan output
+.idea/
+nuclei-out/
+.security-assessment/

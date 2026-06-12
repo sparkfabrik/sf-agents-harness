@@ -9,10 +9,10 @@ Structured audit for AI agent configurations and LLM integration code. The skill
 discovers AI-related files and dependencies, reviews them against the OWASP Top
 10 for Agentic Applications (ASI01-ASI10), and produces a markdown report.
 
-This skill is **complementary** to the `code-security-audit` skill. That skill audits
-application code (SQL injection, XSS, dependency CVEs). This skill audits the AI
-integration layer: instruction files, tool configurations, prompt construction,
-and trust boundaries.
+This skill is **complementary** to the `security-assessment` skill. That skill audits
+application code and the live surface (SQL injection, XSS, dependency CVEs, DAST).
+This skill audits the AI integration layer: instruction files, tool configurations,
+prompt construction, and trust boundaries.
 
 **Primarily LLM-driven** -- automated tooling for agentic security is still
 nascent. The audit relies on structured manual review guided by reference files.
@@ -33,32 +33,32 @@ Scan the project to identify AI/agentic integration points. Read files directly
 
 Scan the project for known AI instruction file patterns:
 
-| Pattern | Tool / Purpose |
-|---------|---------------|
-| `.github/copilot-instructions.md` | GitHub Copilot instructions |
-| `AGENTS.md` | Multi-tool agent instructions |
-| `.cursorrules` | Cursor AI rules |
-| `.cursorignore` | Cursor AI ignore patterns |
-| `.opencode/` directory | OpenCode config and skills |
-| `.aider.conf.yml` | Aider configuration |
-| `.mcp.json`, `mcp.config.*` | MCP server configurations |
-| `**/SKILL.md` | Custom agent skills |
-| `**/prompts/**`, `**/*.prompt`, `**/*.prompt.md` | Prompt templates |
+| Pattern                                          | Tool / Purpose                |
+| ------------------------------------------------ | ----------------------------- |
+| `.github/copilot-instructions.md`                | GitHub Copilot instructions   |
+| `AGENTS.md`                                      | Multi-tool agent instructions |
+| `.cursorrules`                                   | Cursor AI rules               |
+| `.cursorignore`                                  | Cursor AI ignore patterns     |
+| `.opencode/` directory                           | OpenCode config and skills    |
+| `.aider.conf.yml`                                | Aider configuration           |
+| `.mcp.json`, `mcp.config.*`                      | MCP server configurations     |
+| `**/SKILL.md`                                    | Custom agent skills           |
+| `**/prompts/**`, `**/*.prompt`, `**/*.prompt.md` | Prompt templates              |
 
 ### LLM SDK dependency detection
 
 Check package manager files for LLM-related dependencies:
 
-| Dependency | Language | Indicates |
-|-----------|----------|-----------|
-| `openai` | Python / Node.js | OpenAI API integration |
-| `anthropic` | Python / Node.js | Anthropic API integration |
-| `langchain`, `langchain-*` | Python / Node.js | LangChain agent framework |
-| `llamaindex`, `llama-index` | Python | LlamaIndex RAG framework |
-| `crewai` | Python | CrewAI multi-agent framework |
-| `autogen`, `pyautogen` | Python | AutoGen multi-agent framework |
-| `drupal/ai`, `drupal/openai` | PHP (Composer) | Drupal AI modules |
-| `@modelcontextprotocol/*` | Node.js | MCP SDK |
+| Dependency                   | Language         | Indicates                     |
+| ---------------------------- | ---------------- | ----------------------------- |
+| `openai`                     | Python / Node.js | OpenAI API integration        |
+| `anthropic`                  | Python / Node.js | Anthropic API integration     |
+| `langchain`, `langchain-*`   | Python / Node.js | LangChain agent framework     |
+| `llamaindex`, `llama-index`  | Python           | LlamaIndex RAG framework      |
+| `crewai`                     | Python           | CrewAI multi-agent framework  |
+| `autogen`, `pyautogen`       | Python           | AutoGen multi-agent framework |
+| `drupal/ai`, `drupal/openai` | PHP (Composer)   | Drupal AI modules             |
+| `@modelcontextprotocol/*`    | Node.js          | MCP SDK                       |
 
 ### Vector DB and RAG detection
 
@@ -84,18 +84,18 @@ credential patterns: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`,
 Based on discovery results, determine which OWASP Agentic Top 10 categories
 apply:
 
-| Category | Applies when |
-|----------|-------------|
-| ASI01 Behaviour Hijack | LLM integration code found (prompt construction) |
-| ASI02 Tool Misuse | MCP configs or tool definitions found |
-| ASI03 Identity & Privilege | LLM integration with auth/session context |
-| ASI04 Supply Chain | Instruction files, MCP configs, prompt templates |
-| ASI05 Code Execution | Agent with code generation/execution capability |
-| ASI06 Memory Poisoning | Vector DB dependencies or RAG pipelines |
-| ASI07 Inter-Agent Comms | Multi-agent framework dependencies (crewai, autogen) |
-| ASI08 Cascading Failures | LLM output used as input to another LLM/tool |
-| ASI09 Human-Agent Trust | HITL patterns in code (approval gates, confirmations) |
-| ASI10 Rogue Agents | Multi-agent framework or dynamic agent instantiation |
+| Category                   | Applies when                                          |
+| -------------------------- | ----------------------------------------------------- |
+| ASI01 Behaviour Hijack     | LLM integration code found (prompt construction)      |
+| ASI02 Tool Misuse          | MCP configs or tool definitions found                 |
+| ASI03 Identity & Privilege | LLM integration with auth/session context             |
+| ASI04 Supply Chain         | Instruction files, MCP configs, prompt templates      |
+| ASI05 Code Execution       | Agent with code generation/execution capability       |
+| ASI06 Memory Poisoning     | Vector DB dependencies or RAG pipelines               |
+| ASI07 Inter-Agent Comms    | Multi-agent framework dependencies (crewai, autogen)  |
+| ASI08 Cascading Failures   | LLM output used as input to another LLM/tool          |
+| ASI09 Human-Agent Trust    | HITL patterns in code (approval gates, confirmations) |
+| ASI10 Rogue Agents         | Multi-agent framework or dynamic agent instantiation  |
 
 ### Discovery report
 

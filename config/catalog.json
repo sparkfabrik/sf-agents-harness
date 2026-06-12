@@ -16,9 +16,6 @@
     "auto-format-doc": {
       "description": "Auto-format files with external formatters (Just)"
     },
-    "code-security-audit": {
-      "description": "Multi-phase security audit for web apps and APIs"
-    },
     "doc-coauthoring": {
       "description": "Co-author docs, proposals, and technical specs"
     },
@@ -39,6 +36,9 @@
     },
     "postmortem-writing": {
       "description": "Write blameless incident postmortems (timeline, RCA, actions)"
+    },
+    "security-assessment": {
+      "description": "Orchestrate VA + PT tracks into one HTML report"
     },
     "sf-create-agentsmd": {
       "description": "Generate and review AGENTS.md for projects"
