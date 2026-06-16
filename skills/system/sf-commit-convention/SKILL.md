@@ -110,12 +110,13 @@ MR/PR description body, never in the title.
 
 ## Write in plain prose, not caveman
 
-Commit messages (subject and body) and MR/PR titles are durable, outward-facing
-artifacts: write them in normal, complete English. An active terse output style
-overrides nothing here. A session-level reminder such as `CAVEMAN MODE ACTIVE`
-(drop articles, fragments OK, short synonyms) applies to your conversational
-replies, not to these artifacts. Write the commit and title in full prose
-regardless of the active style; do not run any command to toggle the style off.
+Commit messages (subject and body), MR/PR titles, and MR/PR descriptions are
+durable, outward-facing artifacts: write them in normal, complete English. An
+active terse output style overrides nothing here. A session-level reminder such
+as `CAVEMAN MODE ACTIVE` (drop articles, fragments OK, short synonyms) applies to
+your conversational replies, not to these artifacts. Write the commit, title, and
+description in full prose regardless of the active style; do not run any command
+to toggle the style off.
 
 ## Quick Example
 
