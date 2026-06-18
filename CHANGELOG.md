@@ -10,6 +10,9 @@ Changes are grouped by date.
 
 ### Added
 
+- `diagnose` skill (`skills/system/`): upstream-synced from [mattpocock/skills](https://github.com/mattpocock/skills) -- disciplined 6-phase diagnosis loop for hard bugs and performance regressions (build feedback loop → reproduce → hypothesise → instrument → fix → cleanup)
+- `tdd` skill (`skills/system/`): upstream-synced from [mattpocock/skills](https://github.com/mattpocock/skills) -- test-driven development with red-green-refactor vertical slices, integration-style tests through public interfaces
+- `improve-codebase-architecture` skill (`skills/system/`): upstream-synced from [mattpocock/skills](https://github.com/mattpocock/skills) -- find deepening opportunities to turn shallow modules into deep ones for testability and AI-navigability
 - `sf-commit-convention` skill (`skills/system/`): enforce SparkFabrik commit message and branch naming conventions -- adaptive format detection from git log history (conventional, legacy, Jira-style, custom) with most-recent-commit-wins for mixed logs and user prompt for unrecognizable histories, commit-msg hook error parsing for automatic format recovery, mandatory issue references in commit footers only (`Refs:`/`Closes:` trailers with fully qualified project path, never bare `#N` or in the subject line), branch naming (`feat/<issue>-<desc>`, `fix/<issue>-<desc>`, etc.), lowercase `Assisted-by` AI trailer on every commit, and non-interactive git operation guidance (avoid `-i`/`--interactive` flags, editors, and TTY-dependent commands)
 - `skill-creator` custom section: document `opencode run` as an alternative to `claude -p` for running skill evals, including OpenCode JSON event schema and skill-trigger detection pattern; enforce `github-copilot/gpt-4.1` as default model for evals to avoid premium model costs
 - `gh` and `glab` skills: warn about accidental issue auto-linking -- wrap `#N` in backticks when used as examples rather than intentional references

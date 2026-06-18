@@ -36,6 +36,15 @@
     },
     "skill-creator": {
       "description": "Create, iterate, and benchmark agent skills"
+    },
+    "diagnose": {
+      "description": "Disciplined diagnosis loop for hard bugs and regressions"
+    },
+    "tdd": {
+      "description": "Test-driven development with red-green-refactor loop"
+    },
+    "improve-codebase-architecture": {
+      "description": "Architecture deepening for testability and AI-navigability"
     }
   },
   "agents": {
