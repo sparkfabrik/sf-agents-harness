@@ -54,6 +54,22 @@ GITLAB_HOST=gitlab.example.com glab mr list -R team/project
 glab milestone list -R gitlab.example.com/team/project --project team/project
 ```
 
+### Targeting a host different from the repo's git remote (use `--hostname` for `glab api`)
+
+Inside a git repo, `glab` resolves the host from the repo's git remote, and that resolution can **override `GITLAB_HOST`**. So when you are inside a repo on host A (for example a self-hosted instance) but need to query host B (for example `gitlab.com`), `GITLAB_HOST=B glab api ...` may silently still hit host A and return `404 Project Not Found` for a project that exists on B.
+
+For `glab api`, pass the **`--hostname` flag** instead. It is authoritative: it beats both the repo remote and `GITLAB_HOST`.
+
+```bash
+# Inside a self-hosted repo, querying a public gitlab.com project: CORRECT
+glab api --hostname gitlab.com "projects/gitlab-org%2Fterraform-provider-gitlab/issues/6841"
+
+# GITLAB_HOST can lose to the repo remote for a cross-host api call: do NOT rely on it
+GITLAB_HOST=gitlab.com glab api "projects/gitlab-org%2Fterraform-provider-gitlab/..."   # may 404
+```
+
+Telltale sign you hit the wrong host: a `404 Project Not Found` for a project you know exists. It is easy to miss when your username exists on both instances, because `glab api user` then succeeds on either host and masks which one answered. Confirm the host with `glab api --hostname <host> user` (compare the returned user id), not just the username.
+
 ## Handling auth errors
 
 If any `glab` command fails with "Unauthenticated", "401", "403", or "connection refused", **stop immediately**. Do NOT work around auth failures with WebFetch, curl, or `gh`. Self-hosted GitLab instances are private -- those fallbacks will also fail.
