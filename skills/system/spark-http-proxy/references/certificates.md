@@ -18,11 +18,14 @@ spark-http-proxy generate-mkcert "myapp.spark.loc"
 spark-http-proxy generate-mkcert "*.project.spark.loc"
 ```
 
-`generate-mkcert` does everything: installs mkcert if missing (Homebrew on
-macOS), creates the certificate directory `~/.local/spark/http-proxy/certs`,
-writes the cert with a safe filename, and **restarts Traefik** so it loads
-immediately. No config file editing is needed — the Traefik entrypoint scans the
-certs directory and generates the TLS config (`/traefik/dynamic/auto-tls.yml`).
+`generate-mkcert` does everything: installs mkcert if missing (Homebrew on macOS,
+pacman on Arch; on other Linux distros it prints manual install steps), runs
+`mkcert -install` to add the local CA to the system trust store, creates the
+certificate directory `~/.local/spark/http-proxy/certs`, writes the cert with a
+safe filename, and **restarts Traefik** so it loads immediately. No config file
+editing is needed — the Traefik entrypoint scans the certs directory and
+generates the TLS config (`/traefik/dynamic/auto-tls.yml`). To check or remove
+mkcert, the certs, or the CA, see `uninstall.md`.
 
 ## The wildcard nesting gotcha
 

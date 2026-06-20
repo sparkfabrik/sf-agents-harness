@@ -53,6 +53,13 @@ it is available and invoke it directly rather than checking for it first.
 | Get trusted HTTPS / fix certificate warnings     | Run `generate-mkcert`          | `references/certificates.md`     |
 | Resolve `*.loc` (or other TLDs) on their machine | Run `configure-dns`            | `references/dns.md`              |
 | Fix "it's not working / not reachable"           | Walk the decision tree         | `references/troubleshooting.md`  |
+| Check dependencies, or uninstall / clean up      | Verify or remove the pieces    | `references/uninstall.md`        |
+
+Dependencies: Docker is required (the proxy is a Docker stack; `spark-http-proxy
+self-test` checks the daemon). `mkcert` is only needed for trusted HTTPS and is
+installed automatically by `generate-mkcert` — you rarely check it yourself. See
+`references/uninstall.md` for how to verify what is installed, where certificates
+and config live, and how to uninstall.
 
 ## The most common task: expose a container
 

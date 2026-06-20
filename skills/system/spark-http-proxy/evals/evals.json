@@ -1,0 +1,26 @@
+{
+  "skill_name": "spark-http-proxy",
+  "evals": [
+    {
+      "id": 0,
+      "name": "expose-drupal-with-https",
+      "prompt": "I'm working on a Drupal site for a client in this repo. The docker-compose.yml has a `web` service that serves the app on port 8080. I want to reach it at drupal.acme.spark.loc over trusted HTTPS while I develop locally. Set it up.",
+      "expected_output": "Edits the web service to add VIRTUAL_HOST=drupal.acme.spark.loc and VIRTUAL_PORT=8080, and generates a trusted certificate with the correct nested wildcard `*.acme.spark.loc` (not *.loc or *.spark.loc). Recreates the container and mentions DNS resolves via the built-in server.",
+      "files": ["docker-compose.yml"]
+    },
+    {
+      "id": 1,
+      "name": "troubleshoot-not-reachable",
+      "prompt": "My container starts fine and `docker ps` shows it running, but when I open https://api.myapp.spark.loc the browser just shows a 404 / connection refused. It has VIRTUAL_HOST set. dig @127.0.0.1 -p 19322 api.myapp.spark.loc returns 127.0.0.1. What's wrong and how do I fix it?",
+      "expected_output": "Recognizes DNS resolves but routing fails, so it walks the routing branch: checks the container is opted in, that join-networks bridged the network (recreate to re-trigger), and that VIRTUAL_PORT matches the real in-container port. Does not chase the DNS path since dig already works.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "guide-simple-expose",
+      "prompt": "I'm new here. How do I use spark-http-proxy to expose a local nginx container at nginx.spark.loc? Just walk me through it.",
+      "expected_output": "Guides the user: add VIRTUAL_HOST=nginx.spark.loc to the container (env var or docker run -e), start the proxy if needed, generate a *.spark.loc certificate for trusted HTTPS, and open the URL. Clear and beginner-friendly.",
+      "files": []
+    }
+  ]
+}
