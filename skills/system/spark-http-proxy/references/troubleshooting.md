@@ -27,7 +27,10 @@ result:
 
 ## Resolves but not reachable (404 / connection refused)
 
-Most common. Work down this list:
+Most common. **This is not a certificate problem** — a missing or mismatched
+certificate produces a TLS trust _warning_ on a page that still loads, never a
+404 or a refused connection. Do not chase the cert-nesting rule here; that lives
+under "Certificate untrusted or mismatched" below. Work down this list instead:
 
 1. **Container not opted in.** It needs `VIRTUAL_HOST` or a `traefik.*` label;
    the proxy ignores everything else (`exposedByDefault: false`). Confirm the
@@ -56,6 +59,10 @@ Most common. Work down this list:
    `HTTP_PROXY_DNS_TLDS=loc,dev spark-http-proxy start`.
 
 ## Certificate untrusted or mismatched
+
+The symptom here is a **browser TLS trust warning** ("not secure", `NET::ERR_CERT_*`)
+on a page that otherwise loads — not a 404 and not a refused connection. If the
+page does not load at all, it is a routing or DNS problem above, not this.
 
 1. Trusted cert never generated → run `spark-http-proxy generate-mkcert "*.spark.loc"`.
 2. Warning on a nested domain (`drupal.client.spark.loc`) while `*.spark.loc`
