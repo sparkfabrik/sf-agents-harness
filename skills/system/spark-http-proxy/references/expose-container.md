@@ -4,6 +4,11 @@ There are two ways to make a container reachable through the proxy. Both produce
 HTTP and HTTPS routes and both require nothing more than editing the container's
 definition — the proxy discovers the change automatically.
 
+> The Compose file may be named `compose.yaml`, `compose.yml`, or the legacy
+> `docker-compose.yml` / `docker-compose.yaml`. These are the same thing to Docker
+> Compose v2 — edit whichever file the project already has rather than creating a
+> second one.
+
 ## Path 1: `VIRTUAL_HOST` (the quick path)
 
 Add environment variables to the service. Best for the common case.
