@@ -68,7 +68,7 @@ that is expected and does not affect resolution.
 ```bash
 dig @127.0.0.1 -p 19322 myapp.spark.loc        # UDP
 dig @127.0.0.1 -p 19322 +tcp myapp.spark.loc   # TCP (Lima and other VMs)
-curl --dns-servers 127.0.0.1:19322 http://myapp.spark.loc
+curl --resolve myapp.spark.loc:80:127.0.0.1 http://myapp.spark.loc   # bypass system DNS
 ```
 
 A correct answer is an A record pointing at the target IP (`127.0.0.1` by

@@ -24,11 +24,12 @@
 | mkcert local CA          | `$(mkcert -CAROOT)`                                                                 |
 | Docker resources         | containers, the `traefik_dynamic`/metrics volumes, the `http-proxy_default` network |
 
-On a sparkdock-provisioned Mac the CLI comes from `/opt/sparkdock/http-proxy`
-(see `sparkdock.md`); a manual install via `install.sh` uses
-`~/.local/spark/http-proxy/src` instead. Note that on a Mac the next sparkdock
-provision will re-clone and re-symlink the CLI, so a manual uninstall is undone
-unless sparkdock is also adjusted.
+The CLI source depends on how it was installed (see `provisioning.md`): a
+sparkdock Mac uses `/opt/sparkdock/http-proxy`; the Linux provisioner drops just
+the `bin/spark-http-proxy` script at `/usr/local/bin` (no source tree) plus a
+compose file at `~/.local/spark/http-proxy/compose.yml`; a manual `install.sh`
+uses `~/.local/spark/http-proxy/src`. A manual uninstall on a provisioned machine
+is undone by the next provisioning run unless the provisioner is also adjusted.
 
 ## Uninstalling
 

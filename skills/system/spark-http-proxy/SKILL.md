@@ -18,17 +18,19 @@ development only, never a production Traefik setup.
 
 ## First, orient yourself
 
-SparkFabrik macOS workstations are provisioned by
-[sparkdock](https://github.com/sparkfabrik/sparkdock), which installs and starts
-`spark-http-proxy` and wires `*.loc` resolution automatically — so on a Mac assume
-the CLI is available and invoke it directly. On Linux it is not guaranteed (no
-sparkdock Linux path); fall back to the install steps below if it is missing. See
-`references/sparkdock.md` for what sparkdock sets up and how to update.
+SparkFabrik workstations are provisioned automatically, so the CLI is normally
+already installed: macOS by [sparkdock](https://github.com/sparkfabrik/sparkdock)
+and Linux (Arch and Debian/Ubuntu) by the archlinux-ansible-provisioner. Assume
+`spark-http-proxy` is available and invoke it directly. Two platform differences
+matter: the Linux provisioner installs the CLI but does **not** auto-start the
+proxy, and `*.loc` resolves to `127.0.0.1` on macOS but to the Docker bridge
+`172.17.0.1` on Linux. See `references/provisioning.md` for the full per-platform
+picture and how to update.
 
 1. **Is the proxy running?** Run `spark-http-proxy status`. If it is not running,
    `spark-http-proxy start`.
-2. **If the command is genuinely not found** (a Linux box or an unprovisioned
-   Mac), don't stop at "not installed" — give the user the install commands:
+2. **If the command is genuinely not found** (an unprovisioned machine), don't
+   stop at "not installed" — give the user the install commands:
 
    ```bash
    # One-liner installer
@@ -51,14 +53,14 @@ sparkdock Linux path); fall back to the install steps below if it is missing. Se
 3. **What does the user actually need?** Map it to one task below and read only
    the reference you need. Do not load every reference; each is self-contained.
 
-| The user wants to…                               | Do this                           | Read                             |
-| ------------------------------------------------ | --------------------------------- | -------------------------------- |
-| Make a container reachable at a domain           | Edit its `compose.yml` service    | `references/expose-container.md` |
-| Get trusted HTTPS / fix certificate warnings     | Run `generate-mkcert`             | `references/certificates.md`     |
-| Resolve `*.loc` (or other TLDs) on their machine | Run `configure-dns`               | `references/dns.md`              |
-| Fix "it's not working / not reachable"           | Walk the decision tree            | `references/troubleshooting.md`  |
-| Update the proxy on a company Mac                | `sjust http-proxy-install-update` | `references/sparkdock.md`        |
-| Check dependencies, or uninstall / clean up      | Verify or remove the pieces       | `references/uninstall.md`        |
+| The user wants to…                               | Do this                        | Read                             |
+| ------------------------------------------------ | ------------------------------ | -------------------------------- |
+| Make a container reachable at a domain           | Edit its `compose.yml` service | `references/expose-container.md` |
+| Get trusted HTTPS / fix certificate warnings     | Run `generate-mkcert`          | `references/certificates.md`     |
+| Resolve `*.loc` (or other TLDs) on their machine | Run `configure-dns`            | `references/dns.md`              |
+| Fix "it's not working / not reachable"           | Walk the decision tree         | `references/troubleshooting.md`  |
+| Understand how it's installed / update it        | Per-platform provisioner notes | `references/provisioning.md`     |
+| Check dependencies, or uninstall / clean up      | Verify or remove the pieces    | `references/uninstall.md`        |
 
 Dependencies: Docker is required (the proxy is a Docker stack; `spark-http-proxy
 self-test` checks the daemon). `mkcert` is only needed for trusted HTTPS and is
