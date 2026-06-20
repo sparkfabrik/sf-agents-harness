@@ -1,0 +1,23 @@
+[
+  {"query": "the web service in my docker-compose.yml needs to be reachable at drupal.acme.spark.loc over https while I develop, can you wire it up", "should_trigger": true},
+  {"query": "add a VIRTUAL_HOST to my nginx container so I can hit it at nginx.spark.loc instead of localhost:8080", "should_trigger": true},
+  {"query": "my container is running fine but https://api.myapp.spark.loc just gives a 404, and dig @127.0.0.1 -p 19322 resolves it ok. what's broken?", "should_trigger": true},
+  {"query": "chrome says not secure on myapp.spark.loc, how do I get a trusted cert for local dev", "should_trigger": true},
+  {"query": "i need drupal.client.spark.loc working locally with a trusted wildcard cert for the whole client.spark.loc set", "should_trigger": true},
+  {"query": "expose this go api that listens on 8090 under a clean local hostname instead of localhost:8090", "should_trigger": true},
+  {"query": "spark-http-proxy status shows nothing running, how do I bring it up and reach my app", "should_trigger": true},
+  {"query": "i added VIRTUAL_HOST to the service but traefik still isn't routing to the container, nothing shows on the http-proxy network", "should_trigger": true},
+  {"query": "how do I uninstall the local http proxy and remove the .loc resolver from my mac, and drop the mkcert CA", "should_trigger": true},
+  {"query": "new laptop provisioned by sparkdock, how do I check the local dev proxy is set up and expose my first project at app.spark.loc", "should_trigger": true},
+
+  {"query": "configure Traefik as the production ingress on our k8s cluster with Let's Encrypt and cert-manager", "should_trigger": false},
+  {"query": "set up an nginx reverse proxy in production to load balance three API backend servers", "should_trigger": false},
+  {"query": "my docker compose web service exits immediately with code 1 on startup, help me debug the container crash", "should_trigger": false},
+  {"query": "generate a Let's Encrypt wildcard certificate for *.example.com on our production load balancer", "should_trigger": false},
+  {"query": "set up local HTTPS for my Vite dev server on localhost:5173 with a self-signed cert", "should_trigger": false},
+  {"query": "debug why systemd-resolved keeps overwriting my /etc/resolv.conf and breaking my VPN DNS for company.internal", "should_trigger": false},
+  {"query": "write me a docker-compose.yml for a postgres + redis + node app stack with healthchecks", "should_trigger": false},
+  {"query": "our production Traefik dashboard shows 502s for the checkout service, what should I check", "should_trigger": false},
+  {"query": "add VIRTUAL_HOST entries to our jwilder nginx-proxy container on the staging server", "should_trigger": false},
+  {"query": "how do I add a custom domain to /etc/hosts pointing at a remote staging IP", "should_trigger": false}
+]
