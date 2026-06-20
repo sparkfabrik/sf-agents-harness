@@ -25,6 +25,9 @@
     "glab": {
       "description": "GitLab CLI (issues, MRs, pipelines, repos)"
     },
+    "mermaid-diagrams": {
+      "description": "Create clear Mermaid diagrams in Markdown docs"
+    },
     "playwright-cli": {
       "description": "Browser automation, testing, screenshots, scraping"
     },
