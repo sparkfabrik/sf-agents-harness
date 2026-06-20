@@ -18,7 +18,7 @@ description: >-
 A diagram earns its place only when it is **faster to understand than the prose it
 replaces**. A cluttered diagram is worse than no diagram: it costs the reader
 effort and gives little back. So the goal is never "draw everything" — it is to
-show *structure* at a glance and let surrounding prose, tables, or code carry the
+show _structure_ at a glance and let surrounding prose, tables, or code carry the
 detail. Every principle below serves that one goal.
 
 ## Workflow
@@ -32,7 +32,7 @@ detail. Every principle below serves that one goal.
 3. **Draft the structure**, then apply the design principles in order: kill the
    hairball, group, encode meaning, trim labels.
 4. **Render-verify.** Mermaid syntax breaks easily. Confirm it parses (see
-   *Render-verify* below) before handing it over — a diagram that does not render
+   _Render-verify_ below) before handing it over — a diagram that does not render
    is a hard failure, not a nitpick.
 5. **Write the legend.** Pair every non-trivial diagram with a short "Reading the
    diagram" paragraph in prose. Color and shape mean nothing to the reader unless
@@ -40,12 +40,12 @@ detail. Every principle below serves that one goal.
 
 ## Choosing the diagram type
 
-| Need to show | Type | Reference |
-| --- | --- | --- |
-| Components, dependencies, decisions, layered architecture | flowchart / graph | [references/flowchart.md](references/flowchart.md) |
-| Actors exchanging messages over time, API calls, protocols | sequence | [references/sequence.md](references/sequence.md) |
-| Data model: entities and relationships; OO classes; lifecycle states | ER / class / state | [references/data-models.md](references/data-models.md) |
-| System/container/context architecture at a defined zoom level | C4 / architecture | [references/architecture-c4.md](references/architecture-c4.md) |
+| Need to show                                                         | Type               | Reference                                                      |
+| -------------------------------------------------------------------- | ------------------ | -------------------------------------------------------------- |
+| Components, dependencies, decisions, layered architecture            | flowchart / graph  | [references/flowchart.md](references/flowchart.md)             |
+| Actors exchanging messages over time, API calls, protocols           | sequence           | [references/sequence.md](references/sequence.md)               |
+| Data model: entities and relationships; OO classes; lifecycle states | ER / class / state | [references/data-models.md](references/data-models.md)         |
+| System/container/context architecture at a defined zoom level        | C4 / architecture  | [references/architecture-c4.md](references/architecture-c4.md) |
 
 When unsure between flowchart and a specialized type, prefer the specialized one:
 a sequence diagram reads message flow far better than a flowchart of arrows, and
@@ -90,14 +90,14 @@ stroke.
 A reader decodes shape before they read text, so a misused shape actively
 misleads. Keep shapes meaningful and conventional:
 
-| Shape | Mermaid | Means |
-| --- | --- | --- |
-| Rectangle | `["..."]` | process, component, generic node |
-| Rounded / stadium | `(["..."])` | start / end / terminal |
+| Shape                   | Mermaid     | Means                                   |
+| ----------------------- | ----------- | --------------------------------------- |
+| Rectangle               | `["..."]`   | process, component, generic node        |
+| Rounded / stadium       | `(["..."])` | start / end / terminal                  |
 | Subroutine (double bar) | `[["..."]]` | module, library, package, sub-procedure |
-| Cylinder | `[("...")]` | datastore / database **only** |
-| Rhombus | `{"..."}` | decision / branch |
-| Hexagon | `{{"..."}}` | preparation / parameter |
+| Cylinder                | `[("...")]` | datastore / database **only**           |
+| Rhombus                 | `{"..."}`   | decision / branch                       |
+| Hexagon                 | `{{"..."}}` | preparation / parameter                 |
 
 The cylinder is the classic mistake: it reads as a database. Never use it for a
 code module, a service, or a package — use the subroutine shape `[[...]]` for a
@@ -110,7 +110,7 @@ key:
 
 - `-->` solid: the primary/default relationship (dependency, flow).
 - `-.->` dotted: a secondary or weaker relationship (optional, config-level, cross-cutting).
-- `==>` thick: a relationship of a different *kind* (e.g. a different mechanism, an emphasized path).
+- `==>` thick: a relationship of a different _kind_ (e.g. a different mechanism, an emphasized path).
 
 Label edges with the relationship (`-->|"depends on"|`). If you use more than one
 style, the prose legend must say what each means.
@@ -144,7 +144,7 @@ A diagram that does not parse is broken, and Mermaid is fussy. Before delivering
 - **Quote labels containing special characters.** Parentheses, `#`, `:`, `;`,
   `<`, `>`, quotes, and `&` inside an unquoted label break the parser. Wrap the
   label in double quotes: `node["text (with parens)"]`. Use `<br/>` for line
-  breaks and `&amp;`/`#quot;`-style entities only inside quoted strings.
+  breaks and `&amp;`/`&quot;`-style entities only inside quoted strings.
 - **Subgraph edges need IDs.** To draw an edge from a group, give the subgraph an
   id: `subgraph grp["Label"]` then `grp --> target`.
 - **`direction` inside subgraphs requires Mermaid ≥ 9.x.** GitHub and GitLab
@@ -203,8 +203,8 @@ graph TB
 
 **Reading the diagram.** Green = the compulsory `base`; blue group = v1 modules;
 grey dashed group = deferred; orange double-barred box = an external package (not a
-module of this system). Each group draws one edge to `base` meaning *every member
-depends on it*. Edges: solid = depends on, dotted = optional reference, thick =
+module of this system). Each group draws one edge to `base` meaning _every member
+depends on it_. Edges: solid = depends on, dotted = optional reference, thick =
 hard requirement.
 
 Six edges instead of a dozen, regions the eye can parse, shapes that mean what they

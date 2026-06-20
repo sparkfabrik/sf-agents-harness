@@ -2,21 +2,21 @@
   "skill_name": "mermaid-diagrams",
   "evals": [
     {
-      "id": 0,
+      "id": 1,
       "name": "fix-hairball-flowchart",
       "prompt": "This diagram in my ADR (doc/adr/0007-service-layers.md) is an unreadable mess — every service points at the shared core and it's just a tangle of crossing arrows. Clean it up so a reader can actually parse it. Here's the current block:\n\n```mermaid\ngraph TD\n  auth[\"auth-service\"]\n  billing[\"billing-service\"]\n  notify[\"notify-service\"]\n  search[\"search-service\"]\n  reporting[\"reporting-service\"]\n  core[\"core-lib shared utilities, config, logging\"]\n  pg[(\"postgres\")]\n  auth --> core\n  billing --> core\n  notify --> core\n  search --> core\n  reporting --> core\n  auth --> pg\n  billing --> pg\n  reporting --> pg\n  billing -.-> auth\n```\n\nWrite the improved markdown to doc/adr/0007-service-layers.md.",
       "expected_output": "A markdown file with a cleaner mermaid diagram: the five identical service-->core edges collapsed via a subgraph + single group edge, services grouped, postgres kept as a datastore, the billing-.->auth dependency preserved as a distinct edge, plus a prose 'reading the diagram' legend.",
       "files": []
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "architecture-from-description",
       "prompt": "I'm writing the README for our notification service. Add a diagram showing how the pieces fit together. The service has an HTTP API and a background worker; they share a Postgres database and a Redis queue. The worker calls two external providers, Twilio (SMS) and SendGrid (email). The API is called by our main web app. Put the diagram in README.md under a new '## Architecture' section.",
       "expected_output": "README.md with an Architecture section containing a mermaid diagram that groups internal components vs external providers, uses a datastore shape for Postgres/Redis, distinguishes internal services from external systems, labels the relationships, and is followed by a short legend.",
       "files": []
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "sequence-oauth-flow",
       "prompt": "Document the Google OAuth login flow in docs/auth.md. The flow: the browser hits our app's /login, the app redirects the browser to Google's consent screen, the user approves, Google redirects back to our /callback with a code, our app exchanges the code with Google for an access token, then creates a session and redirects the browser to the dashboard. Add a diagram and a couple sentences explaining it.",
       "expected_output": "docs/auth.md with a mermaid SEQUENCE diagram (not a flowchart) showing browser, app, and Google as participants with ordered request/response messages, autonumbered, plus a short prose explanation.",
