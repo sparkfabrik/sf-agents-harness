@@ -1,6 +1,6 @@
 ---
 name: gh
-description: 'How to use the GitHub CLI (gh) to work with GitHub issues, pull requests, Actions workflows, releases, and repositories. Use this skill whenever the user provides a URL containing "github.com" in the hostname, mentions pull requests, GitHub issues, GitHub Actions, or wants to interact with a GitHub remote. Also use this skill when the user mentions "gh", "PR", "pull request", or when you detect the git remote points to a GitHub instance (look for "github" in the remote URL). This skill is the GitHub equivalent of using `glab` for GitLab -- if the project is on GitHub, use this skill instead.'
+description: 'Invoke whenever the user is working with GitHub. Trigger on any of these signals: a URL containing "github.com" or a self-hosted GitHub Enterprise host, a git remote pointing to GitHub (git@github.com:... or https://github.com/...), the #N issue or PR notation (#15, #42), or words like "PR", "pull request", "gh", "GitHub issue", "GitHub Actions", "workflow run", "release", "gist", "review this PR", "merge this PR", "CI status", "checks", "fork", or "clone". Handles issues, pull requests, PR reviews and comments, GitHub Actions and CI runs, releases, gists, search, and reading files from GitHub repos. Always use gh, not WebFetch or curl, for any GitHub URL because gh handles authentication and returns structured data. This skill is the GitHub equivalent of glab for GitLab; if the project is on GitHub use this skill, and do not invoke it for GitLab tasks (use the glab skill instead).'
 ---
 
 # gh CLI Skill
