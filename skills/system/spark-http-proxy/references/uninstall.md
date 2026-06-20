@@ -15,13 +15,20 @@
 
 ## Where things live
 
-| What                    | Location                                                                            |
-| ----------------------- | ----------------------------------------------------------------------------------- |
-| Config + cert dir       | `~/.local/spark/http-proxy` (`certs/` inside it)                                    |
-| CLI entrypoint          | symlink `/usr/local/bin/spark-http-proxy`                                           |
-| Source (manual install) | `~/.local/spark/http-proxy/src`                                                     |
-| mkcert local CA         | `$(mkcert -CAROOT)`                                                                 |
-| Docker resources        | containers, the `traefik_dynamic`/metrics volumes, the `http-proxy_default` network |
+| What                     | Location                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| Config + cert dir        | `~/.local/spark/http-proxy` (`certs/` inside it)                                    |
+| CLI entrypoint           | symlink `/usr/local/bin/spark-http-proxy`                                           |
+| Source — sparkdock (Mac) | `/opt/sparkdock/http-proxy` (managed; force-updated to `origin/main`)               |
+| Source — manual install  | `~/.local/spark/http-proxy/src`                                                     |
+| mkcert local CA          | `$(mkcert -CAROOT)`                                                                 |
+| Docker resources         | containers, the `traefik_dynamic`/metrics volumes, the `http-proxy_default` network |
+
+On a sparkdock-provisioned Mac the CLI comes from `/opt/sparkdock/http-proxy`
+(see `sparkdock.md`); a manual install via `install.sh` uses
+`~/.local/spark/http-proxy/src` instead. Note that on a Mac the next sparkdock
+provision will re-clone and re-symlink the CLI, so a manual uninstall is undone
+unless sparkdock is also adjusted.
 
 ## Uninstalling
 
