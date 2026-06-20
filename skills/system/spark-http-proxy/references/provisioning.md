@@ -10,26 +10,27 @@ platform, and they differ in important ways — especially the DNS target IP.
 | Compose file     | from the clone                                                                       | `bin/compose.yml` → `~/.local/spark/http-proxy/compose.yml`                              |
 | Starts the proxy | **yes** (`spark-http-proxy start`)                                                   | **no** — run `spark-http-proxy start` yourself                                           |
 | mkcert local CA  | package only; CA trust via `sjust system-install-mkcert` or `generate-mkcert`        | `mkcert -install` **is** run during provisioning                                         |
-| `*.loc` DNS      | `/etc/resolver/loc` → `127.0.0.1` port `19322`                                       | systemd-resolved drop-in → `172.17.0.1:19322` (Arch full-system path only)               |
+| `*.loc` DNS      | `/etc/resolver/loc` → `127.0.0.1` port `19322`                                       | systemd-resolved drop-in → `172.17.0.1:19322` (Arch and Debian/Ubuntu)                   |
 | CLI guaranteed   | yes (fail-fast verification)                                                         | no explicit verification step                                                            |
 
 ## The DNS-target difference matters
 
 - **macOS** resolves `*.loc` to **`127.0.0.1`** via an `/etc/resolver/loc` file;
   the proxy DNS server is reached on loopback.
-- **Linux** points systemd-resolved at the **Docker bridge `172.17.0.1:19322`**
-  (`/etc/systemd/resolved.conf.d/docker-dev-dns.conf`, `Domains=~loc ~docker`),
-  because the query is served from inside the proxy container. This is the
-  correct target on Linux — do not "fix" it to `127.0.0.1`. See `dns.md`.
+- **Linux** (Arch and Debian/Ubuntu) points systemd-resolved at the **Docker
+  bridge `172.17.0.1:19322`** (`/etc/systemd/resolved.conf.d/docker-dev-dns.conf`,
+  `Domains=~loc ~docker`), because the query is served from inside the proxy
+  container. This is the correct target on Linux — do not "fix" it to
+  `127.0.0.1`. See `dns.md`.
 
 ## Consequences worth knowing
 
 - **macOS checkout is managed.** `/opt/sparkdock/http-proxy` is force-updated to
   `origin/main`; never assume a custom checkout there or tell a user to edit it.
-- **Linux does not auto-start or auto-configure DNS on the cross-distro path.**
-  The toolbox role installs the CLI, compose, and the mkcert CA, but starting the
-  proxy and (outside the Arch full-system path) wiring `.loc` resolution are on
-  the user. If `*.loc` does not resolve on a Linux box, run `configure-dns`.
+- **Linux does not auto-start the proxy.** Provisioning installs the CLI, compose,
+  the mkcert CA, and the `*.loc` DNS drop-in, but does not run
+  `spark-http-proxy start` — the user does that. If `*.loc` still does not resolve
+  on a Linux box, run `configure-dns`.
 - **mkcert CA trust differs.** Linux provisioning trusts the CA (`mkcert -install`)
   automatically; macOS does not until `generate-mkcert` or `sjust
 system-install-mkcert` runs. A lingering TLS warning on macOS often means that
