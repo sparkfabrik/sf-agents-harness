@@ -73,7 +73,12 @@ page does not load at all, it is a routing or DNS problem above, not this.
 
 ## Last resorts
 
-- `spark-http-proxy self-test` runs a built-in diagnosis.
+- `spark-http-proxy self-test` is a quick health check: it confirms the proxy
+  (DNS service) is up and that DNS resolution works, using a throwaway container.
+  Treat it as a "is the stack alive" sanity check — it does **not** exercise
+  actual routing or HTTPS for your container, so a passing self-test does not
+  prove your app is reachable. Use it first; if it passes but your host still
+  fails, the problem is in the per-container routing above.
 - `spark-http-proxy restart` clears transient state.
 - The Traefik dashboard (`spark-http-proxy dashboard`) shows whether the router
   and service for the host actually exist.
