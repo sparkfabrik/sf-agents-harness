@@ -5,8 +5,7 @@ description: >-
   when the user wants to create, save, amend, sync, navigate, or reorder a 
   stack of dependent merge requests. Triggers on tasks involving stacked 
   diffs, stacked MRs, dependent merge requests, or incremental code review 
-  workflows using `glab stack`. Works on self-hosted GitLab CE — it chains 
-  MRs by branch targeting and needs no paid tier.
+  workflows using `glab stack`.
 ---
 
 
