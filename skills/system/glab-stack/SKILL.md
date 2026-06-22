@@ -5,9 +5,8 @@ description: >-
   when the user wants to create, save, amend, sync, navigate, or reorder a 
   stack of dependent merge requests. Triggers on tasks involving stacked 
   diffs, stacked MRs, dependent merge requests, or incremental code review 
-  workflows using `glab stack`. Works on self-hosted GitLab CE (for example 
-  gitlab.sparkfabrik.com) — it chains MRs by branch targeting and needs no 
-  paid tier.
+  workflows using `glab stack`. Works on self-hosted GitLab CE — it chains 
+  MRs by branch targeting and needs no paid tier.
 ---
 
 
@@ -162,9 +161,9 @@ These notes adapt `glab stack` to SparkFabrik's self-hosted GitLab and conventio
 
 ### Self-hosted GitLab CE
 
-`glab stack` is a client-side feature: it chains merge requests by **branch targeting** (each MR targets the source branch of the one below it), not the Premium "Merge Request Dependencies" API. It works on GitLab Free and on self-hosted Community Edition, including `gitlab.sparkfabrik.com`.
+`glab stack` is a client-side feature: it chains merge requests by **branch targeting** (each MR targets the source branch of the one below it), not the Premium "Merge Request Dependencies" API. It works on GitLab Free and on self-hosted Community Edition.
 
-Stack commands act on the repository's configured remote. For a repo hosted on `gitlab.sparkfabrik.com`, confirm the remote (or `GITLAB_HOST`) points there before running `glab stack sync`, exactly as described in the `glab` skill. A misconfigured host silently pushes branches and opens MRs against the wrong instance.
+Stack commands act on the repository's configured remote. For a repo on a self-hosted GitLab instance, confirm the remote (or `GITLAB_HOST`) points there before running `glab stack sync`, exactly as described in the `glab` skill. A misconfigured host silently pushes branches and opens MRs against the wrong instance.
 
 ### Commit messages and MR titles
 
