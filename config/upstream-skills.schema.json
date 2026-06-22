@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "upstream-skills.schema.json",
   "title": "Upstream Skills Manifest",
-  "description": "Declares upstream GitHub repositories and paths to sync as system skills.",
+  "description": "Declares upstream GitHub or GitLab repositories and paths to sync as system skills.",
   "type": "object",
   "required": ["skills"],
   "additionalProperties": false,
@@ -24,10 +24,15 @@
             "pattern": "^[a-z][a-z0-9-]*$",
             "description": "Skill name (lowercase, hyphens). Must match the target folder name under skills/system/."
           },
+          "host": {
+            "type": "string",
+            "default": "github.com",
+            "description": "Host of the upstream repository: 'github.com' (default) or a GitLab host such as 'gitlab.com'. Selects the tarball URL scheme."
+          },
           "repo": {
             "type": "string",
-            "pattern": "^[^/]+/[^/]+$",
-            "description": "GitHub repository in owner/repo format (e.g. 'microsoft/playwright-cli')."
+            "pattern": "^[^/]+(/[^/]+)+$",
+            "description": "Repository path. 'owner/repo' for GitHub (e.g. 'microsoft/playwright-cli'); may include nested groups for GitLab (e.g. 'gitlab-org/cli')."
           },
           "ref": {
             "type": "string",

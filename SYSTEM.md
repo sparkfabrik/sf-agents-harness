@@ -52,6 +52,7 @@ When adding or modifying a system skill or agent, update the catalog entry too.
 ## Available skills
 
 - **glab** -- GitLab CLI skill for working with issues, merge requests, CI/CD pipelines, and repositories via the `glab` CLI.
+- **glab-stack** -- Manage stacked diffs and dependent merge requests with `glab stack`. Synced from [gitlab-org/cli](https://gitlab.com/gitlab-org/cli) with SparkFabrik notes; works on self-hosted GitLab CE.
 - **gh** -- GitHub CLI skill for working with issues, pull requests, Actions workflows, releases, and repositories via the `gh` CLI.
 - **playwright-cli** -- Browser automation with the `playwright-cli` CLI tool for web testing, screenshots, form filling, and data extraction. Synced from [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli) with custom output file conventions.
 - **skill-creator** -- Create, iterate, and benchmark agent skills with eval-driven workflows. Synced from [anthropics/skills](https://github.com/anthropics/skills) with custom tool-agnostic usage guidance.

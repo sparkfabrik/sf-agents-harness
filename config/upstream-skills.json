@@ -30,6 +30,16 @@
       "frontmatter_overrides": {
         "description": "How to use GitHuman to review AI-generated code changes before committing. GitHuman provides a GitHub-like diff review interface for your staging area — visual diffs, inline comments, todos, and review workflows — all running locally via Docker. Use this skill whenever the user mentions \"githuman\", \"code review before commit\", \"review staged changes\", \"review AI changes\", wants to review diffs in a browser, asks about reviewing code before committing, or after completing a coding task where staged changes should be reviewed. Also trigger when you see references to sjust/ajust githuman commands."
       }
+    },
+    {
+      "name": "glab-stack",
+      "host": "gitlab.com",
+      "repo": "gitlab-org/cli",
+      "ref": "main",
+      "path": "internal/commands/skills/bundled/assets/glab-stack",
+      "frontmatter_overrides": {
+        "description": "Manage stacked diffs and dependent merge requests with the GitLab CLI. Use when the user wants to create, save, amend, sync, navigate, or reorder a stack of dependent merge requests. Triggers on tasks involving stacked diffs, stacked MRs, dependent merge requests, or incremental code review workflows using `glab stack`. Works on self-hosted GitLab CE (for example gitlab.sparkfabrik.com) — it chains MRs by branch targeting and needs no paid tier."
+      }
     }
   ]
 }

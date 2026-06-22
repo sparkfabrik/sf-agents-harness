@@ -2,9 +2,10 @@
 #
 # Generic upstream skill sync script.
 #
-# Downloads skill directories from upstream GitHub repos (via tarball) and
-# installs them into skills/system/<name>/. Reads the skill list and config
-# from config/upstream-skills.json.
+# Downloads skill directories from upstream GitHub or GitLab repos (via tarball)
+# and installs them into skills/system/<name>/. Reads the skill list and config
+# from config/upstream-skills.json. The optional per-skill "host" field selects
+# the tarball URL scheme (github.com by default, or a GitLab host).
 #
 # For each skill the script:
 #   1. Downloads the repo tarball (one per unique repo, cached in tmpdir)
@@ -56,7 +57,7 @@ validate_manifest() {
     (if .name  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"name\""  else empty end),
     (if .repo  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"repo\""  else empty end),
     (if .path  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"path\""  else empty end),
-    (if .repo  | type == "string" and (test("^[^/]+/[^/]+$") | not) then "skills[\($i)]: \"repo\" must be owner/repo format" else empty end)
+    (if .repo  | type == "string" and (test("^[^/]+(/[^/]+)+$") | not) then "skills[\($i)]: \"repo\" must be owner/repo (GitHub) or a slash-separated path (GitLab)" else empty end)
   ' "$MANIFEST" 2>&1)
 
   if [[ -n "$errors" ]]; then
@@ -73,8 +74,8 @@ validate_manifest
 declare -A TARBALL_CACHE  # key: "repo@ref" -> path to extracted dir
 
 download_tarball() {
-  local repo="$1" ref="$2"
-  local cache_key="${repo}@${ref}"
+  local repo="$1" ref="$2" host="$3"
+  local cache_key="${host}/${repo}@${ref}"
 
   if [[ -n "${TARBALL_CACHE[$cache_key]:-}" ]]; then
     return
@@ -82,12 +83,23 @@ download_tarball() {
 
   # Sanitize ref for filesystem use (e.g. "release/1.2" -> "release_1.2")
   local safe_ref="${ref//\//_}"
-  local tarball="${TMPDIR_ROOT}/${repo//\//_}_${safe_ref}.tar.gz"
-  local extract_dir="${TMPDIR_ROOT}/${repo//\//_}_${safe_ref}"
-  # Short-form URL works for both branches and tags.
-  local url="https://github.com/${repo}/archive/${ref}.tar.gz"
+  local tarball="${TMPDIR_ROOT}/${host//\//_}_${repo//\//_}_${safe_ref}.tar.gz"
+  local extract_dir="${TMPDIR_ROOT}/${host//\//_}_${repo//\//_}_${safe_ref}"
 
-  printf 'Downloading %s@%s...\n' "$repo" "$ref"
+  # Build the tarball URL by host. Both schemes accept branches and tags.
+  # The extracted top-level dir name varies (GitLab appends a short SHA), but
+  # --strip-components=1 drops it regardless of name.
+  local url
+  case "$host" in
+    github.com)
+      url="https://github.com/${repo}/archive/${ref}.tar.gz"
+      ;;
+    *)
+      url="https://${host}/${repo}/-/archive/${ref}/${repo##*/}-${ref}.tar.gz"
+      ;;
+  esac
+
+  printf 'Downloading %s/%s@%s...\n' "$host" "$repo" "$ref"
   if ! curl -sSfL "$url" -o "$tarball"; then
     die "Failed to download tarball from ${url}"
   fi
@@ -99,8 +111,8 @@ download_tarball() {
 }
 
 get_tarball_dir() {
-  local repo="$1" ref="$2"
-  printf '%s' "${TARBALL_CACHE[${repo}@${ref}]}"
+  local repo="$1" ref="$2" host="$3"
+  printf '%s' "${TARBALL_CACHE[${host}/${repo}@${ref}]}"
 }
 
 # ---------------------------------------------------------------------------
@@ -244,10 +256,11 @@ sync_skill() {
     die "Skill '${skill_name}' not found in manifest."
   fi
 
-  local repo ref path overrides_json
+  local repo ref path host overrides_json
   repo=$(echo "$skill_json" | jq -r '.repo')
   ref=$(echo "$skill_json" | jq -r '.ref // "main"')
   path=$(echo "$skill_json" | jq -r '.path')
+  host=$(echo "$skill_json" | jq -r '.host // "github.com"')
   overrides_json=$(echo "$skill_json" | jq '.frontmatter_overrides // null')
 
   local target_dir="${REPO_ROOT}/skills/system/${skill_name}"
@@ -255,16 +268,16 @@ sync_skill() {
   local build_dir="${TMPDIR_ROOT}/build_${skill_name}"
 
   # Download tarball if not cached
-  download_tarball "$repo" "$ref"
+  download_tarball "$repo" "$ref" "$host"
   local tarball_dir
-  tarball_dir=$(get_tarball_dir "$repo" "$ref")
+  tarball_dir=$(get_tarball_dir "$repo" "$ref" "$host")
 
   local upstream_dir="${tarball_dir}/${path}"
   if [[ ! -d "$upstream_dir" ]]; then
-    die "Path '${path}' not found in ${repo}@${ref} tarball."
+    die "Path '${path}' not found in ${host}/${repo}@${ref} tarball."
   fi
 
-  printf 'Syncing %s from %s@%s:%s...\n' "$skill_name" "$repo" "$ref" "$path"
+  printf 'Syncing %s from %s/%s@%s:%s...\n' "$skill_name" "$host" "$repo" "$ref" "$path"
 
   # Build into temp directory
   mkdir -p "$build_dir"

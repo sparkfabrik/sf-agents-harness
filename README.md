@@ -18,6 +18,7 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 | Skill                      | Description                                                                                                                                      | Path                                    |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- |
 | **glab**                   | GitLab CLI -- issues, merge requests, CI/CD pipelines, repositories                                                                              | `skills/system/glab/`                   |
+| **glab-stack**             | Stacked diffs / dependent MRs via `glab stack` -- works on self-hosted GitLab CE                                                                 | `skills/system/glab-stack/`             |
 | **gh**                     | GitHub CLI -- issues, pull requests, Actions, releases, PR review comments                                                                       | `skills/system/gh/`                     |
 | **playwright-cli**         | Browser automation -- web testing, screenshots, form filling, data extraction                                                                    | `skills/system/playwright-cli/`         |
 | **skill-creator**          | Create, iterate, and benchmark agent skills with eval-driven workflows                                                                           | `skills/system/skill-creator/`          |
@@ -38,6 +39,8 @@ Skills are documents that provide context to Copilot on specific topics. Each sk
 - Commands and code snippets
 
 Browse the `skills/` directory for available categories.
+
+> **Note on `glab skills install`:** Recent `glab` versions ship their own bundled `glab` skill via `glab skills install`. Do **not** run `glab skills install --global glab` — it writes to `~/.agents/skills/glab/`, the same path our sync targets, and overwrites our richer `glab` skill with glab's thinner bundled one. Our `glab` skill is the source of truth; we only adopt glab's bundled `glab-stack` skill (synced via `config/upstream-skills.json`).
 
 ## Agents
 

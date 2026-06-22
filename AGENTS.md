@@ -129,8 +129,8 @@ System agents (`agents/system/`) support multiple tools (Copilot, OpenCode). Eac
 
 ## Upstream Skill Sync
 
-Some system skills are synced from external GitHub repositories. The sync
-mechanism uses a JSON manifest (`config/upstream-skills.json`) and a generic
+Some system skills are synced from external GitHub or GitLab repositories. The
+sync mechanism uses a JSON manifest (`config/upstream-skills.json`) and a generic
 sync script (`scripts/sync-skill.sh`).
 
 ### How it works
@@ -171,7 +171,8 @@ in the `skills` array has the following fields:
 | Field                   | Type   | Required | Description                                                                                                                           |
 | ----------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                  | string | yes      | Skill name (`lowercase-with-hyphens`). Must match the target folder under `skills/system/`.                                           |
-| `repo`                  | string | yes      | GitHub repository in `owner/repo` format.                                                                                             |
+| `host`                  | string | no       | Upstream host: `github.com` (default) or a GitLab host such as `gitlab.com`. Selects the tarball URL scheme.                          |
+| `repo`                  | string | yes      | Repository path. `owner/repo` for GitHub; may include nested groups for GitLab (for example `gitlab-org/cli`).                        |
 | `ref`                   | string | no       | Branch or tag to sync from. Defaults to `main`.                                                                                       |
 | `path`                  | string | yes      | Path to the skill directory inside the repo.                                                                                          |
 | `frontmatter_overrides` | object | no       | YAML frontmatter fields to patch in the upstream SKILL.md. Only listed fields are replaced; all other upstream fields are kept as-is. |
