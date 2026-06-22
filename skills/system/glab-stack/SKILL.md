@@ -1,11 +1,6 @@
 ---
 name: glab-stack
-description: >-
-  Manage stacked diffs and dependent merge requests with the GitLab CLI. Use 
-  when the user wants to create, save, amend, sync, navigate, or reorder a 
-  stack of dependent merge requests. Triggers on tasks involving stacked 
-  diffs, stacked MRs, dependent merge requests, or incremental code review 
-  workflows using `glab stack`.
+description: Manage stacked diffs and merge requests with the GitLab CLI. Use when the user wants to create, save, amend, sync, navigate, or reorder a stack of dependent merge requests. Triggers on tasks involving stacked diffs, stacked MRs, dependent merge requests, or incremental code review workflows using `glab stack`.
 ---
 
 
