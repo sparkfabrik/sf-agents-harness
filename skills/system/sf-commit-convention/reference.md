@@ -1,9 +1,9 @@
-# Commit Convention — Reference
+# Commit Convention Reference
 
 Detailed material for the [sf-commit-convention](SKILL.md) skill. Loaded on demand for
 edge cases; the core rules live in `SKILL.md`.
 
-## Format Detection — Full Procedure
+## Format Detection: Full Procedure
 
 ### Step 1: Inspect recent history
 
@@ -18,7 +18,7 @@ Run `git log --oneline -5` and look for a dominant pattern:
 | Other recognizable pattern  | Custom                   | Adapt to whatever the project uses |
 
 If the last 5 commits consistently follow one format, use that. If mixed, use the most
-recent commit's format — the project is likely transitioning, and the latest commit
+recent commit's format; the project is likely transitioning, and the latest commit
 reflects the current convention. If there are no commits or no recognizable pattern
 (e.g., freeform messages like `"updated stuff"`, `"wip"`), ask the user what commit
 format the project expects.
@@ -26,7 +26,7 @@ format the project expects.
 ### Step 2: Check for commit-msg hooks
 
 Check if the project has a `commit-msg` hook (`.git/hooks/commit-msg`, husky, lefthook,
-or similar). The presence of a hook means the project enforces a specific format — the
+or similar). The presence of a hook means the project enforces a specific format, so the
 git log inspection from Step 1 becomes even more important because the hook will reject
 non-compliant messages.
 
@@ -34,7 +34,7 @@ non-compliant messages.
 
 If a commit is rejected by a `commit-msg` hook:
 
-1. **Read the hook's error output** — it usually tells you the expected format.
+1. **Read the hook's error output.** It usually tells you the expected format.
 2. **Retry with the format indicated by the error**, not a hardcoded fallback.
 3. **If the error is unclear**, check `git log --oneline -3` for examples and match that pattern.
 4. **If still unclear**, ask the user what commit format the project expects.
@@ -48,10 +48,10 @@ subsequent commits.
 
 When a project uses a non-standard format (e.g., Jira-style), adapt the commit message to
 that format while still applying the `Assisted-by` trailer. The trailer is a git
-mechanism independent of the commit message format — it works with any convention.
+mechanism independent of the commit message format; it works with any convention.
 
 For custom formats, the issue reference rules from this skill (fully qualified path in
-footers) may not apply — follow whatever convention the project uses. The `Assisted-by`
+footers) may not apply; follow whatever convention the project uses. The `Assisted-by`
 trailer is the only rule that always applies regardless of project convention.
 
 ## Resolving the Full Project Path
@@ -90,13 +90,13 @@ command normally opens an editor, find the flag that passes the value inline.
 - `git rebase <branch>` (non-interactive) is safe for straightforward rebases.
 - For squashing commits, prefer the platform's squash merge option (GitHub / GitLab) over `git rebase -i`.
 - Prefer `git pull --rebase` over manual fetch + rebase when updating a branch.
-- If rebase conflicts occur, resolve the files then run `git rebase --continue`. Do not add `--edit` — the original commit messages are reused automatically.
+- If rebase conflicts occur, resolve the files then run `git rebase --continue`. Do not add `--edit`; the original commit messages are reused automatically.
 
 ## GPG Signing & Commit Rewriting
 
 When `commit.gpgsign = true` is set, **never use git plumbing commands to rewrite
 commits**. `git commit-tree` and similar low-level commands bypass the commit machinery
-entirely, skipping GPG signing even when it is globally configured — resulting in
+entirely, skipping GPG signing even when it is globally configured, resulting in
 "Unverified" commits on GitHub/GitLab.
 
 Always rewrite through `git commit`:

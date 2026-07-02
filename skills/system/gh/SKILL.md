@@ -143,7 +143,7 @@ These rules apply to every issue title and description, pull request title and d
 
 Issue titles must be **human-readable, short, and concise** — a few words that express the goal or scope of the work. Issue titles are NOT commit messages and must NOT use the Conventional Commits format (no `feat:`, `fix(scope):`, `chore:` prefixes, no imperative commit-style phrasing).
 
-The title is read by humans scanning boards, backlogs, and notifications — it should describe **what the issue is about**, not how the eventual fix will be committed. Conventional Commits belongs on PR titles and commit messages, where it drives changelogs and tooling. Issues sit upstream of that, often before the solution is even known, so a commit-shaped title is both premature and harder to scan.
+The title is read by humans scanning boards, backlogs, and notifications — it should describe **what the issue is about**, not how the eventual fix will be committed. Conventional Commits belongs on commit messages, where it drives changelogs and tooling. Issue titles and PR titles are both human-readable (see PR title format); the Conventional Commits format stays on the commits themselves. Issues sit upstream of that, often before the solution is even known, so a commit-shaped title is both premature and harder to scan.
 
 Style guidelines:
 
@@ -230,28 +230,25 @@ Include `Closes #42` or `Fixes #42` in the body to auto-close issues on merge.
 
 ### PR title format
 
-PR titles must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format:
+PR titles are **human-readable**, exactly like issue titles. A PR title is a short sentence-case phrase describing what the PR does, read by people scanning the PR list, boards, and notifications. It does **not** use the Conventional Commits format: no `feat:`, `fix(scope):`, `chore:` prefixes and no lowercase imperative commit phrasing.
 
-```
-<type>[(optional scope)]: <description>
-```
+Style guidelines:
 
-Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
-
-Use a scope when the change is clearly scoped to a module, component, or area of the codebase. Keep the description lowercase, concise, and in imperative mood.
+- Sentence case, no trailing period.
+- Aim for under ~60 characters.
+- Describe the change in plain English, as a noun phrase or a short imperative.
+- Do not prefix with a type or a `Bug:`/`Feature:` pseudo-category. Categorize with labels instead.
 
 **Examples:**
 
-```
-feat(auth): add JWT token refresh
-fix: prevent crash on empty password submission
-docs(api): update rate limiting section
-refactor(parser): simplify config validation logic
-ci: add deploy stage for staging environment
-chore: bump dependencies
-```
+| Bad (commit-shaped)                    | Good (human-readable)               |
+| -------------------------------------- | ----------------------------------- |
+| `feat(auth): add OAuth2 flow`          | `Add OAuth2 authentication flow`    |
+| `fix: prevent crash on empty password` | `Fix login crash on empty password` |
+| `docs(api): update rate limiting`      | `Update rate limiting docs`         |
+| `chore: bump dependencies`             | `Bump dependencies`                 |
 
-Breaking changes append `!` before the colon: `feat(api)!: change response format for /users endpoint`.
+**The commit history stays conventional.** Only the title is human-readable. The commits on the branch, and the single commit that lands on the default branch, still follow the Conventional Commits format (see the `sf-commit-convention` skill). These repositories squash-merge with `squash_merge_commit_title = COMMIT_OR_PR_TITLE`, so a multi-commit PR uses this human-readable title as the squash commit subject by default. When you squash-merge such a PR, set the squash commit subject to the conventional format so the default-branch history stays conventional.
 
 **PR creation checklist** (follow this carefully):
 

@@ -174,13 +174,14 @@
     {
       "id": 13,
       "prompt": "I've been working on this feature branch and my changes are ready. Create a pull request for this branch targeting main. The changes add a new authentication flow with OAuth2 support and refactor the existing session handling. Request a review from 'elena'.",
-      "expected_output": "The agent should create a PR with a Conventional Commits-formatted title (e.g., 'feat(auth): add OAuth2 authentication flow'). The title should use the correct type prefix and optionally a scope.",
+      "expected_output": "The agent should create a PR with a human-readable, sentence-case title (e.g., 'Add OAuth2 authentication flow'). The title must NOT use the Conventional Commits format.",
       "files": [],
       "assertions": [
         "Uses `gh pr create` to create the pull request",
-        "PR title follows Conventional Commits format: `<type>[(scope)]: <description>`",
-        "Uses `feat` as the type (this is a new feature)",
-        "Title description is lowercase and concise",
+        "PR title does NOT start with a Conventional Commits type prefix (no `feat:`, `fix:`, `chore:`, etc.)",
+        "PR title does NOT contain a scoped CC prefix like `feat(auth):`",
+        "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
+        "Title references the OAuth2 / authentication change in plain English",
         "Does NOT use a generic title like 'Add new feature' or just restate the user's request verbatim",
         "Uses `--reviewer elena` to request review",
         "Pushes the branch before creating the PR"
