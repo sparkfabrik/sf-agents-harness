@@ -35,6 +35,19 @@
         {"name": "includes-trailer", "description": "Mentions Assisted-by trailer convention"}
       ],
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Write the commit message for this change: I addressed the code review feedback by making the dependency handling accurate, updating the layout tree in the README, and switching the list rendering to fail fast instead of degrading silently. The related issue is #32 in this same repo.",
+      "expected_output": "Conventional commit whose subject line is under 72 characters and uses no em dash or en dash. Detail goes in the body, not the subject. Includes a Refs: owner/repo#32 footer and an Assisted-by trailer.",
+      "assertions": [
+        {"name": "subject-under-72", "description": "The subject line (first line) is under 72 characters"},
+        {"name": "no-em-dash-subject", "description": "The subject line contains no em dash (—) or en dash (–)"},
+        {"name": "no-em-dash-anywhere", "description": "Neither the subject nor the body uses an em/en dash as a sentence connector"},
+        {"name": "detail-in-body", "description": "Extra detail is moved into the commit body, not crammed into the subject"},
+        {"name": "refs-footer", "description": "Includes a Refs: footer with the fully qualified path for #32"}
+      ],
+      "files": []
     }
   ]
 }

@@ -48,7 +48,7 @@ Before the first commit in a session, detect the project's convention by running
 Use the dominant format; if mixed, use the most recent commit's format. If there is no
 recognizable pattern, ask the user. Cache the detected format for the rest of the
 session. A `commit-msg` hook (`.git/hooks/commit-msg`, husky, lefthook) means the format
-is enforced — match it. For hook rejection, custom formats, and caching details, see
+is enforced, so match it. For hook rejection, custom formats, and caching details, see
 [reference.md](reference.md).
 
 ## Conventional Commits (preferred)
@@ -58,8 +58,10 @@ is enforced — match it. For hook rejection, custom formats, and caching detail
 ```
 
 - Types: `feat`, `fix`, `chore`, `test`, `docs`, `refactor`, `style`, `perf`, `ci`, `build`, `revert`
-- Scope: optional but recommended — the component or area changed
+- Scope: optional but recommended; the component or area changed
 - Description: lowercase, imperative mood, no trailing period
+- Subject length: keep the whole subject line under 72 characters, and aim for 50. Longer subjects are truncated with `…` in GitHub and GitLab commit lists. Move detail into the commit body, never the subject.
+- No AI-slop writing tells: in the subject or body, do not use the em dash (—) or en dash (–) as a sentence connector; rewrite with a period, comma, colon, or parentheses. Write like a human engineer, not a generated summary.
 
 ## Legacy Format (transitional)
 
@@ -70,7 +72,7 @@ refs #<issue-number>: <description>
 - Strictly lowercase `refs`, always `#` before the number, colon + space before the description
 - Lowercase description, imperative mood
 - Validated by git hooks in projects still using it; cross-project references not supported
-- The issue reference is part of the subject — no separate footer needed
+- The issue reference is part of the subject; no separate footer needed
 
 ## Issue References
 
@@ -82,7 +84,7 @@ conversation, MR/PR description), ask the user:
 
 Skipping the reference is the exception, not the norm. Never silently omit it.
 
-**Always use the fully qualified project path in footers — never a bare `#N`.** A bare
+**Always use the fully qualified project path in footers, never a bare `#N`.** A bare
 `#N` is ambiguous and breaks when commits are cherry-picked, mirrored, or viewed outside
 the original project. Run `git remote get-url origin`, parse the `owner/repo` path, and
 resolve a bare `#35` to `<project-path>#35`:
@@ -117,6 +119,11 @@ as `CAVEMAN MODE ACTIVE` (drop articles, fragments OK, short synonyms) applies t
 your conversational replies, not to these artifacts. Write the commit, title, and
 description in full prose regardless of the active style; do not run any command
 to toggle the style off.
+
+Avoid AI-slop writing tells in these artifacts too: do not use the em dash (—) or
+en dash (–) as a sentence connector; rewrite with a period, comma, colon, or
+parentheses. This matches the same rule in the `gh` and `glab` skills for PR/MR
+bodies, so subjects, titles, and descriptions all read the same way.
 
 ## Quick Example
 
