@@ -105,18 +105,26 @@ def normalize(node, path=""):
             if is_strippable(key, value):
                 continue
 
-            # int64 fields come back as strings ("2", not 2).
-            if key in INT64_STRING_KEYS and isinstance(value, int) and "mosaicLayout" not in path:
-                value = str(value)
+            # int64 fields come back as strings ("2", not 2). Accept a float
+            # like 2.0 too (bool is an int subclass, so exclude it explicitly),
+            # since a whole-number float would otherwise slip through and still
+            # drift against the API's "2".
+            if (key in INT64_STRING_KEYS and "mosaicLayout" not in path
+                    and isinstance(value, (int, float)) and not isinstance(value, bool)
+                    and float(value).is_integer()):
+                value = str(int(value))
 
-            # Threshold values pass through float32 on the API side.
+            # Threshold values pass through float32 on the API side. Rewrite to
+            # the float32 value the API stores so --write output is drift-free;
+            # a warning still fires so the author can pick a cleaner exact value.
             if key == "value" and re.search(r"thresholds\[\d+\]$", path) and isinstance(value, float):
                 if not float32_exact(value):
                     rounded = struct.unpack("f", struct.pack("f", value))[0]
-                    warn(f"{child_path}: {value} is not float32-exact; the "
-                         f"API stores it as {rounded!r} (provider issue "
-                         "#8225). Use a float32-exact value or commit the "
-                         "long form.")
+                    warn(f"{child_path}: {value} is not float32-exact; "
+                         f"rewritten to {rounded!r} to match what the API "
+                         "stores (provider issue #8225). Prefer a float32-exact "
+                         "value if you want a cleaner number.")
+                    value = rounded
 
             # Enums must be uppercase.
             if isinstance(value, str) and value.islower() and key in (
@@ -153,13 +161,17 @@ def main():
     args = parser.parse_args()
 
     try:
-        with open(args.file) as fh:
+        with open(args.file, encoding="utf-8") as fh:
             original = json.load(fh)
     except (OSError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    normalized = dict(normalize(original))
+    if not isinstance(original, dict):
+        print(f"error: {args.file} does not contain a JSON object", file=sys.stderr)
+        return 2
+
+    normalized = normalize(original)
     for key in COMPUTED_TOP_LEVEL:
         normalized.pop(key, None)
 
@@ -178,7 +190,7 @@ def main():
         return 0
 
     if args.write:
-        with open(args.file, "w") as fh:
+        with open(args.file, "w", encoding="utf-8") as fh:
             fh.write(rendered)
         state = "normalized" if changed else "already canonical"
         print(f"{args.file}: {state}", file=sys.stderr)
