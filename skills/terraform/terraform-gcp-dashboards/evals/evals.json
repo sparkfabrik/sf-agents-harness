@@ -1,0 +1,23 @@
+{
+  "skill_name": "terraform-gcp-dashboards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My terraform plan always shows an in-place update on google_monitoring_dashboard.app even right after apply. The dashboard JSON is in dashboards/app.json and the diff shows things like '+ xPos = 0', '+ dashboardFilters = []' and '- etag'. Fix it so the plan is clean.",
+      "expected_output": "Identifies config-side keys stripped by the API as the cause (not etag), normalizes the JSON (removes xPos/yPos zeros, empty arrays, zero enums), does NOT suggest ignore_changes, verifies plan is clean.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "This Cloud Run dashboard still shows an in-place update on every terraform plan, even though I already removed the xPos/yPos and empty arrays. The remaining diff touches the pie chart and the grid columns. Here's dashboards/traffic.json - make the plan clean without breaking the latency chart.",
+      "expected_output": "Converts gridLayout.columns 2 -> \"2\" (int64 returns as string), removes minAlignmentPeriod from the pieChart dataSet (API strips it there) but KEEPS it on the xyChart latency dataSet (API keeps it there), removes stripped false booleans (showLabels/outputFullDuration), preserves the valid non-zero enum chartType DONUT. Discriminating test: over-stripping (removing xyChart minAlignmentPeriod) or under-stripping fails it.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create a new Cloud Monitoring dashboard in terraform with a CPU utilization line chart and a scorecard with a 0.995 threshold for our SLO, project acme-metrics.",
+      "expected_output": "Writes minimal canonical JSON (no zero defaults, no empty arrays), warns that 0.995 is not float32-exact and will be stored as 0.99500000476837158 (suggests exact value or long form), validates with gcloud --validate-only, uses file() pattern.",
+      "files": []
+    }
+  ]
+}
