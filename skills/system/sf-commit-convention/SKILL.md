@@ -107,17 +107,8 @@ Example: `Assisted-by: opencode/github-copilot/claude-opus-4.6`
 
 ## MR/PR Titles
 
-MR/PR titles are **human-readable**, like issue titles, not the Conventional Commits
-format. Write a short sentence-case phrase describing the change (for example `Add OAuth2
-authentication flow`), with no `feat:`/`fix(scope):` prefix and no lowercase imperative
-commit phrasing. The issue reference goes in the MR/PR description body, never in the
-title. See the `gh` and `glab` skills for the full title rule and examples.
-
-The commit history stays conventional. The commits on the branch, and the single commit
-that lands on the default branch, still follow the Conventional Commits format above.
-Because these repositories squash-merge and default the squash commit subject to the
-human-readable MR/PR title, set the squash commit subject to the conventional format when
-you squash-merge, so the default-branch history stays conventional.
+Same conventional commit format as the subject line. The issue reference goes in the
+MR/PR description body, never in the title.
 
 ## Write in plain prose, not caveman
 
