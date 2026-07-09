@@ -6,43 +6,109 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
-## [Unreleased]
-
-### Added
-
-- `terraform-gcp-dashboards` skill (`skills/terraform/`): create and manage Google Cloud Monitoring dashboards (`google_monitoring_dashboard`) in Terraform without perpetual `dashboard_json` plan drift. Explains the one-directional provider diff suppression and the golden rule (committed JSON must never contain a value the API strips), covers hand-authoring, console export via `gcloud monitoring dashboards describe`, and `terraform import` workflows, and bundles a `normalize_dashboard.py` script (`--write`/`--check`) plus a full `references/normalization-rules.md` inventory of stripped/injected fields, float32 threshold rounding, int64-as-string fields, and enum casing.
-- `spark-http-proxy` skill (`skills/system/`): configure, run, and troubleshoot the [Spark HTTP Proxy](https://github.com/sparkfabrik/http-proxy) local development reverse proxy. Helps agents act directly (edit a project's `compose.yml` to expose a service via `VIRTUAL_HOST`/`VIRTUAL_PORT` or native `traefik.*` labels, generate trusted certificates with `generate-mkcert`, configure `*.loc` DNS) and guide users. Lean `SKILL.md` core plus on-demand `references/` (expose-container, certificates, dns, troubleshooting). Bakes in the SparkFabrik `*.spark.loc` naming convention, including the wildcard-nesting rule (`drupal.client.spark.loc` needs `*.client.spark.loc`), and assumes the CLI is preinstalled on company machines.
-- `mermaid-diagrams` skill (`skills/system/`): create clear, well-designed Mermaid diagrams in Markdown documents (READMEs, ADRs, design docs, RFCs). Covers flowcharts, sequence, ER, class, state, and C4/architecture diagrams with eight design principles (deduplicate edges, grouping, color encoding, shapes, edge styles, trimmed labels, direction, legend), per-type reference guides, render-verify guidance, and a worked before/after example.
-- `glab` skill: document cross-host `glab api` calls -- inside a git repo the remote's host can override `GITLAB_HOST`, so a query to a different host (for example a public `gitlab.com` project from a self-hosted repo) silently returns `404 Project Not Found`; use the `--hostname` flag for `glab api`, which is authoritative, and confirm the host with `glab api --hostname <host> user`
-- `sf-commit-convention` skill (`skills/system/`): enforce SparkFabrik commit message and branch naming conventions -- adaptive format detection from git log history (conventional, legacy, Jira-style, custom) with most-recent-commit-wins for mixed logs and user prompt for unrecognizable histories, commit-msg hook error parsing for automatic format recovery, mandatory issue references in commit footers only (`Refs:`/`Closes:` trailers with fully qualified project path, never bare `#N` or in the subject line), branch naming (`feat/<issue>-<desc>`, `fix/<issue>-<desc>`, etc.), lowercase `Assisted-by` AI trailer on every commit, and non-interactive git operation guidance (avoid `-i`/`--interactive` flags, editors, and TTY-dependent commands)
-- `skill-creator` custom section: document `opencode run` as an alternative to `claude -p` for running skill evals, including OpenCode JSON event schema and skill-trigger detection pattern; enforce `github-copilot/gpt-4.1` as default model for evals to avoid premium model costs
-- `gh` and `glab` skills: warn about accidental issue auto-linking -- wrap `#N` in backticks when used as examples rather than intentional references
-- `drupal-major-upgrade-validation` skill (`skills/drupal/`): validate Drupal major version upgrades (e.g., D10 to D11) by capturing a browser-automation baseline on the stable branch, applying the upgrade, re-running the same tests, and producing a structured comparison report with per-page status, console error diffs, and screenshot references
-
-### Changed
-
-- `sf-commit-convention` skill: split the heavy 240-line SKILL.md into a lean ~120-line core (branch naming, format detection, conventional/legacy formats, issue references, Assisted-by trailer) plus a bundled `reference.md` loaded on demand for worked git examples, GPG signing, non-interactive git, and format-detection edge cases. Cuts the skill's resident context cost (~22% of session usage per `/status`) by roughly half with no loss of guidance
-- `sf-create-agentsmd` skill: add Step 4 to manage a `CLAUDE.md` symlink alongside the root `AGENTS.md` -- auto-create relative symlink when `CLAUDE.md` is absent, preserve and warn when an existing regular file or mismatched symlink is found, no-op when already pointing at `AGENTS.md`, and explicit prompt with default No for non-root AGENTS-style files (subproject `AGENTS.md`, `.agents/AGENTS.project.md`). Three new evals cover scaffold, existing-CLAUDE.md, and subdir prompt scenarios. Capability spec at `openspec/specs/agentsmd-claude-symlink/`
-- Project renamed from `sf-awesome-copilot` to `sf-agents-harness` -- updated descriptions, references, and GitHub metadata to reflect broader scope beyond any single AI coding tool
-- README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
-- `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links
-- `glab` skill: clarify that references autolink only when written bare -- backticked refs render as inline code, and GitHub-style `owner/repo#N` does not autolink on GitLab; reconcile the duplicate "Issue auto-linking" note to point at the canonical rule
-- `glab` skill: auto-closing issues on merge via `Closes`/`Fixes` directives in MR descriptions is now optional -- the agent asks the user before including a closing reference, since auto-close is not always desired
-- `sf-commit-convention` skill: add two commit-subject quality rules that were previously only in the `gh`/`glab` skills (which govern PR/MR bodies, not commit subjects). Subjects must stay under 72 characters (aim for 50) with detail pushed to the body, and must not use an em dash or en dash as a sentence connector. The skill's own prose was rewritten to obey the new rule, and a fourth eval regresses both checks. Closes the gap that let over-length, em-dash commit subjects ship (for example sparkfabrik/sf-claude-plugins#33)
-- `gh`, `glab`, and `sf-commit-convention` skills: consolidate the "write artifacts in plain prose" guidance into a single section per skill and state explicitly that an active terse output style (e.g. `CAVEMAN MODE ACTIVE`) does not apply to commit messages, MR/PR titles and descriptions, comments, or reviews -- these are always written in full prose
-
-### Fixed
-
-- `sf-commit-convention` skill: the plain-prose (anti-caveman) guard now explicitly covers MR/PR descriptions, not only titles. This skill loads before every commit and MR/PR title operation, so the guard is complete even when the `glab` or `gh` skill is not active
-- `glab` skill: stop generating GitLab issue titles in Conventional Commits format -- add an explicit "Issue title format" subsection requiring human-readable noun phrases (sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes), with categorization deferred to labels. Includes bad/good examples table. Four new eval cases (#27-#30) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 19/25 (76%) on the pre-fix snapshot
-- `gh` skill: stop generating GitHub issue titles in Conventional Commits format -- mirror the glab fix with an "Issue title format" subsection (human-readable noun phrases, sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes; categorization on labels). Includes bad/good examples table. Adds `## Issues` H2 heading that previously was missing. Four new eval cases (#14-#17) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 21/25 (84%) on the pre-fix snapshot
-- `glab` skill: document `-f` vs `-F` flag difference for `glab api` — `-f key=@file` sends the literal string while `-F key=@file` reads the file content; using the wrong flag silently corrupts note/description updates
-
 ## [2026-07-09]
 
 ### Changed
 
 - `gh`, `glab`, and `sf-commit-convention` skills: PR/MR titles follow the Conventional Commits format again (`<type>[(scope)]: <description>`), reverting the human-readable title rule. The commit-subject length and em-dash quality rules stay. Restores the two evals (gh #13, glab #16) that assert conventional PR/MR titles.
+- `AGENTS.md`: the changelog policy drops the `[Unreleased]` section. This is a rolling project where every merge to `main` is released, so all entries go straight under a dated section. Existing `[Unreleased]` items were moved to dated sections by their merge date.
+
+## [2026-07-06]
+
+### Added
+
+- `terraform-gcp-dashboards` skill (`skills/terraform/`): create and manage Google Cloud Monitoring dashboards (`google_monitoring_dashboard`) in Terraform without perpetual `dashboard_json` plan drift. Explains the one-directional provider diff suppression and the golden rule (committed JSON must never contain a value the API strips), covers hand-authoring, console export via `gcloud monitoring dashboards describe`, and `terraform import` workflows, and bundles a `normalize_dashboard.py` script (`--write`/`--check`) plus a full `references/normalization-rules.md` inventory of stripped/injected fields, float32 threshold rounding, int64-as-string fields, and enum casing.
+
+## [2026-07-02]
+
+### Changed
+
+- `sf-commit-convention` skill: add two commit-subject quality rules that were previously only in the `gh`/`glab` skills (which govern PR/MR bodies, not commit subjects). Subjects must stay under 72 characters (aim for 50) with detail pushed to the body, and must not use an em dash or en dash as a sentence connector. The skill's own prose was rewritten to obey the new rule, and a fourth eval regresses both checks. Closes the gap that let over-length, em-dash commit subjects ship (for example sparkfabrik/sf-claude-plugins#33)
+
+## [2026-06-20]
+
+### Added
+
+- `spark-http-proxy` skill (`skills/system/`): configure, run, and troubleshoot the [Spark HTTP Proxy](https://github.com/sparkfabrik/http-proxy) local development reverse proxy. Helps agents act directly (edit a project's `compose.yml` to expose a service via `VIRTUAL_HOST`/`VIRTUAL_PORT` or native `traefik.*` labels, generate trusted certificates with `generate-mkcert`, configure `*.loc` DNS) and guide users. Lean `SKILL.md` core plus on-demand `references/` (expose-container, certificates, dns, troubleshooting). Bakes in the SparkFabrik `*.spark.loc` naming convention, including the wildcard-nesting rule (`drupal.client.spark.loc` needs `*.client.spark.loc`), and assumes the CLI is preinstalled on company machines.
+- `mermaid-diagrams` skill (`skills/system/`): create clear, well-designed Mermaid diagrams in Markdown documents (READMEs, ADRs, design docs, RFCs). Covers flowcharts, sequence, ER, class, state, and C4/architecture diagrams with eight design principles (deduplicate edges, grouping, color encoding, shapes, edge styles, trimmed labels, direction, legend), per-type reference guides, render-verify guidance, and a worked before/after example.
+
+## [2026-06-19]
+
+### Added
+
+- `glab` skill: document cross-host `glab api` calls -- inside a git repo the remote's host can override `GITLAB_HOST`, so a query to a different host (for example a public `gitlab.com` project from a self-hosted repo) silently returns `404 Project Not Found`; use the `--hostname` flag for `glab api`, which is authoritative, and confirm the host with `glab api --hostname <host> user`
+
+## [2026-06-16]
+
+### Fixed
+
+- `sf-commit-convention` skill: the plain-prose (anti-caveman) guard now explicitly covers MR/PR descriptions, not only titles. This skill loads before every commit and MR/PR title operation, so the guard is complete even when the `glab` or `gh` skill is not active
+
+## [2026-06-10]
+
+### Changed
+
+- `glab` skill: clarify that references autolink only when written bare -- backticked refs render as inline code, and GitHub-style `owner/repo#N` does not autolink on GitLab; reconcile the duplicate "Issue auto-linking" note to point at the canonical rule
+
+## [2026-06-06]
+
+### Changed
+
+- `gh`, `glab`, and `sf-commit-convention` skills: consolidate the "write artifacts in plain prose" guidance into a single section per skill and state explicitly that an active terse output style (e.g. `CAVEMAN MODE ACTIVE`) does not apply to commit messages, MR/PR titles and descriptions, comments, or reviews -- these are always written in full prose
+
+## [2026-05-29]
+
+### Changed
+
+- `sf-commit-convention` skill: split the heavy 240-line SKILL.md into a lean ~120-line core (branch naming, format detection, conventional/legacy formats, issue references, Assisted-by trailer) plus a bundled `reference.md` loaded on demand for worked git examples, GPG signing, non-interactive git, and format-detection edge cases. Cuts the skill's resident context cost (~22% of session usage per `/status`) by roughly half with no loss of guidance
+
+## [2026-05-27]
+
+### Fixed
+
+- `glab` skill: stop generating GitLab issue titles in Conventional Commits format -- add an explicit "Issue title format" subsection requiring human-readable noun phrases (sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes), with categorization deferred to labels. Includes bad/good examples table. Four new eval cases (#27-#30) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 19/25 (76%) on the pre-fix snapshot
+- `gh` skill: stop generating GitHub issue titles in Conventional Commits format -- mirror the glab fix with an "Issue title format" subsection (human-readable noun phrases, sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes; categorization on labels). Includes bad/good examples table. Adds `## Issues` H2 heading that previously was missing. Four new eval cases (#14-#17) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 21/25 (84%) on the pre-fix snapshot
+
+## [2026-05-25]
+
+### Changed
+
+- `sf-create-agentsmd` skill: add Step 4 to manage a `CLAUDE.md` symlink alongside the root `AGENTS.md` -- auto-create relative symlink when `CLAUDE.md` is absent, preserve and warn when an existing regular file or mismatched symlink is found, no-op when already pointing at `AGENTS.md`, and explicit prompt with default No for non-root AGENTS-style files (subproject `AGENTS.md`, `.agents/AGENTS.project.md`). Three new evals cover scaffold, existing-CLAUDE.md, and subdir prompt scenarios. Capability spec at `openspec/specs/agentsmd-claude-symlink/`
+
+## [2026-05-15]
+
+### Changed
+
+- Project renamed from `sf-awesome-copilot` to `sf-agents-harness` -- updated descriptions, references, and GitHub metadata to reflect broader scope beyond any single AI coding tool
+- `glab` skill: auto-closing issues on merge via `Closes`/`Fixes` directives in MR descriptions is now optional -- the agent asks the user before including a closing reference, since auto-close is not always desired
+
+## [2026-04-22]
+
+### Added
+
+- `sf-commit-convention` skill (`skills/system/`): enforce SparkFabrik commit message and branch naming conventions -- adaptive format detection from git log history (conventional, legacy, Jira-style, custom) with most-recent-commit-wins for mixed logs and user prompt for unrecognizable histories, commit-msg hook error parsing for automatic format recovery, mandatory issue references in commit footers only (`Refs:`/`Closes:` trailers with fully qualified project path, never bare `#N` or in the subject line), branch naming (`feat/<issue>-<desc>`, `fix/<issue>-<desc>`, etc.), lowercase `Assisted-by` AI trailer on every commit, and non-interactive git operation guidance (avoid `-i`/`--interactive` flags, editors, and TTY-dependent commands)
+- `skill-creator` custom section: document `opencode run` as an alternative to `claude -p` for running skill evals, including OpenCode JSON event schema and skill-trigger detection pattern; enforce `github-copilot/gpt-4.1` as default model for evals to avoid premium model costs
+- `gh` and `glab` skills: warn about accidental issue auto-linking -- wrap `#N` in backticks when used as examples rather than intentional references
+
+## [2026-04-20]
+
+### Changed
+
+- `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links
+
+### Fixed
+
+- `glab` skill: document `-f` vs `-F` flag difference for `glab api` — `-f key=@file` sends the literal string while `-F key=@file` reads the file content; using the wrong flag silently corrupts note/description updates
+
+## [2026-04-15]
+
+### Added
+
+- `drupal-major-upgrade-validation` skill (`skills/drupal/`): validate Drupal major version upgrades (e.g., D10 to D11) by capturing a browser-automation baseline on the stable branch, applying the upgrade, re-running the same tests, and producing a structured comparison report with per-page status, console error diffs, and screenshot references
+
+### Changed
+
+- README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
 
 ## [2026-04-13]
 

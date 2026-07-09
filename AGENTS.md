@@ -196,15 +196,14 @@ used as-is.
 ## Changelog
 
 This project maintains a `CHANGELOG.md` using the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
-There is no semantic versioning — the latest commit is always the current version. Changes are grouped by date.
+There is no semantic versioning — the latest commit is always the current version. This is a rolling project: every merge to `main` is immediately released, so there is no unreleased state. Changes are grouped by date, not by version. Do not use an `[Unreleased]` section; the top of the file is always a dated section.
 
 **Every time you make changes to this repository, you must update `CHANGELOG.md`:**
 
-- Move any relevant items from `[Unreleased]` to a dated section (e.g. `[2026-03-05]`) matching today's date, or add a new dated section if none exists for today.
-- Use the standard Keep a Changelog categories: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
+- Add your entry under a dated section (`[YYYY-MM-DD]`, ISO 8601) matching today's date. Create the section at the top of the list if none exists for today; otherwise append to the existing one. Dated sections are ordered newest first.
+- Use the standard Keep a Changelog categories: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`. Within a date, order the categories as listed here.
 - Write entries from the perspective of a consumer of the skill/agent (what changed, not how).
 - Keep it concise: 1-2 entries per skill/agent per date section. Consolidate related changes into a single entry rather than listing each sub-feature separately.
-- The `[Unreleased]` section must always remain at the top, even if empty.
 
 ## References
 
