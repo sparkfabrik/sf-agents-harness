@@ -28,7 +28,6 @@ Changes are grouped by date.
 - `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links
 - `glab` skill: clarify that references autolink only when written bare -- backticked refs render as inline code, and GitHub-style `owner/repo#N` does not autolink on GitLab; reconcile the duplicate "Issue auto-linking" note to point at the canonical rule
 - `glab` skill: auto-closing issues on merge via `Closes`/`Fixes` directives in MR descriptions is now optional -- the agent asks the user before including a closing reference, since auto-close is not always desired
-- `gh`, `glab`, and `sf-commit-convention` skills: PR/MR titles are now human-readable (sentence-case, no `feat:`/`fix(scope):` prefix), the same rule as issue titles, instead of Conventional Commits format. The Conventional Commits format stays on the commits, including the single commit that lands on the default branch. Because these repositories squash-merge and default the squash commit subject to the PR/MR title, the skills instruct setting the squash commit subject to the conventional format at merge so branch history stays conventional. Fixes the issue-title sections that still pointed Conventional Commits at PR/MR titles, and flips the two evals (gh #13, glab #16) that asserted conventional PR/MR titles
 - `sf-commit-convention` skill: add two commit-subject quality rules that were previously only in the `gh`/`glab` skills (which govern PR/MR bodies, not commit subjects). Subjects must stay under 72 characters (aim for 50) with detail pushed to the body, and must not use an em dash or en dash as a sentence connector. The skill's own prose was rewritten to obey the new rule, and a fourth eval regresses both checks. Closes the gap that let over-length, em-dash commit subjects ship (for example sparkfabrik/sf-claude-plugins#33)
 - `gh`, `glab`, and `sf-commit-convention` skills: consolidate the "write artifacts in plain prose" guidance into a single section per skill and state explicitly that an active terse output style (e.g. `CAVEMAN MODE ACTIVE`) does not apply to commit messages, MR/PR titles and descriptions, comments, or reviews -- these are always written in full prose
 
@@ -38,6 +37,12 @@ Changes are grouped by date.
 - `glab` skill: stop generating GitLab issue titles in Conventional Commits format -- add an explicit "Issue title format" subsection requiring human-readable noun phrases (sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes), with categorization deferred to labels. Includes bad/good examples table. Four new eval cases (#27-#30) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 19/25 (76%) on the pre-fix snapshot
 - `gh` skill: stop generating GitHub issue titles in Conventional Commits format -- mirror the glab fix with an "Issue title format" subsection (human-readable noun phrases, sentence case, under ~60 chars, no `feat:`/`fix:`/`chore:` prefixes, no `Bug:`/`Feature:` pseudo-prefixes; categorization on labels). Includes bad/good examples table. Adds `## Issues` H2 heading that previously was missing. Four new eval cases (#14-#17) cover bug/feature/chore/docs prompts; eval #1 augmented with title-format assertions. Eval run: 25/25 (100%) on the patched skill vs 21/25 (84%) on the pre-fix snapshot
 - `glab` skill: document `-f` vs `-F` flag difference for `glab api` — `-f key=@file` sends the literal string while `-F key=@file` reads the file content; using the wrong flag silently corrupts note/description updates
+
+## [2026-07-09]
+
+### Changed
+
+- `gh`, `glab`, and `sf-commit-convention` skills: PR/MR titles follow the Conventional Commits format again (`<type>[(scope)]: <description>`), reverting the human-readable title rule. The commit-subject length and em-dash quality rules stay. Restores the two evals (gh #13, glab #16) that assert conventional PR/MR titles.
 
 ## [2026-04-13]
 
