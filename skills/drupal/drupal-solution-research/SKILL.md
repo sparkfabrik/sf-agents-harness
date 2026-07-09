@@ -83,13 +83,15 @@ ALWAYS use this structure:
 ## Evidence
 
 ### 1. <title> — <kind: known issue + patch | merge request | fixed in release | alternative module | documented approach>
-- **Link**: <url>  **Status**: <issue status / MR state>  **Version**: <target version>
+
+- **Link**: <url> **Status**: <issue status / MR state> **Version**: <target version>
 - **Compatibility**: <applies cleanly to installed version? yes/no/untested>
 - <2-3 sentences: what it is, what the comments say, caveats>
 
 ### 2. <runner-up, one entry per real alternative> ...
 
 ## Context checked
+
 <installed core/module/PHP versions, or "not in a Drupal project" — one line>
 ```
 
@@ -103,11 +105,11 @@ Length discipline: the reader wants the answer at the top and as little below it
 
 ### 6. Apply a patch (only when the user wants to proceed)
 
-When the recommendation is a patch/MR and the user asks to apply it, follow the SparkFabrik convention in `references/patch-workflow.md`: download the patch into `src/drupal/addons/patches/` with the `#<NID>_<CM|MR><id>.patch` naming, and add the `composer.patches.json` entry. Include the ready-to-paste snippet in the report's Recommendation section even before applying, so the user sees exactly what would change.
+When the recommendation is a patch/MR and the user asks to apply it, follow the SparkFabrik convention in the `drupal-patch-convention` skill: download the patch into the project's patches folder with the `<NID>_<CM|MR><id>.patch` naming, and add the `composer.patches.json` entry keyed `#<NID>: <issue title>`. Include the ready-to-paste snippet in the report's Recommendation section even before applying, so the user sees exactly what would change.
 
 ## Judgment notes
 
-- An issue marked "Closed (works as designed)" still often contains the answer — the explanation of *why* it works that way, plus the supported alternative.
+- An issue marked "Closed (works as designed)" still often contains the answer — the explanation of _why_ it works that way, plus the supported alternative.
 - Check issue `changed` dates: a 2019 patch on a module now at 3.x is archaeology, not a solution.
 - Duplicates chain: comments saying "duplicate of #NNN" — follow the chain to the canonical issue before reporting.
 - For core issues, also search for a **change record** (WebSearch `site:drupal.org/node` or "change record" + topic) — API changes are documented there, and the "fix" may be adapting to a deliberate change.
