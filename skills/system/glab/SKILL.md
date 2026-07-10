@@ -375,6 +375,18 @@ glab mr update 15 --add-label "reviewed"
 glab mr close 15                    # close without merging
 ```
 
+> **`--description` replaces, never patches.** `glab mr update N --description` (and `glab issue update`, and `glab api -X PUT ... -f description=`) overwrites the entire body. Before any description update, re-fetch the current live content — never reuse a copy cached in the session from creation time, because reviewers, bots, or quick actions may have edited it in between, and your stale copy would silently erase their changes. Fetch the raw markdown (use `glab api`, not `glab mr view`, which formats the output for display), apply your edit to it, then send the merged result:
+>
+> ```bash
+> # 1. Fetch the current raw description
+> glab api projects/:id/merge_requests/15 | jq -r '.description' > /tmp/mr-desc.md
+> # 2. Edit /tmp/mr-desc.md (append or modify only the section you need)
+> # 3. Push the merged result back
+> glab mr update 15 --description "$(cat /tmp/mr-desc.md)"
+> ```
+>
+> Preserve any existing AI-attribution header and any content you did not author.
+
 > **`close`/`reopen` do NOT accept `--message`**: unlike `gh pr close --comment`, `glab mr close` and `glab mr reopen` only accept `--repo` -- there is no `--message` or `--comment` flag. The same applies to `glab issue close` and `glab issue reopen`. To close (or reopen) with an explanation, add a note first as a separate command:
 >
 > ```bash
@@ -664,6 +676,8 @@ GITLAB_HOST=<hostname> glab mr update 4 --description "## Screenshot
 
 ![image](/uploads/<hash>/image.png)"
 ```
+
+When adding the screenshot to an existing description, follow the re-fetch rule from "Reviewing and managing MRs": fetch the current raw description first and append to it — `--description` replaces the whole body.
 
 ---
 
