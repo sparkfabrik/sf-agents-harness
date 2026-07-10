@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-10]
+
+### Changed
+
+- `glab` skill: updating an MR or issue description now requires re-fetching the live description first, because `--description` replaces the entire body and a session-cached copy would erase edits made since creation.
+
 ## [2026-07-09]
 
 ### Changed
