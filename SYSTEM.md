@@ -47,7 +47,7 @@ When adding or modifying a system skill or agent, update the catalog entry too.
 
 ## Available agents
 
-- **the-architect** -- Conversational AI oracle for discovery, brainstorming, architecture, and general knowledge. Not a code agent.
+_No system agents are currently defined._
 
 ## Available skills
 

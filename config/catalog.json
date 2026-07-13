@@ -41,9 +41,5 @@
       "description": "Create, iterate, and benchmark agent skills"
     }
   },
-  "agents": {
-    "the-architect": {
-      "description": "Discovery, brainstorming, architecture oracle"
-    }
-  }
+  "agents": {}
 }

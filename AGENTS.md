@@ -34,6 +34,7 @@ sjust sf-agents-status           # show installed resources and update status
 | `skills/system/<name>/`          | `~/.agents/skills/<name>/`   | Agent skills (SKILL.md + bundled assets) |
 | `agents/system/<name>/copilot/`  | `~/.copilot/agents/`         | GitHub Copilot agent profiles            |
 | `agents/system/<name>/opencode/` | `~/.config/opencode/agents/` | OpenCode agent profiles                  |
+| `agents/system/<name>/claude/`   | `~/.claude/agents/`          | Claude Code agent profiles               |
 
 The sync is SHA-tracked via a manifest at `~/.cache/sparkdock/sf-skills-manifest.json`.
 Local modifications are detected and preserved unless `--force` is used.
@@ -107,7 +108,9 @@ Content with examples, commands, code snippets...
 4. **Update `SYSTEM.md`** — if the agent belongs to `system/`, add or remove it from the "Available agents" list
 5. **Update `config/catalog.json`** — add or update the short description in the `agents` section
 
-System agents (`agents/system/`) support multiple tools (Copilot, OpenCode). Each tool gets its own file in a subfolder, but the prompt body must be kept identical across tools — only the YAML frontmatter differs to match each tool's configuration format. There is no shared standard yet.
+System agents (`agents/system/`) support multiple tools (Copilot, OpenCode, Claude Code). Each tool gets its own file in a subfolder, but the prompt body must be kept identical across tools — only the YAML frontmatter differs to match each tool's configuration format. There is no shared standard yet.
+
+Drupal agents (`agents/drupal/`) use the same per-tool subfolder layout as `agents/system/`: `agents/drupal/<name>/{copilot,claude,opencode}/`. Each tool's variant maps to the matching project directory: `copilot/` → `.github/agents/`, `claude/` → `.claude/agents/`, `opencode/` → `.opencode/agents/`. As with system agents, the prompt body must be kept identical across tools — only the frontmatter differs.
 
 ### For Skills
 

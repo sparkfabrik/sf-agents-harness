@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-13]
+
+### Changed
+
+- `drupal-cache-expert` agent (`agents/drupal/`): restructured to the per-tool subfolder layout used by `agents/system/`, at `agents/drupal/drupal-cache-expert/{copilot,claude,opencode}/`. The flat `drupal-cache-expert.agent.md` moves into `copilot/`, and Claude Code and OpenCode variants are added with identical prompt bodies (only frontmatter differs). Each tool's variant maps to a project directory: `copilot/` to `.github/agents/`, `claude/` to `.claude/agents/`, and `opencode/` to `.opencode/agents/`.
+
+### Removed
+
+- `the-architect` agent, including its Copilot, Claude Code, and OpenCode variants and its `config/catalog.json` and `SYSTEM.md` entries.
+
 ## [2026-07-10]
 
 ### Changed
