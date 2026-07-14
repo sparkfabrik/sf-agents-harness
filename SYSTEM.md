@@ -7,8 +7,8 @@ externally via [sparkdock](https://github.com/sparkfabrik/sparkdock).
 
 ```
 agents/system/<agent-name>/
-├── copilot/     # GitHub Copilot profile (.agent.md)
-└── opencode/    # OpenCode profile (.md)
+├── copilot/      # GitHub Copilot profile (.agent.md)
+└── claude-code/  # Claude Code subagent profile (.md)
 
 skills/system/<skill-name>/
 └── SKILL.md     # Skill definition (plus optional bundled assets)
@@ -16,15 +16,19 @@ skills/system/<skill-name>/
 
 ### Agents
 
-System agents support multiple tools (Copilot, OpenCode). Each tool gets its
+System agents support multiple tools (Copilot, Claude Code). Each tool gets its
 own file in a subfolder, but the prompt body is kept identical across tools --
 only the YAML frontmatter differs to match each tool's configuration format.
 There is no shared standard yet.
 
-| Tool     | Install path                                |
-| -------- | ------------------------------------------- |
-| Copilot  | `~/.copilot/agents/<agent-name>.agent.md`   |
-| OpenCode | `~/.config/opencode/agents/<agent-name>.md` |
+Claude Code agents are installed at the user level (`~/.claude/agents/`, scope
+"All your projects") by sparkdock, so the four system agents are available in
+every project.
+
+| Tool        | Install path                              |
+| ----------- | ----------------------------------------- |
+| Copilot     | `~/.copilot/agents/<agent-name>.agent.md` |
+| Claude Code | `~/.claude/agents/<agent-name>.md`        |
 
 ### Skills
 
@@ -47,7 +51,10 @@ When adding or modifying a system skill or agent, update the catalog entry too.
 
 ## Available agents
 
+- **the-analyst** -- Domain analysis and modeling agent. Turns ambiguous requirements into bounded contexts, ubiquitous language, invariants, workflows, and integration boundaries. Not a code agent.
 - **the-architect** -- Conversational AI oracle for discovery, brainstorming, architecture, and general knowledge. Not a code agent.
+- **the-builder** -- Test-driven development agent. Writes code, tests, and refactors with accountability. Technology-agnostic, principle-driven.
+- **the-reviewer** -- Read-only implementation review agent. Compares candidate implementations, picks the best fit for the requirements, and produces severity-ordered findings with evidence.
 
 ## Available skills
 

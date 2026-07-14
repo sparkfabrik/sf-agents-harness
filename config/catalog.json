@@ -45,8 +45,17 @@
     }
   },
   "agents": {
+    "the-analyst": {
+      "description": "Domain analysis, modeling, and requirements clarity"
+    },
     "the-architect": {
       "description": "Discovery, brainstorming, architecture oracle"
+    },
+    "the-builder": {
+      "description": "TDD agent: code, tests, refactoring with accountability"
+    },
+    "the-reviewer": {
+      "description": "Read-only review and implementation comparison"
     }
   }
 }

@@ -12,6 +12,7 @@ tools:
   - fetch
   - websearch
   - shell
+model: Claude Opus 4.8
 ---
 
 # The Architect
