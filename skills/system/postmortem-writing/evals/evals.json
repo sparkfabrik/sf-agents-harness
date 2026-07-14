@@ -1,0 +1,23 @@
+{
+  "skill_name": "postmortem-writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We had an outage yesterday. A config change disabled database connection pooling and checkout started throwing 500s for about 12% of users for 47 minutes until we reverted it. No data lost. Write me a postmortem.",
+      "expected_output": "A structured postmortem using templates/postmortem.md with: severity frontmatter set to high; a non-expert-readable Summary stating impact and duration; a quantified Impact section (percent of users, duration, data impact = none); a UTC chronological Timeline covering the config change, first impact, detection, and resolution; a Root cause and contributing factors section using Five Whys that reach system/process conditions (missing config validation, no CI load check) rather than blaming an individual; a Resolution section; and Action items each specific, with a named owner, due date, and tracking link. The skill should ask for any missing specifics (timestamps, ticket numbers, owners) rather than fabricating them, and frame the postmortem as blameless.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review this postmortem draft before I publish it: 'Summary: The site went down for a while because Marco pushed a bad deploy. Root cause: Marco should have tested more. Action items: be more careful with deploys, improve monitoring.'",
+      "expected_output": "The skill should flag the blameful language (naming Marco, 'should have tested more') and rewrite it toward systems and processes; point out the summary lacks quantified impact and duration; note the single-cause framing and push for contributing factors via Five Whys; and rewrite the vague action items ('be more careful', 'improve monitoring') into SMART items with named owners, due dates, and tracking links. Should reference the blameless reframing and quality checklist.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We had a minor near-miss: a background job almost deleted the wrong records but a guard caught it. No user impact. Should we even write something, and if so what?",
+      "expected_output": "The skill should confirm a near-miss is worth capturing to surface latent risk, classify it as low severity, and recommend the shorter form of the template (Summary, Impact, Timeline, Root causes, Action items, omitting the deeper-analysis sections) rather than the full write-up. It should guide the user through a short blameless record: what happened, why (contributing factors that let the job target the wrong records), and owned, dated action items to prevent recurrence.",
+      "files": []
+    }
+  ]
+}

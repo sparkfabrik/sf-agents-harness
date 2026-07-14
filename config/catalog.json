@@ -31,6 +31,9 @@
     "playwright-cli": {
       "description": "Browser automation, testing, screenshots, scraping"
     },
+    "postmortem-writing": {
+      "description": "Write blameless incident postmortems (timeline, RCA, actions)"
+    },
     "sf-create-agentsmd": {
       "description": "Generate and review AGENTS.md for projects"
     },
