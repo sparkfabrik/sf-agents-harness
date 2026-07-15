@@ -31,6 +31,8 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 | **mermaid-diagrams**       | Create and refactor clear Mermaid diagrams in Markdown -- flowcharts, sequence, ER, state, C4                                                         | `skills/system/mermaid-diagrams/`       |
 | **spark-http-proxy**       | Configure, run, and troubleshoot the Spark HTTP Proxy local dev proxy -- expose containers (VIRTUAL_HOST/traefik labels), mkcert HTTPS, .loc DNS      | `skills/system/spark-http-proxy/`       |
 | **postmortem-writing**     | Write blameless incident postmortems -- summary, quantified impact, UTC timeline, root cause and contributing factors (Five Whys), SMART action items | `skills/system/postmortem-writing/`     |
+| **adversarial-verify**     | Adversarial verification (Chain-of-Verification) of code, architecture, data, docs, tests, and analysis -- red-teaming, hidden-behavior probing, stress tests | `skills/system/adversarial-verify/`     |
+| **figma-bridge**           | Generic Figma access -- URL parsing, Figma MCP tool usage, and adaptive design-token mapping discovery                                                 | `skills/system/figma-bridge/`           |
 
 Skills are documents that provide context to Copilot on specific topics. Each skill contains:
 

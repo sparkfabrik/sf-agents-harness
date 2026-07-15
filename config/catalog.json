@@ -4,6 +4,12 @@
     "adr-creator": {
       "description": "Create Architecture Decision Records (Nygard format)"
     },
+    "adversarial-verify": {
+      "description": "Adversarial verification (Chain-of-Verification) of code, docs, and analysis"
+    },
+    "figma-bridge": {
+      "description": "Generic Figma access, MCP tool usage, and design-token mapping"
+    },
     "agentic-security-audit": {
       "description": "Audit AI agent configs for OWASP agentic risks"
     },
