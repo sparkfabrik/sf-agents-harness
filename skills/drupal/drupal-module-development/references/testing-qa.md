@@ -65,24 +65,4 @@ phpunit modules/custom/my_module/tests/src/Unit/
 
 ## Code Quality Tools
 
-```bash
-make drupal-qa  # Run all quality checks (linting, coding standards, etc.)
-```
-
-You can run individual tools to speed up the process:
-
-```bash
-# Run PHPCS only
-make drupal-qa phpcs
-
-# Run CSpell only
-make drupal-qa cspell
-
-# Run PHPMD only
-make drupal-qa phpmd
-
-# Run PHPStan only
-make drupal-qa phpstan
-```
-
-**NEVER** run individual tools from bin directory! **ALWAYS** use the `make drupal-qa <tool>` command to ensure proper environment variables and configuration are applied.
+Run `make drupal-qa` for all quality checks, or a single tool with `make drupal-qa <phpcs|cspell|phpmd|phpstan>`. Never run the tools from the `bin/` directory directly. The full QA workflow, including how to fix each tool's failures, lives in the `drupal-qa` skill.

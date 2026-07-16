@@ -30,167 +30,15 @@ Use this skill when:
 ❌ **BAD**: Add global ignoreErrors in phpstan.neon
 ✅ **GOOD**: Fix each issue individually with proper types
 
-### 2. PHPStan Annotations for Inherited Methods
-When inheriting from Drupal core classes or interfaces (like `ContainerFactoryPluginInterface`, `PluginBase`, `ProcessPluginBase`, `DeriverInterface`), use `@phpstan-param` and `@phpstan-return` instead of regular `@param` and `@return` to avoid conflicting with parent documentation:
+### 2. PHPStan Fixes: Use the Shared Error Catalogue
 
-❌ **BAD**:
-```php
-/**
- * Constructs a MyPlugin plugin.
- *
- * @param array<string, mixed> $configuration
- *   The plugin configuration.
- * @param string $plugin_id
- *   The plugin ID.
- */
-public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-  parent::__construct($configuration, $plugin_id, $plugin_definition);
-}
-```
+The canonical, fully worked catalogue of PHPStan level 8 errors and their fixes lives in the `drupal-php-standards` skill, in `references/phpstan-common-errors.md`. Read it before fixing any PHPStan error. The rules most often needed while fixing QA failures:
 
-✅ **GOOD**:
-```php
-/**
- * {@inheritdoc}
- *
- * @phpstan-param array<string, mixed> $configuration
- *   The plugin configuration.
- * @phpstan-param string $plugin_id
- *   The plugin ID.
- * @phpstan-param mixed $plugin_definition
- *   The plugin definition.
- */
-public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-  parent::__construct($configuration, $plugin_id, $plugin_definition);
-}
-```
+- **Inherited methods** (catalogue §12): when overriding a method from Drupal core or contrib (`PluginBase`, `ContainerFactoryPluginInterface::create()`, `DeriverInterface::getDerivativeDefinitions()`), use `@phpstan-param` / `@phpstan-return` under `{@inheritdoc}` instead of regular `@param` / `@return`, so the annotations do not conflict with parent documentation.
+- **`static` vs concrete return type** (catalogue §11): when `create()` returns `new ClassName()` and PHPStan reports `return.type`, change the return type from `static` to the concrete class name and make the class `final`. Do not make the class `final` when it is designed to be extended or already has subclasses; in that case keep `static` and return `new static()`.
+- **Parameter contravariance** (catalogue §6): when PHPStan reports `method.childParameterType`, do not narrow the native type. Add a `@phpstan-param` with the parent's broader type (e.g. `array<array-key, mixed>` where the parent declares `array`).
 
-**When to use `@phpstan-*`:**
-- In `__construct()` for plugins extending base classes like `PluginBase`
-- In `create()` for plugins implementing `**ContainerFactoryPluginInterface**`
-- In `getDerivativeDefinitions()` for classes implementing `DeriverInterface`
-- Any method from custom module sources that overrides a parent method from Drupal core or contrib modules
-
-### 3. Fix `static` Return Type Errors with Concrete Class Names
-When PHPStan reports a `return.type` error like:
-
-```
-Method Drupal\luiss_migrate\Plugin\migrate\Deriver\LuissPageRichAccordionParagraphDeriver::create() should return
-         static(Drupal\luiss_migrate\Plugin\migrate\Deriver\LuissPageRichAccordionParagraphDeriver) but returns
-         Drupal\luiss_migrate\Plugin\migrate\Deriver\LuissPageRichAccordionParagraphDeriver.
-         🪪  return.type
-```
-
-This happens when a method returns `new ClassName()` instead of `new static()`, or when using `new static()` in a non-final class. The fix is to:
-1. **Change the return type from `static` to the concrete class name**
-2. **Make the class `final`**
-
-❌ **BAD**: Suppress the error
-```php
-// @phpstan-ignore-next-line return.type
-public static function create(...): static {
-  return new MyClass(...);
-}
-```
-
-❌ **BAD**: Keep using `static` return type
-```php
-class MyDeriver extends DeriverBase {
-  public static function create(ContainerInterface $container, $base_plugin_id): static {
-    return new MyDeriver();
-  }
-}
-```
-
-✅ **GOOD**: Use concrete class name and make class final
-```php
-final class MyDeriver extends DeriverBase implements ContainerDeriverInterface {
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, $base_plugin_id): MyDeriver {
-    return new MyDeriver();
-  }
-}
-```
-
-```php
-final class MyPlugin extends ProcessPluginBase implements ContainerFactoryPluginInterface {
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(
-    ContainerInterface $container,
-    array $configuration,
-    $plugin_id,
-    $plugin_definition
-  ): MyPlugin {
-    return new MyPlugin(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('database'),
-    );
-  }
-}
-```
-
-**Key points:**
-- Replace `static` with the concrete class name in the return type
-- Add `final` to the class definition to prevent inheritance issues
-- This applies to factory methods like `create()`, `createInstance()`, etc.
-
-**When NOT to use `final`:**
-- If the class is explicitly designed to be extended (base classes, abstract classes)
-- If other classes in the codebase already extend it
-
-In those rare cases where `final` is not possible, keep `static` as return type and ensure you use `new static()` instead of `new ClassName()`.
-
-### 4. Fix Parameter Contravariance Errors
-When PHPStan reports a `method.childParameterType` error like:
-
-> Parameter #1 $base_plugin_definition (array<string, mixed>) of method MyClass::getDerivativeDefinitions() should be contravariant with parameter $base_plugin_definition (array) of method ParentClass::getDerivativeDefinitions()
-
-This means the child method's parameter type is **more specific** than the parent's, violating the [Liskov Substitution Principle](https://en.wikipedia.org/wiki/Liskov_substitution_principle). In PHP, method parameters must be contravariant (same or broader type than parent).
-
-**The fix**: Add a `@phpstan-param` annotation with the broader type matching the parent's signature. This tells PHPStan to use the broader type for analysis without changing the actual PHP type hint.
-
-❌ **BAD**: Suppress or ignore
-```php
-// @phpstan-ignore-next-line method.childParameterType
-public function getDerivativeDefinitions($base_plugin_definition): array {
-```
-
-❌ **BAD**: Change the `@param` type to be more specific than the parent
-```php
-/**
- * @param array<string, mixed> $base_plugin_definition
- */
-public function getDerivativeDefinitions($base_plugin_definition): array {
-```
-
-✅ **GOOD**: Use `@phpstan-param` with the parent's broader type
-```php
-/**
- * {@inheritdoc}
- *
- * @phpstan-param array<array-key, mixed> $base_plugin_definition
- */
-public function getDerivativeDefinitions($base_plugin_definition): array {
-```
-
-**Common cases where this applies:**
-- `getDerivativeDefinitions($base_plugin_definition)` - parent uses `array`, child uses `array<string, mixed>`
-- `transform($value, ...)` - parent uses `mixed`, child uses a more specific type
-- `__construct(array $configuration, ...)` - parent uses `array`, child uses `array<string, mixed>`
-- Any overridden method where you've added generic type annotations that are stricter than the parent
-
-**How to determine the correct `@phpstan-param` type:**
-1. Look at the parent class/interface parameter type
-2. Use that same type (or broader) in the `@phpstan-param` annotation
-3. Common broader types: `array` becomes `array<array-key, mixed>`, specific types become `mixed`
-
-### 5. Type Assertions Over Ignores
+### 3. Type Assertions Over Ignores
 When PHPStan complains about type narrowing, use assertions:
 
 ❌ **BAD**:
@@ -205,29 +53,10 @@ assert($paragraph instanceof RevisionableInterface);
 $revision_id = $paragraph->getRevisionId();
 ```
 
-### 6. Refactor Complex Code
-When PHPMD reports high cyclomatic complexity:
+### 4. Refactor Complex Code
+When PHPMD reports high cyclomatic complexity, never add `@SuppressWarnings(PHPMD.CyclomaticComplexity)`. Extract focused methods instead; see the strategies and worked example in Step 4 of the Workflow below.
 
-❌ **BAD**: Add `@SuppressWarnings(PHPMD.CyclomaticComplexity)`
-
-✅ **GOOD**: Extract methods to reduce complexity:
-```php
-// Before: 20 lines, CC=15
-public function transform($value, $exec, $row, $dest) {
-  // ... complex logic ...
-}
-
-// After: Multiple focused methods
-public function transform($value, $exec, $row, $dest) {
-  $data = $this->extractData($row);
-  return $this->processData($data);
-}
-
-private function extractData($row) { /* ... */ }
-private function processData($data) { /* ... */ }
-```
-
-### 7. When Suppressions Are Acceptable
+### 5. When Suppressions Are Acceptable
 
 Only use suppressions in these specific cases:
 
@@ -420,72 +249,13 @@ public static function create(ContainerInterface $container, ...) {
 }
 ```
 
-### Plugin Configuration Arrays
-Specify types for plugin configuration using `@phpstan-param` when inheriting from Drupal core:
-
-```php
-// For __construct() overriding parent from ProcessPluginBase/PluginBase
-/**
- * Constructs a MyPlugin plugin.
- *
- * @phpstan-param array<string, mixed> $configuration
- *   The plugin configuration.
- * @param string $plugin_id
- *   The plugin ID.
- * @param mixed $plugin_definition
- *   The plugin definition.
- * @param \Drupal\Core\Database\Connection $database
- *   The database connection.
- */
-public function __construct(
-  array $configuration,
-  $plugin_id,
-  $plugin_definition,
-  Connection $database,
-) {
-  parent::__construct($configuration, $plugin_id, $plugin_definition);
-}
-
-// For create() factory method
-/**
- * {@inheritdoc}
- *
- * @phpstan-param array<string, mixed> $configuration
- */
-public static function create(
-  ContainerInterface $container,
-  array $configuration,
-  $plugin_id,
-  $plugin_definition
-): static {
-  return new static(
-    $configuration,
-    $plugin_id,
-    $plugin_definition,
-    $container->get('database'),
-  );
-}
-```
-
-### Deriver getDerivativeDefinitions
-For DeriverInterface implementations, use `@phpstan-*` annotations:
-
-```php
-/**
- * {@inheritdoc}
- *
- * @phpstan-param array<string, mixed> $base_plugin_definition
- * @phpstan-return array<string, array<string, mixed>>
- */
-public function getDerivativeDefinitions($base_plugin_definition): array {
-  // Implementation
-}
-```
+### Plugin Configuration Arrays and Derivers
+For `@phpstan-param` / `@phpstan-return` annotations on plugin constructors, `create()` factory methods, and `getDerivativeDefinitions()`, follow the inherited-methods rule in Core Principle 2 and the worked examples in the `drupal-php-standards` catalogue (`references/phpstan-common-errors.md`, §11 and §12).
 
 ## Questions to Ask User
 
 When encountering these situations, **ALWAYS ask the user**:
-`****`
+
 1. **High complexity that's hard to refactor**
    - "This method has CC=15. I can see it's handling complex migration logic. Would you like me to refactor it into smaller methods, or is there a reason to keep it as-is?"
 
