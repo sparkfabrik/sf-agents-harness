@@ -118,7 +118,25 @@ GITLAB_HOST=gitlab.example.com glab api \
 
 # Group details
 GITLAB_HOST=gitlab.example.com glab api "groups/team%2Fsubgroup"
+
+# Create a subgroup (parent_id = numeric id of the parent group)
+GITLAB_HOST=gitlab.example.com glab api -X POST groups \
+  -f name="AI Research" -f path="ai-research" \
+  -f parent_id=196 -f visibility="private"
 ```
+
+### Transferring a project
+
+```bash
+# List valid target namespaces (id + full_path):
+glab api "projects/:id/transfer_locations" | jq '.[] | {id, full_path}'
+
+# Transfer to a namespace by numeric group id.
+# NOTE: use PUT, not POST. Current GitLab (18.x) 404s on POST for this route.
+glab api -X PUT "projects/<project-id>/transfer" -f namespace=<group-id>
+```
+
+The project id and history are preserved and the old path redirects, but local git remotes must be updated to the new `path_with_namespace`.
 
 ---
 
