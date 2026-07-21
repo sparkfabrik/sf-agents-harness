@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-21]
+
+### Added
+
+- `glab` skill: documents creating groups and subgroups (`POST groups` with `parent_id`) and transferring a project to another namespace, including the `transfer_locations` pre-check and the gotcha that current GitLab (18.x) requires `PUT`, not `POST`, on the transfer route.
+
 ## [2026-07-14]
 
 ### Added
