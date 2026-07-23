@@ -158,12 +158,9 @@ This rule applies **only to written content** (descriptions, comments, closing k
 
 ### Write in plain, professional prose
 
-Issue and merge request titles and descriptions, comments and notes, and commit messages must always be written in normal, complete, well-structured English: full sentences, articles, and proper markdown. They are durable, outward-facing documents that other people read and that GitLab renders in its UI; compression hurts readability and looks unprofessional. This rule **overrides any active terse output style for the duration of writing these artifacts.** A session-level style may inject a per-turn reminder such as `CAVEMAN MODE ACTIVE` (drop articles, fragments OK, short synonyms); that reminder applies to your conversational replies, not to the artifacts. When you compose an issue/MR title or body, a comment, a note, or a commit message, write full prose regardless of the active style, then resume the terse conversational style for your surrounding chat replies. Do not run any command to toggle the style off; just write the artifact in plain prose regardless of what reminder is present.
+Issue and MR titles and descriptions, comments and notes, and commit messages are durable, outward-facing artifacts: write them in complete, well-structured English with proper markdown, regardless of any active terse output style. A session-level reminder such as `CAVEMAN MODE ACTIVE` applies to your conversational replies, never to these artifacts; do not toggle the style, write the artifact in full prose and resume the terse style in chat. Never use the em dash (—) or en dash (–); rewrite with a period, comma, colon, or parentheses, and prefer short paragraphs and lists over dense run-ons.
 
-### Avoid AI-slop writing tells
-
-- Do not use the em dash (—) or en dash (–) as a sentence connector; rewrite with a period, comma, colon, or parentheses instead.
-- Prefer clear structure over dense run-on paragraphs: use real line breaks, short paragraphs, and lists, and keep sentences plain and direct. Write like a human engineer, not a generated summary.
+**Load the `sf-writing-style` skill for the full SparkFabrik ruleset** (air, bold lead-in lists, slop blacklist, before/after examples) before composing any of these artifacts.
 
 ---
 
