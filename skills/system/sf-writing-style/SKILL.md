@@ -1,6 +1,6 @@
 ---
 name: sf-writing-style
-description: 'SparkFabrik writing style, MUST be loaded before writing or rewriting any markdown or prose artifact: docs, READMEs, MR/PR and issue text, comments, changelogs, ADRs. Short aired paragraphs, bulleted lists with bold lead-ins, no em/en dashes, no AI slop. Trigger on: "writing style", "readable markdown", "rewrite this doc", "improve this README", "air out", "too dense", "wall of text", "no slop", "em dash".'
+description: 'SparkFabrik markdown writing style, MUST be loaded before writing or rewriting any markdown or prose artifact: docs, READMEs, MR/PR and issue text, comments, changelogs, ADRs. Short aired paragraphs, bulleted lists with bold lead-ins, no em/en dashes, no AI slop. Trigger on: "writing style", "readable markdown", "rewrite this doc", "improve this README", "air out", "too dense", "wall of text", "no slop", "em dash".'
 ---
 
 # SparkFabrik writing style
