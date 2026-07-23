@@ -1,6 +1,6 @@
 ---
 name: sf-writing-style
-description: 'Canonical SparkFabrik writing style for every markdown or prose artifact the agent writes: READMEs, docs, onboarding guides, MR/PR and issue descriptions, comments, changelogs, ADRs, review notes. Enforces readable markdown with air (short paragraphs, bulleted lists with bold lead-ins), a total ban on em and en dashes, and an AI-slop blacklist. MUST be loaded before writing or rewriting any documentation or prose artifact. Trigger on: "writing style", "readable markdown", "rewrite this doc", "improve this README", "write the docs", "air out", "too dense", "wall of text", "no slop", "AI slop", "em dash", "polish this text", "editing pass".'
+description: 'SparkFabrik writing style, MUST be loaded before writing or rewriting any markdown or prose artifact: docs, READMEs, MR/PR and issue text, comments, changelogs, ADRs. Short aired paragraphs, bulleted lists with bold lead-ins, no em/en dashes, no AI slop. Trigger on: "writing style", "readable markdown", "rewrite this doc", "improve this README", "air out", "too dense", "wall of text", "no slop", "em dash".'
 ---
 
 # SparkFabrik writing style
