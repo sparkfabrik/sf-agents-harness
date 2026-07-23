@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-23]
+
+### Added
+
+- `sf-writing-style` skill: canonical SparkFabrik writing style for every markdown and prose artifact (READMEs, docs, MR/issue descriptions, comments, changelogs). Aired short paragraphs, bulleted lists with bold lead-ins, a total ban on em and en dashes, an AI-slop blacklist, and bundled before/after rewrite examples.
+
+### Changed
+
+- `gh` and `glab` skills: the inline plain-prose and AI-slop authoring sections are now compact stubs that keep the terse-style override and the dash ban, and point to `sf-writing-style` for the full ruleset.
+- `doc-coauthoring` skill: gains a custom section pointing the drafting and quality-check passes to `sf-writing-style`.
+
 ## [2026-07-21]
 
 ### Added

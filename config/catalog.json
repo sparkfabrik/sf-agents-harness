@@ -46,6 +46,9 @@
     "sf-commit-convention": {
       "description": "Enforce SparkFabrik commit conventions and trailers"
     },
+    "sf-writing-style": {
+      "description": "SparkFabrik writing style: readable markdown, no em dashes, no slop"
+    },
     "skill-creator": {
       "description": "Create, iterate, and benchmark agent skills"
     }
