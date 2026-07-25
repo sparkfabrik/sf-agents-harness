@@ -20,25 +20,25 @@ own checksums/hashes.
 <!-- When updating a version: change the version, update the SHA-256 where
      applicable, and set "Last verified" to today's date. -->
 
-| Tool | Version | Install method | SHA-256 (linux/amd64) | Last verified |
-|------|---------|---------------|-----------------------|---------------|
-| semgrep | 1.156.0 | pip | -- | 2026-03-31 |
-| trivy | 0.69.3 | binary tarball | `1816b632dfe52986...` | 2026-03-31 |
-| gitleaks | 8.30.1 | binary tarball | `551f6fc83ea457d6...` | 2026-03-31 |
-| grype | 0.110.0 | binary tarball | `aaa98d27d2d7efd9...` | 2026-03-31 |
-| syft | 1.42.3 | binary tarball | `0d6be741479eddd2...` | 2026-03-31 |
-| checkov | 3.2.513 | pip | -- | 2026-03-31 |
-| phpcs | 3.7.2 | composer | -- | 2026-03-31 |
-| drupal/coder | 7.2.2 | composer | -- | 2026-03-31 |
-| psalm | 6.16.1 | composer | -- | 2026-03-31 |
-| phpstan | 2.1.45 | composer | -- | 2026-03-31 |
-| drupal-check | 1.5.0 | composer | -- | 2026-03-31 |
-| local-php-security-checker | 2.1.3 | binary download | `db03c8c180692408...` | 2026-03-31 |
-| retire.js | 5.4.2 | npm | -- | 2026-03-31 |
-| gosec | 2.25.0 | binary tarball | `ca099f42e37bc8f9...` | 2026-03-31 |
-| govulncheck | 1.1.4 | go install | -- | 2026-03-31 |
-| bandit | 1.9.4 | pip | -- | 2026-03-31 |
-| pip-audit | 2.10.0 | pip | -- | 2026-03-31 |
+| Tool                       | Version | Install method  | SHA-256 (linux/amd64) | Last verified |
+| -------------------------- | ------- | --------------- | --------------------- | ------------- |
+| semgrep                    | 1.156.0 | pip             | --                    | 2026-03-31    |
+| trivy                      | 0.69.3  | binary tarball  | `1816b632dfe52986...` | 2026-03-31    |
+| gitleaks                   | 8.30.1  | binary tarball  | `551f6fc83ea457d6...` | 2026-03-31    |
+| grype                      | 0.110.0 | binary tarball  | `aaa98d27d2d7efd9...` | 2026-03-31    |
+| syft                       | 1.42.3  | binary tarball  | `0d6be741479eddd2...` | 2026-03-31    |
+| checkov                    | 3.2.513 | pip             | --                    | 2026-03-31    |
+| phpcs                      | 3.7.2   | composer        | --                    | 2026-03-31    |
+| drupal/coder               | 7.2.2   | composer        | --                    | 2026-03-31    |
+| psalm                      | 6.16.1  | composer        | --                    | 2026-03-31    |
+| phpstan                    | 2.1.45  | composer        | --                    | 2026-03-31    |
+| drupal-check               | 1.5.0   | composer        | --                    | 2026-03-31    |
+| local-php-security-checker | 2.1.3   | binary download | `db03c8c180692408...` | 2026-03-31    |
+| retire.js                  | 5.4.2   | npm             | --                    | 2026-03-31    |
+| gosec                      | 2.25.0  | binary tarball  | `ca099f42e37bc8f9...` | 2026-03-31    |
+| govulncheck                | 1.1.4   | go install      | --                    | 2026-03-31    |
+| bandit                     | 1.9.4   | pip             | --                    | 2026-03-31    |
+| pip-audit                  | 2.10.0  | pip             | --                    | 2026-03-31    |
 
 Full SHA-256 checksums (for copy-paste into Dockerfiles):
 

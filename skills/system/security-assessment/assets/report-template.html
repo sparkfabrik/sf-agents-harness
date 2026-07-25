@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{PROJECT}} — Security Assessment Report</title>
+    <!-- No external assets: the report is fully standalone and makes no outbound
+         requests when opened, so a security report can't leak metadata. Fonts
+         fall back to the system stack (Barlow/JetBrains Mono if installed). -->
+    <style>
+      :root {
+        --red: #ff0523;
+        --navy: #031527;
+        --blue: #0073ce;
+        --ink: #14202e;
+        --muted: #5b6b7b;
+        --line: #e3e8ee;
+        --bg: #f5f7fa;
+        --card: #ffffff;
+        --code-bg: #061b30;
+        --code-ink: #d9e6f2;
+        --sev-critical: #ff0523;
+        --sev-high: #e8590c;
+        --sev-medium: #b8860b;
+        --sev-low: #0073ce;
+        --sev-info: #5b6b7b;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: "Barlow", Helvetica, Arial, sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+        background-image: radial-gradient(
+          circle at 1px 1px,
+          rgba(3, 21, 39, 0.05) 1px,
+          transparent 0
+        );
+        background-size: 22px 22px;
+        line-height: 1.55;
+      }
+      a {
+        color: var(--blue);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      code.inline {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: rgba(0, 115, 206, 0.08);
+        color: var(--navy);
+        padding: 1px 5px;
+        border-radius: 4px;
+        word-break: break-word;
+      }
+
+      header.top {
+        background: var(--navy);
+        color: #fff;
+        border-bottom: 4px solid var(--red);
+        padding: 26px 32px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .logo {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #fff;
+      }
+      .logo b {
+        color: var(--red);
+      }
+      .logo .dot {
+        color: var(--red);
+      }
+      .kicker {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-size: 13px;
+        color: #8fa6bd;
+      }
+      header.top h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 34px;
+        margin: 18px 0 6px;
+        letter-spacing: 0.5px;
+      }
+      header.top .lead {
+        margin: 0;
+        color: #9fb3c8;
+        max-width: 720px;
+      }
+
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 38px 32px 80px;
+      }
+      section {
+        margin-bottom: 46px;
+      }
+      .sec-title {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 18px;
+        color: var(--navy);
+        margin: 0 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--line);
+        position: relative;
+      }
+      .sec-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 54px;
+        height: 2px;
+        background: var(--red);
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 22px 24px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 30px rgba(3, 21, 39, 0.05);
+      }
+      .label {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0 0 4px;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .meta th,
+      .meta td {
+        text-align: left;
+        padding: 7px 10px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .meta th {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: var(--muted);
+        width: 190px;
+        font-weight: 600;
+      }
+      .meta td {
+        font-weight: 500;
+        color: var(--navy);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 18px;
+      }
+      .summary h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 22px;
+        color: var(--navy);
+        margin: 0 0 6px;
+        letter-spacing: 0.3px;
+      }
+      .summary .count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+
+      .matrix th,
+      .matrix td {
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+      .matrix th {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .matrix td.n,
+      .matrix th.n {
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .matrix tr.total td {
+        font-weight: 700;
+        border-top: 2px solid var(--line);
+        color: var(--navy);
+      }
+
+      .pill {
+        display: inline-block;
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        padding: 2px 10px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .pill.critical {
+        background: var(--sev-critical);
+      }
+      .pill.high {
+        background: var(--sev-high);
+      }
+      .pill.medium {
+        background: var(--sev-medium);
+      }
+      .pill.low {
+        background: var(--sev-low);
+      }
+      .pill.info {
+        background: var(--sev-info);
+      }
+      .pill.pass {
+        background: #18794e;
+      }
+      .pill.partial {
+        background: #b8860b;
+      }
+      .pill.findings {
+        background: var(--sev-high);
+      }
+
+      .cov-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-bottom: 16px;
+      }
+      .cov-summary .num {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1;
+      }
+      .cov-summary .num.green {
+        color: #18794e;
+      }
+      .cov-summary .lbl {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .cov td.ok {
+        color: #18794e;
+        font-weight: 600;
+      }
+      .cov td.n {
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .cov th {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .cov th,
+      .cov td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+
+      .chk-group {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin-bottom: 12px;
+        overflow: hidden;
+      }
+      .chk-group > summary {
+        cursor: pointer;
+        padding: 14px 18px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 17px;
+        letter-spacing: 0.4px;
+        color: var(--navy);
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .chk-group > summary::-webkit-details-marker {
+        display: none;
+      }
+      .chk-group > summary::before {
+        content: "\25B8";
+        color: var(--muted);
+      }
+      .chk-group[open] > summary::before {
+        content: "\25BE";
+      }
+      .chk-group .meta {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0;
+      }
+      .chk-list {
+        border-top: 1px solid var(--line);
+        max-height: 420px;
+        overflow-y: auto;
+      }
+      .chk {
+        display: flex;
+        gap: 10px;
+        padding: 5px 18px;
+        font-size: 13px;
+        border-bottom: 1px solid #eef2f6;
+      }
+      .chk:last-child {
+        border-bottom: 0;
+      }
+      .chk .mark {
+        flex: 0 0 auto;
+        font-weight: 700;
+      }
+      .chk.ok .mark {
+        color: #18794e;
+      }
+      .chk.bad {
+        background: rgba(255, 5, 35, 0.04);
+      }
+      .chk.bad .mark {
+        color: var(--sev-critical);
+      }
+      .chk .id {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--ink);
+        word-break: break-all;
+      }
+      .chk .detail {
+        color: var(--muted);
+        margin-left: 6px;
+      }
+
+      .badge {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        background: rgba(0, 115, 206, 0.1);
+        color: var(--blue);
+        padding: 3px 9px;
+        border-radius: 6px;
+        word-break: break-all;
+      }
+      .tier-tag {
+        display: inline-block;
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #eef2f6;
+        color: var(--ink);
+        padding: 3px 10px;
+        border-radius: 6px;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 20px;
+      }
+      .filters button {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 13px;
+        background: var(--card);
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 5px 14px;
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .filters button:hover {
+        border-color: #cdd6e0;
+      }
+      .filters button.active {
+        background: var(--red);
+        color: #fff;
+        border-color: var(--red);
+      }
+
+      .finding {
+        border-left: 4px solid var(--line);
+      }
+      .finding.critical {
+        border-left-color: var(--sev-critical);
+      }
+      .finding.high {
+        border-left-color: var(--sev-high);
+      }
+      .finding.medium {
+        border-left-color: var(--sev-medium);
+      }
+      .finding.low {
+        border-left-color: var(--sev-low);
+      }
+      .finding.info {
+        border-left-color: var(--sev-info);
+      }
+      .finding .row-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .finding .row-head .fid {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .finding .row-head h4 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 20px;
+        color: var(--navy);
+        margin: 0;
+        letter-spacing: 0.3px;
+        flex: 1 1 auto;
+      }
+      .finding dl {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 4px 14px;
+        margin: 12px 0;
+      }
+      .finding dt {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 11px;
+        color: var(--muted);
+        padding-top: 2px;
+      }
+      .finding dd {
+        margin: 0;
+      }
+      .finding .field-h {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: var(--navy);
+        margin: 14px 0 4px;
+      }
+      .finding p {
+        margin: 4px 0;
+      }
+      pre {
+        margin: 6px 0 0;
+        background: var(--code-bg);
+        color: var(--code-ink);
+        border-radius: 8px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .fixed-tag {
+        color: #18794e;
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .empty {
+        color: var(--muted);
+        font-style: italic;
+      }
+      ul.plain {
+        margin: 6px 0;
+        padding-left: 18px;
+      }
+      ul.plain li {
+        margin: 3px 0;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 26px 32px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      footer .wrap {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          background-image: none;
+        }
+        .filters {
+          display: none;
+        }
+        .panel {
+          box-shadow: none;
+          break-inside: avoid;
+        }
+        header.top {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <div class="brand">
+          <span class="logo">Spark<b>Fabrik</b><span class="dot">.</span></span>
+          <span class="kicker">Security Assessment</span>
+        </div>
+        <h1>{{PROJECT}}</h1>
+        <p class="lead">
+          {{DATE}} &middot; {{TRACKS_RAN}}. Vulnerability Assessment (static
+          code and dependency analysis) and Penetration Testing (live recon and
+          exploitation) consolidated into one report.
+        </p>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2 class="sec-title">Engagement</h2>
+        <div class="panel">
+          <table class="meta">
+            {{META_TABLE}}
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sec-title">Executive summary</h2>
+        <div class="summary-grid">{{SUMMARY_CARDS}}</div>
+      </section>
+
+      <section>
+        <h2 class="sec-title">Severity matrix</h2>
+        <div class="panel">
+          <table class="matrix">
+            {{MATRIX_TABLE}}
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sec-title">Tests performed</h2>
+        {{COVERAGE}}
+      </section>
+
+      <section>
+        <h2 class="sec-title">Findings</h2>
+        <div class="filters" id="filters">
+          <button data-filter="all" class="active">All</button>
+          <button data-filter="track:VA">VA only</button>
+          <button data-filter="track:PT">PT only</button>
+          <button data-filter="sev:critical">Critical</button>
+          <button data-filter="sev:high">High</button>
+          <button data-filter="sev:medium">Medium</button>
+          <button data-filter="sev:low">Low</button>
+          <button data-filter="sev:info">Info</button>
+        </div>
+        <div id="findings">{{FINDINGS}}</div>
+      </section>
+
+      <section>
+        <h2 class="sec-title">Artifacts</h2>
+        {{ARTIFACTS}}
+      </section>
+
+      <section>
+        <h2 class="sec-title">Detailed test log</h2>
+        {{CHECKLIST}}
+      </section>
+    </main>
+    <footer>
+      <div class="wrap">
+        <span>{{FOOTER}}</span>
+        <span class="logo" style="font-size: 18px"
+          >Spark<b>Fabrik</b><span class="dot">.</span></span
+        >
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var buttons = document.querySelectorAll("#filters button");
+        var cards = document.querySelectorAll("#findings .finding");
+        buttons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            buttons.forEach(function (b) {
+              b.classList.remove("active");
+            });
+            btn.classList.add("active");
+            var f = btn.getAttribute("data-filter");
+            cards.forEach(function (c) {
+              var show =
+                f === "all" ||
+                (f.indexOf("track:") === 0 &&
+                  c.getAttribute("data-track") === f.slice(6)) ||
+                (f.indexOf("sev:") === 0 &&
+                  c.getAttribute("data-severity") === f.slice(4));
+              c.style.display = show ? "" : "none";
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

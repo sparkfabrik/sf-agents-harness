@@ -20,6 +20,7 @@ document.getElementById("output").textContent = location.hash.slice(1);
 ```
 
 **Dangerous sinks to look for**:
+
 - `element.innerHTML`
 - `element.outerHTML`
 - `document.write()`
@@ -30,6 +31,7 @@ document.getElementById("output").textContent = location.hash.slice(1);
 - `new Function(string)`
 
 **Dangerous sources** (user-controlled data):
+
 - `location.hash`, `location.search`, `location.href`
 - `document.referrer`
 - `document.cookie`
@@ -42,18 +44,18 @@ When you must insert dynamic content into HTML, use proper escaping:
 
 ```javascript
 function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function escapeAttr(str) {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 ```
 
@@ -66,9 +68,9 @@ literals that produce HTML.
 
 ```javascript
 function merge(target, source) {
-    for (const key in source) {
-        target[key] = source[key];  // __proto__ pollution
-    }
+  for (const key in source) {
+    target[key] = source[key]; // __proto__ pollution
+  }
 }
 ```
 
@@ -76,10 +78,12 @@ function merge(target, source) {
 
 ```javascript
 function merge(target, source) {
-    for (const key of Object.keys(source)) {  // skip inherited
-        if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
-        target[key] = source[key];
-    }
+  for (const key of Object.keys(source)) {
+    // skip inherited
+    if (key === "__proto__" || key === "constructor" || key === "prototype")
+      continue;
+    target[key] = source[key];
+  }
 }
 // Or use Object.assign / structuredClone
 ```
@@ -95,7 +99,7 @@ db.query(`SELECT * FROM users WHERE id = ${req.params.id}`);
 ### Safe
 
 ```javascript
-db.query('SELECT * FROM users WHERE id = ?', [req.params.id]);
+db.query("SELECT * FROM users WHERE id = ?", [req.params.id]);
 ```
 
 **What to look for**: Template literals or string concatenation in SQL queries,
@@ -132,7 +136,7 @@ res.sendFile(filePath);
 ```javascript
 const filePath = path.join(uploadDir, path.basename(req.params.filename));
 if (!filePath.startsWith(path.resolve(uploadDir))) {
-    return res.status(400).send('Invalid path');
+  return res.status(400).send("Invalid path");
 }
 res.sendFile(filePath);
 ```
@@ -142,16 +146,16 @@ res.sendFile(filePath);
 ### Vulnerable
 
 ```javascript
-const response = await fetch(req.body.url);  // user controls URL
+const response = await fetch(req.body.url); // user controls URL
 ```
 
 ### Safe
 
 ```javascript
 const url = new URL(req.body.url);
-const allowedHosts = ['api.example.com'];
+const allowedHosts = ["api.example.com"];
 if (!allowedHosts.includes(url.hostname)) {
-    return res.status(400).send('Host not allowed');
+  return res.status(400).send("Host not allowed");
 }
 // Also check for internal IPs (127.0.0.1, 10.x, 172.16-31.x, 192.168.x)
 ```
@@ -175,21 +179,24 @@ npm outdated
 ## Express.js hardening
 
 ```javascript
-const helmet = require('helmet');
-app.use(helmet());  // sets security headers
+const helmet = require("helmet");
+app.use(helmet()); // sets security headers
 
 // Disable X-Powered-By
-app.disable('x-powered-by');
+app.disable("x-powered-by");
 
 // Limit request body size
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: "1mb" }));
 
 // Rate limiting
-const rateLimit = require('express-rate-limit');
-app.use('/api/auth', rateLimit({
+const rateLimit = require("express-rate-limit");
+app.use(
+  "/api/auth",
+  rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
-}));
+  }),
+);
 ```
 
 ## Content Security Policy
@@ -206,20 +213,23 @@ Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'
 ## Cookie security (Express)
 
 ```javascript
-app.use(session({
+app.use(
+  session({
     cookie: {
-        httpOnly: true,
-        secure: true,       // requires HTTPS
-        sameSite: 'lax',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true, // requires HTTPS
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
     // ...
-}));
+  }),
+);
 ```
 
 ## Secrets management
 
 **What to look for**:
+
 - Hardcoded API keys, tokens, passwords in source code
 - `.env` files committed to git (check `.gitignore`)
 - Secrets in client-side JavaScript (visible in browser)
@@ -235,10 +245,10 @@ app.use(session({
 
 Key patterns semgrep catches:
 
-| Pattern | Description |
-|---------|-------------|
-| `javascript.browser.security.innerHTML` | Dynamic innerHTML assignment |
-| `javascript.express.security.injection` | SQL/NoSQL injection in Express |
-| `javascript.lang.security.eval` | Use of eval() |
-| `javascript.express.security.open-redirect` | Unvalidated redirects |
-| `javascript.jwt.security.jwt-none-alg` | JWT with "none" algorithm |
+| Pattern                                     | Description                    |
+| ------------------------------------------- | ------------------------------ |
+| `javascript.browser.security.innerHTML`     | Dynamic innerHTML assignment   |
+| `javascript.express.security.injection`     | SQL/NoSQL injection in Express |
+| `javascript.lang.security.eval`             | Use of eval()                  |
+| `javascript.express.security.open-redirect` | Unvalidated redirects          |
+| `javascript.jwt.security.jwt-none-alg`      | JWT with "none" algorithm      |

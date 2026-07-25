@@ -302,11 +302,11 @@ class DeleteController extends ControllerBase {
 ```yaml
 # routing.yml -- state-changing action on GET
 mymodule.delete:
-  path: '/admin/delete/{id}'
+  path: "/admin/delete/{id}"
   defaults:
     _controller: '\Drupal\mymodule\Controller\DeleteController::delete'
   requirements:
-    _permission: 'administer content'
+    _permission: "administer content"
 ```
 
 #### Safe
@@ -395,7 +395,7 @@ foreach ($nodes as $node) {
 ```yaml
 # Route without access control
 mymodule.api:
-  path: '/api/data'
+  path: "/api/data"
   defaults:
     _controller: '\Drupal\mymodule\Controller\ApiController::getData'
   # Missing: requirements._permission or requirements._access
@@ -423,11 +423,11 @@ foreach ($nodes as $node) {
 ```yaml
 # Route with proper access control
 mymodule.api:
-  path: '/api/data'
+  path: "/api/data"
   defaults:
     _controller: '\Drupal\mymodule\Controller\ApiController::getData'
   requirements:
-    _permission: 'access content'
+    _permission: "access content"
 ```
 
 **What to look for**: `\Drupal::entityQuery(` without `->accessCheck(TRUE)`.
@@ -495,6 +495,7 @@ phpcs --standard=Drupal,DrupalPractice --extensions=php,module,inc,install,theme
 ```
 
 Key security-related sniffs:
+
 - `Drupal.Semantics.FunctionT` -- validates `t()` usage
 - `DrupalPractice.General.ClassName` -- checks for proper namespacing
 - `Drupal.Functions.DiscouragedFunctions` -- flags `eval()`, `exec()`, etc.
