@@ -203,8 +203,14 @@ def main():
     # unresolved visibility blocks, because "we could not tell" must not read as
     # "it is fine" — the failure this skill exists for was exactly a check whose
     # message and behaviour disagreed.
-    blocking = [f for f in findings if f["always_sensitive"] or visibility != "private"]
-    advisory = [f for f in findings if f not in blocking]
+    def is_blocking(f):
+        return f["always_sensitive"] or visibility != "private"
+
+    # Both lists come from the same predicate. Deriving the second by excluding the
+    # first compared dictionaries by value, so two patterns matching the same text on
+    # the same line could drop an advisory finding from the report entirely.
+    blocking = [f for f in findings if is_blocking(f)]
+    advisory = [f for f in findings if not is_blocking(f)]
 
     if args.json:
         print(json.dumps({"visibility": visibility, "remote": remote,
