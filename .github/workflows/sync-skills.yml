@@ -136,11 +136,16 @@ jobs:
           EOF
           )")
           echo "url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge scheduled sync pull request
         if: github.event_name == 'schedule' && steps.pr.outputs.url != ''
-        run: gh pr merge "${{ steps.pr.outputs.url }}" --squash --delete-branch
+        run: |
+          gh pr merge "${{ steps.pr.outputs.url }}" \
+            --squash \
+            --delete-branch \
+            --match-head-commit "${{ steps.pr.outputs.head_sha }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
