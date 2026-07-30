@@ -2,12 +2,11 @@ name: Sync upstream skills
 
 on:
   schedule:
-    - cron: '0 9 * * 1' # Every Monday at 09:00 UTC
+    - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: sync-upstream-skills
@@ -16,9 +15,21 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    environment: scheduled-sync
     steps:
+      - name: Create PR automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.SF_PR_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.SF_PR_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Validate manifest against schema
         run: npx ajv-cli validate -s config/upstream-skills.schema.json -d config/upstream-skills.json --spec=draft2020
@@ -98,7 +109,7 @@ jobs:
             --jq length)
           echo "exists=$([ "$count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Stop when a sync PR is already open
         if: steps.diff.outputs.changed == 'true' && steps.existing.outputs.exists == 'true'
@@ -138,14 +149,15 @@ jobs:
           echo "url=$pr_url" >> "$GITHUB_OUTPUT"
           echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      - name: Merge scheduled sync pull request
+      - name: Enable auto-merge for scheduled sync pull request
         if: github.event_name == 'schedule' && steps.pr.outputs.url != ''
         run: |
           gh pr merge "${{ steps.pr.outputs.url }}" \
+            --auto \
             --squash \
             --delete-branch \
             --match-head-commit "${{ steps.pr.outputs.head_sha }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}

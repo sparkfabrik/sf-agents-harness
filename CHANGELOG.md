@@ -14,7 +14,7 @@ Changes are grouped by date.
 
 ### Changed
 
-- Upstream skill sync: support category-specific destinations and automatically squash-merge validated scheduled sync PRs with dated changelog entries. Manual dispatches remain review-only.
+- Upstream skill sync: support category-specific destinations and use a main-only GitHub environment with a repository-scoped App token to automatically squash-merge validated scheduled sync PRs with dated changelog entries. Manual dispatches remain review-only.
 
 ## [2026-07-25]
 
