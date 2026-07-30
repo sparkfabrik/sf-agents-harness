@@ -34,6 +34,8 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 | **postmortem-writing**     | Write blameless incident postmortems -- summary, quantified impact, UTC timeline, root cause and contributing factors (Five Whys), SMART action items         | `skills/system/postmortem-writing/`     |
 | **adversarial-verify**     | Adversarial verification (Chain-of-Verification) of code, architecture, data, docs, tests, and analysis -- red-teaming, hidden-behavior probing, stress tests | `skills/system/adversarial-verify/`     |
 | **figma-bridge**           | Generic Figma access -- URL parsing, Figma MCP tool usage, and adaptive design-token mapping discovery                                                        | `skills/system/figma-bridge/`           |
+| **angular-developer**      | Angular code generation and architectural guidance for components, signals, forms, routing, testing, SSR, and tooling                                         | `skills/angular/angular-developer/`     |
+| **angular-new-app**        | Create modern Angular applications with the Angular CLI                                                                                                       | `skills/angular/angular-new-app/`       |
 
 Skills are documents that provide context to Copilot on specific topics. Each skill contains:
 
@@ -42,6 +44,13 @@ Skills are documents that provide context to Copilot on specific topics. Each sk
 - Commands and code snippets
 
 Browse the `skills/` directory for available categories.
+
+System skills are always installed. Optional categories are activated globally:
+
+```bash
+ajust sf-harness-category enable angular
+ajust sf-harness-category disable angular
+```
 
 ## Agents
 

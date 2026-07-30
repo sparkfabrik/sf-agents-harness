@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-07-30]
+
+### Added
+
+- Angular skill category: official `angular-developer` and `angular-new-app` skills synchronized from `angular/skills`, ready for global opt-in through Sparkdock.
+
+### Changed
+
+- Upstream skill sync: support category-specific destinations and automatically squash-merge validated scheduled sync PRs with dated changelog entries. Manual dispatches remain review-only.
+
 ## [2026-07-25]
 
 ### Added

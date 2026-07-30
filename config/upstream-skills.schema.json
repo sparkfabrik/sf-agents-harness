@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "upstream-skills.schema.json",
   "title": "Upstream Skills Manifest",
-  "description": "Declares upstream GitHub repositories and paths to sync as system skills.",
+  "description": "Declares upstream GitHub repositories and paths to sync as categorized skills.",
   "type": "object",
   "required": ["skills"],
   "additionalProperties": false,
@@ -22,11 +22,17 @@
           "name": {
             "type": "string",
             "pattern": "^[a-z][a-z0-9-]*$",
-            "description": "Skill name (lowercase, hyphens). Must match the target folder name under skills/system/."
+            "description": "Skill name (lowercase, hyphens). Must be unique across the manifest."
+          },
+          "category": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "default": "system",
+            "description": "Destination category under skills/. Defaults to system."
           },
           "repo": {
             "type": "string",
-            "pattern": "^[^/]+/[^/]+$",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
             "description": "GitHub repository in owner/repo format (e.g. 'microsoft/playwright-cli')."
           },
           "ref": {
@@ -36,6 +42,7 @@
           },
           "path": {
             "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
             "description": "Path to the skill directory inside the repository (e.g. 'skills/playwright-cli')."
           },
           "frontmatter_overrides": {

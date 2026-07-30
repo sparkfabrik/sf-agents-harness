@@ -9,6 +9,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: sync-upstream-skills
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -22,48 +26,121 @@ jobs:
       - name: Run sync script
         run: ./scripts/sync-skill.sh --all
 
-      - name: Check for changes
+      - name: Check generated changes
         id: diff
         run: |
-          if git diff --quiet skills/system/; then
+          if [[ -z "$(git status --porcelain --untracked-files=all -- skills/)" ]]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Validate generated skill paths
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          mapfile -t allowed_prefixes < <(
+            jq -r '.skills[] | "skills/\(.category // "system")/\(.name)/"' \
+              config/upstream-skills.json
+          )
+          mapfile -t changed_paths < <(
+            {
+              git diff --name-only -- skills/
+              git ls-files --others --exclude-standard -- skills/
+            } | sort -u
+          )
+
+          for changed_path in "${changed_paths[@]}"; do
+            allowed=false
+            for prefix in "${allowed_prefixes[@]}"; do
+              if [[ "$changed_path" == "$prefix"* ]]; then
+                allowed=true
+                break
+              fi
+            done
+            if [[ "$allowed" != true ]]; then
+              echo "::error::Unexpected generated path: $changed_path"
+              exit 1
+            fi
+          done
+
+          for prefix in "${allowed_prefixes[@]}"; do
+            target="${prefix%/}"
+            if [[ -d "$target" ]] && find "$target" -type l -print -quit | grep -q .; then
+              echo "::error::Generated skill tree must not contain symlinks: $target"
+              exit 1
+            fi
+          done
+
+      - name: Verify generated skills match upstream
+        if: steps.diff.outputs.changed == 'true'
+        run: ./scripts/sync-skill.sh --all --check
+
+      - name: Add dated changelog entry
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          mapfile -t changed_skills < <(
+            {
+              git diff --name-only -- skills/
+              git ls-files --others --exclude-standard -- skills/
+            } | awk -F/ 'NF >= 3 { print $2 "/" $3 }' | sort -u
+          )
+          python3 scripts/add-sync-changelog-entry.py "${changed_skills[@]}"
+          npx --yes prettier@3 --write CHANGELOG.md
+
       - name: Check for existing sync PR
         if: steps.diff.outputs.changed == 'true'
         id: existing
         run: |
-          count=$(gh pr list --search "chore: sync upstream skills" --state open --json number --jq length)
+          count=$(gh pr list \
+            --search '"chore(skills): sync upstream skills" in:title' \
+            --state open \
+            --json number \
+            --jq length)
           echo "exists=$([ "$count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Stop when a sync PR is already open
+        if: steps.diff.outputs.changed == 'true' && steps.existing.outputs.exists == 'true'
+        run: |
+          echo "::error::An upstream skill sync PR is already open."
+          exit 1
+
       - name: Create pull request
         if: steps.diff.outputs.changed == 'true' && steps.existing.outputs.exists == 'false'
+        id: pr
         run: |
-          branch="chore/sync-upstream-skills-$(date +%Y-%m-%d)"
+          branch="chore/sync-upstream-skills-$(date +%Y-%m-%d)-${GITHUB_RUN_ID}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add skills/system/
-          git commit -m "chore: sync upstream skills"
+          git add skills/ CHANGELOG.md
+          git commit -m "chore(skills): sync upstream skills"
           git push -u origin "$branch"
-          gh pr create \
-            --title "chore: sync upstream skills" \
+          pr_url=$(gh pr create \
+            --title "chore(skills): sync upstream skills" \
             --body "$(cat <<'EOF'
+          > :robot: _This was written by an AI agent on behalf of @paolomainardi._
+
           ## Automated sync
 
-          Updated upstream skills in `skills/system/` from their source repositories
+          Updated categorized upstream skills from their source repositories
           as declared in `config/upstream-skills.json`.
 
           The sync script rebuilds each `SKILL.md` (upstream body + optional frontmatter
           overrides + custom sections) and updates all bundled assets. Local-only files
           (`custom-sections.md`, `evals/`) are preserved.
 
-          **Before merging**, update `CHANGELOG.md` with a dated entry.
+          The scheduled workflow validates manifest structure, generated paths,
+          symlink safety, source parity, and the dated changelog entry before merging.
           EOF
-          )"
+          )")
+          echo "url=$pr_url" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge scheduled sync pull request
+        if: github.event_name == 'schedule' && steps.pr.outputs.url != ''
+        run: gh pr merge "${{ steps.pr.outputs.url }}" --squash --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
