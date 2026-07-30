@@ -3,7 +3,7 @@ name: Sync upstream skills
 on:
   schedule:
     - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
-    - cron: "*/5 * * * *" # Temporary scheduled auto-merge test
+    - cron: "3/5 * * * *" # Temporary scheduled auto-merge test
   workflow_dispatch:
 
 permissions:
