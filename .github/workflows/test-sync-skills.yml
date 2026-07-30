@@ -5,15 +5,21 @@ on:
     paths:
       - 'config/upstream-skills.json'
       - 'config/upstream-skills.schema.json'
+      - 'config/catalog.json'
+      - 'config/catalog.schema.json'
+      - 'scripts/add-sync-changelog-entry.py'
       - 'scripts/sync-skill.sh'
-      - 'skills/system/**'
+      - 'skills/**'
   push:
     branches: [main]
     paths:
       - 'config/upstream-skills.json'
       - 'config/upstream-skills.schema.json'
+      - 'config/catalog.json'
+      - 'config/catalog.schema.json'
+      - 'scripts/add-sync-changelog-entry.py'
       - 'scripts/sync-skill.sh'
-      - 'skills/system/**'
+      - 'skills/**'
   workflow_dispatch:
 
 permissions:
@@ -29,5 +35,28 @@ jobs:
       - name: Validate manifest against schema
         run: npx ajv-cli validate -s config/upstream-skills.schema.json -d config/upstream-skills.json --spec=draft2020
 
+      - name: Validate catalog against schema
+        run: npx ajv-cli validate -s config/catalog.schema.json -d config/catalog.json --spec=draft2020
+
       - name: Verify upstream repos are reachable and skill paths exist
         run: ./scripts/sync-skill.sh --all
+
+      - name: Test changelog entry generation
+        run: |
+          changelog=$(mktemp)
+          cp CHANGELOG.md "$changelog"
+          python3 scripts/add-sync-changelog-entry.py \
+            --file "$changelog" \
+            --date 2099-01-01 \
+            angular/angular-developer \
+            system/playwright-cli
+          grep -F '## [2099-01-01]' "$changelog"
+          grep -F 'angular/angular-developer' "$changelog"
+          before=$(sha256sum "$changelog")
+          python3 scripts/add-sync-changelog-entry.py \
+            --file "$changelog" \
+            --date 2099-01-01 \
+            angular/angular-developer \
+            system/playwright-cli
+          after=$(sha256sum "$changelog")
+          test "$before" = "$after"

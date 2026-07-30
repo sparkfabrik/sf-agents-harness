@@ -32,6 +32,7 @@ sjust sf-agents-status           # show installed resources and update status
 | Source (this repo)               | Install target               | Description                              |
 | -------------------------------- | ---------------------------- | ---------------------------------------- |
 | `skills/system/<name>/`          | `~/.agents/skills/<name>/`   | Agent skills (SKILL.md + bundled assets) |
+| `skills/<category>/<name>/`      | `~/.agents/skills/<name>/`   | Optional category skills                 |
 | `agents/system/<name>/copilot/`  | `~/.copilot/agents/`         | GitHub Copilot agent profiles            |
 | `agents/system/<name>/opencode/` | `~/.config/opencode/agents/` | OpenCode agent profiles                  |
 
@@ -42,8 +43,8 @@ Local modifications are detected and preserved unless `--force` is used.
 
 - **Skills and agents created here reach all team members** via `sjust sf-agents-refresh`.
 - Test changes locally before merging — they will be distributed automatically.
-- The `skills/system/` and `agents/system/` directories are the distribution source of truth.
-- Non-system skills (e.g., `skills/drupal/`) are not synced and exist only in this repo.
+- The `skills/system/` and `agents/system/` directories are the mandatory distribution source of truth.
+- Non-system skill directories are optional categories. Users activate them globally with `sjust sf-harness-category enable <category>` or `ajust sf-harness-category enable <category>`.
 
 ## File Formats
 
@@ -135,15 +136,22 @@ sync script (`scripts/sync-skill.sh`).
 
 ### How it works
 
-1. `upstream-skills.json` declares each upstream skill: the source repo, branch,
-   path inside the repo, and optional frontmatter overrides.
+1. `upstream-skills.json` declares each upstream skill: the destination category,
+   source repo, branch, path inside the repo, and optional frontmatter overrides.
 2. `sync-skill.sh` downloads repo tarballs (one per unique repo), extracts each
    skill directory, patches the SKILL.md frontmatter if overrides are declared,
    appends `custom-sections.md` if present, and writes the result to
-   `skills/system/<name>/`.
+   `skills/<category>/<name>/`. The category defaults to `system`.
 3. Local-only files (`custom-sections.md`, `evals/`) are preserved across syncs.
 4. A weekly GitHub Actions workflow (`.github/workflows/sync-skills.yml`) runs
-   `./scripts/sync-skill.sh --all` and opens a PR if anything changed.
+   `./scripts/sync-skill.sh --all` and opens a PR if anything changed. Scheduled
+   runs validate and squash-merge their PR automatically. Manual dispatches
+   leave the PR open for review.
+
+The manifest is the supply-chain trust boundary. Adding or changing a source
+repository requires review. Scheduled sync rejects unsafe paths, duplicate skill
+names, symlinks, and generated files outside declared skill directories before
+merging.
 
 ### Usage
 
@@ -160,7 +168,7 @@ Requires `jq` and `curl`.
 
 1. Add an entry to `config/upstream-skills.json` (see schema below).
 2. Run `./scripts/sync-skill.sh <name>` to pull the skill.
-3. Optionally create `skills/system/<name>/custom-sections.md` with local additions.
+3. Optionally create `skills/<category>/<name>/custom-sections.md` with local additions.
 4. Update `SYSTEM.md`, `README.md`, `config/catalog.json`, and `CHANGELOG.md`.
 
 ### Manifest schema (`upstream-skills.json`)
@@ -170,7 +178,8 @@ in the `skills` array has the following fields:
 
 | Field                   | Type   | Required | Description                                                                                                                           |
 | ----------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | string | yes      | Skill name (`lowercase-with-hyphens`). Must match the target folder under `skills/system/`.                                           |
+| `name`                  | string | yes      | Globally unique skill name (`lowercase-with-hyphens`).                                                                                |
+| `category`              | string | no       | Destination category under `skills/`. Defaults to `system`.                                                                           |
 | `repo`                  | string | yes      | GitHub repository in `owner/repo` format.                                                                                             |
 | `ref`                   | string | no       | Branch or tag to sync from. Defaults to `main`.                                                                                       |
 | `path`                  | string | yes      | Path to the skill directory inside the repo.                                                                                          |
@@ -180,13 +189,11 @@ Example entry:
 
 ```json
 {
-  "name": "playwright-cli",
-  "repo": "microsoft/playwright-cli",
+  "name": "angular-developer",
+  "category": "angular",
+  "repo": "angular/skills",
   "ref": "main",
-  "path": "skills/playwright-cli",
-  "frontmatter_overrides": {
-    "description": "Custom description optimized for auto-triggering keywords."
-  }
+  "path": "angular-developer"
 }
 ```
 

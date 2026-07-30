@@ -5,16 +5,22 @@
       "description": "Create Architecture Decision Records (Nygard format)"
     },
     "adversarial-verify": {
-      "description": "Adversarial verification (Chain-of-Verification) of code, docs, and analysis"
+      "description": "Adversarial verification of code, docs, and analysis"
     },
     "figma-bridge": {
-      "description": "Generic Figma access, MCP tool usage, and design-token mapping"
+      "description": "Figma access, MCP usage, and design-token mapping"
     },
     "agentic-security-audit": {
       "description": "Audit AI agent configs for OWASP agentic risks"
     },
     "auto-format-doc": {
       "description": "Auto-format files with external formatters (Just)"
+    },
+    "angular-developer": {
+      "description": "Angular code generation and architectural guidance"
+    },
+    "angular-new-app": {
+      "description": "Create modern Angular applications with Angular CLI"
     },
     "doc-coauthoring": {
       "description": "Co-author docs, proposals, and technical specs"
@@ -35,7 +41,7 @@
       "description": "Browser automation, testing, screenshots, scraping"
     },
     "postmortem-writing": {
-      "description": "Write blameless incident postmortems (timeline, RCA, actions)"
+      "description": "Write blameless postmortems (timeline, RCA, actions)"
     },
     "security-assessment": {
       "description": "Orchestrate VA + PT tracks into one HTML report"
@@ -47,7 +53,7 @@
       "description": "Enforce SparkFabrik commit conventions and trailers"
     },
     "sf-writing-style": {
-      "description": "SparkFabrik writing style: readable markdown, no em dashes, no slop"
+      "description": "SparkFabrik markdown style: readable prose, no AI slop"
     },
     "skill-creator": {
       "description": "Create, iterate, and benchmark agent skills"

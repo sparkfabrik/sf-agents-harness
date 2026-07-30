@@ -3,7 +3,7 @@
 # Generic upstream skill sync script.
 #
 # Downloads skill directories from upstream GitHub repos (via tarball) and
-# installs them into skills/system/<name>/. Reads the skill list and config
+# installs them into skills/<category>/<name>/. Reads the skill list and config
 # from config/upstream-skills.json.
 #
 # For each skill the script:
@@ -56,11 +56,23 @@ validate_manifest() {
     (if .name  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"name\""  else empty end),
     (if .repo  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"repo\""  else empty end),
     (if .path  | type != "string" or length == 0 then "skills[\($i)]: missing or empty \"path\""  else empty end),
-    (if .repo  | type == "string" and (test("^[^/]+/[^/]+$") | not) then "skills[\($i)]: \"repo\" must be owner/repo format" else empty end)
+    (if .name | type == "string" and (test("^[a-z][a-z0-9-]*$") | not) then "skills[\($i)]: invalid \"name\"" else empty end),
+    (if (.category // "system") | type != "string" or (test("^[a-z][a-z0-9-]*$") | not) then "skills[\($i)]: invalid \"category\"" else empty end),
+    (if .repo | type == "string" and (test("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$") | not) then "skills[\($i)]: \"repo\" must be owner/repo format" else empty end),
+    (if .path | type == "string" and test("(^/|(^|/)\\.\\.(/|$))") then "skills[\($i)]: \"path\" must be a safe relative path" else empty end)
   ' "$MANIFEST" 2>&1)
 
   if [[ -n "$errors" ]]; then
     die "Manifest validation failed:\n${errors}"
+  fi
+
+  local duplicate_names
+  duplicate_names=$(jq -r '
+    [.skills[].name] | group_by(.)[] | select(length > 1) | .[0]
+  ' "$MANIFEST")
+
+  if [[ -n "$duplicate_names" ]]; then
+    die "Manifest skill names must be unique:\n${duplicate_names}"
   fi
 }
 
@@ -244,15 +256,16 @@ sync_skill() {
     die "Skill '${skill_name}' not found in manifest."
   fi
 
-  local repo ref path overrides_json
+  local category repo ref path overrides_json
+  category=$(echo "$skill_json" | jq -r '.category // "system"')
   repo=$(echo "$skill_json" | jq -r '.repo')
   ref=$(echo "$skill_json" | jq -r '.ref // "main"')
   path=$(echo "$skill_json" | jq -r '.path')
   overrides_json=$(echo "$skill_json" | jq '.frontmatter_overrides // null')
 
-  local target_dir="${REPO_ROOT}/skills/system/${skill_name}"
+  local target_dir="${REPO_ROOT}/skills/${category}/${skill_name}"
   local custom_sections="${target_dir}/custom-sections.md"
-  local build_dir="${TMPDIR_ROOT}/build_${skill_name}"
+  local build_dir="${TMPDIR_ROOT}/build_${category}_${skill_name}"
 
   # Download tarball if not cached
   download_tarball "$repo" "$ref"
@@ -262,6 +275,12 @@ sync_skill() {
   local upstream_dir="${tarball_dir}/${path}"
   if [[ ! -d "$upstream_dir" ]]; then
     die "Path '${path}' not found in ${repo}@${ref} tarball."
+  fi
+
+  local upstream_symlink
+  upstream_symlink=$(find "$upstream_dir" -type l -print -quit)
+  if [[ -n "$upstream_symlink" ]]; then
+    die "Upstream skill '${skill_name}' contains a symlink: ${upstream_symlink#"$upstream_dir"/}"
   fi
 
   printf 'Syncing %s from %s@%s:%s...\n' "$skill_name" "$repo" "$ref" "$path"
@@ -297,7 +316,7 @@ sync_skill() {
     else
       # Compare all files from build against target (new/modified)
       while IFS= read -r -d '' file; do
-        local rel="${file#$build_dir/}"
+        local rel="${file#"$build_dir"/}"
         local local_file="${target_dir}/${rel}"
 
         if [[ ! -f "$local_file" ]]; then
@@ -312,7 +331,7 @@ sync_skill() {
       # Detect stale files in target that no longer exist upstream
       # (excluding preserved local-only paths)
       while IFS= read -r -d '' file; do
-        local rel="${file#$target_dir/}"
+        local rel="${file#"$target_dir"/}"
         case "$rel" in
           custom-sections.md | evals | evals/*) continue ;;
         esac
@@ -348,7 +367,7 @@ sync_skill() {
   # Wipe target directory (except preserved paths) so files removed upstream
   # don't accumulate as stale artifacts.
   while IFS= read -r -d '' path; do
-    local rel="${path#$target_dir/}"
+    local rel="${path#"$target_dir"/}"
     case "$rel" in
       custom-sections.md | evals | evals/*) continue ;;
     esac
