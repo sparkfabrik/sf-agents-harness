@@ -15,6 +15,7 @@ Changes are grouped by date.
 ### Changed
 
 - Upstream skill sync: support category-specific destinations and use a main-only GitHub environment with a repository-scoped App token to automatically squash-merge validated scheduled sync PRs with dated changelog entries. Manual dispatches remain review-only.
+- Upstream skill sync: temporarily run every five minutes and seed a generated-skill marker to validate the scheduled auto-merge path.
 
 ## [2026-07-25]
 
