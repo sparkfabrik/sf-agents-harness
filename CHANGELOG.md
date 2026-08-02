@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-02]
+
+### Added
+
+- `drupal-code-review` skill: a frequency-ranked Drupal merge-request review checklist distilled from 906 real human review findings across production projects. Covers dependency injection over static `\Drupal::` calls, config and YAML dependency completeness, cache metadata, Twig and SDC theming, i18n with `t()` and `msgctxt`, update and post_update hooks, migrations, and phpcs nullable typing, with reference files for the config, cache, and migration themes.
+
 ## [2026-07-30]
 
 ### Added
