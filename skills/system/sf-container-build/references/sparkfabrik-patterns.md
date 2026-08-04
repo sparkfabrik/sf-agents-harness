@@ -39,8 +39,8 @@ Reuse these properties:
 - **Separate flavors.** Test root and rootless variants independently when both
   are published.
 
-Do not inherit one current gap: publishing an arm64 image after only amd64
-runtime tests. Every published platform needs its own smoke test.
+Reuse the native runner and digest publication pattern. Run image smoke tests
+on every published platform before assembling the final manifest.
 
 ## Dependency and runtime stages
 
