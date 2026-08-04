@@ -5,8 +5,8 @@ checking their current code, platform contract, and tests.
 
 ## Package ownership
 
-Firestarter packages generate and synchronize many project Dockerfiles. Read
-the closest `AGENTS.md`, generated headers, `fs-pkg.json`, and build scripts
+SparkFabrik packages can generate and synchronize project Dockerfiles. Read the
+closest `AGENTS.md`, generated headers, package manifest, and build scripts
 before editing.
 
 When a project Dockerfile is package-owned:
@@ -16,10 +16,6 @@ When a project Dockerfile is package-owned:
 3. Use the documented project override only when behavior is project-specific.
 4. Regenerate through `fs-cli` only with the required skill and user approval.
 5. Never present a direct edit to a generated consumer file as persistent.
-
-See the [Firestarter Drupal image templates](https://gitlab.sparkfabrik.com/firestarter-platform/packages/drupal/-/tree/master/infrastructure/build/images?ref_type=heads)
-for development, build, and distribution stages; BuildKit secret mounts; cache
-mounts; rootless runtime users; and allowlist-oriented build contexts.
 
 ## Native multi-platform publication
 
@@ -48,7 +44,7 @@ runtime tests. Every published platform needs its own smoke test.
 
 ## Dependency and runtime stages
 
-Firestarter Drupal templates provide these useful boundaries:
+Package-managed application images can use these boundaries:
 
 - **Composer stage.** Install locked PHP dependencies through a BuildKit secret
   mount for `COMPOSER_AUTH` and a cache mount for downloaded packages.
@@ -64,10 +60,9 @@ indirection without reducing runtime content or separating a trust boundary.
 
 ## Base pinning and build-time tests
 
-The Firestarter MySQL image template pins a versioned base by multi-platform
-manifest digest and leaves version plus digest updates to Renovate. It also uses
-a BuildKit bind mount for test input and checks image behavior during the build
-without retaining the input in a layer.
+Pin versioned release bases by multi-platform manifest digest and leave version
+plus digest updates to Renovate. BuildKit bind mounts can provide deterministic
+test input without retaining that input in an image layer.
 
 This pattern works when the test is deterministic and does not depend on an
 external service. Keep deployment-level integration tests outside the Dockerfile.
