@@ -46,6 +46,9 @@
     "security-assessment": {
       "description": "Orchestrate VA + PT tracks into one HTML report"
     },
+    "sf-container-build": {
+      "description": "Build and review secure multi-platform container images"
+    },
     "sf-create-agentsmd": {
       "description": "Generate and review AGENTS.md for projects"
     },
