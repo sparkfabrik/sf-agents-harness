@@ -64,6 +64,10 @@ RUN --mount=type=secret,id=composer_auth,env=COMPOSER_AUTH \
     composer install --no-interaction --no-dev
 ```
 
+The `env` option of secret mounts requires Dockerfile frontend 1.10 or later.
+Declare `# syntax=docker/dockerfile:1` on the first line of the Dockerfile to
+get it.
+
 Use `type=ssh` for private Git access. Confirm the build context and copied
 artifacts do not retain the credential after the mount disappears.
 

@@ -46,6 +46,8 @@ unknown values:
 ```dockerfile
 ARG TARGETARCH
 
+COPY checksums/ /checksums/
+
 RUN case "$TARGETARCH" in \
       amd64) vendor_arch="x86_64" ;; \
       arm64) vendor_arch="aarch64" ;; \
@@ -57,10 +59,14 @@ RUN case "$TARGETARCH" in \
     && curl --fail --location --silent --show-error \
       "https://downloads.example.test/${artifact}" \
       --output "/tmp/${artifact}" \
-    && (cd /tmp && sha256sum --check "$checksum") \
+    && (cd /tmp && sha256sum -c "$checksum") \
     && tar -xzf "/tmp/${artifact}" -C /usr/local/bin \
     && rm "/tmp/${artifact}"
 ```
+
+Each committed checksum file lists the bare artifact filename, so the check runs
+from the download directory. Use `sha256sum -c` rather than the `--check` long
+option, which BusyBox `sha256sum` on Alpine does not support.
 
 Store real checksums for every supported artifact. Do not use one checksum for
 multiple architectures, and do not silently fall back to amd64.

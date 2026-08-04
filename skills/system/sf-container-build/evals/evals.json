@@ -21,7 +21,7 @@
         {
           "name": "prefers_supported_install",
           "type": "behavior",
-          "check": "Prefers npm or another supported platform-neutral pnpm installation path when it meets the version requirement"
+          "check": "Prefers npm or another supported platform-neutral pnpm installation path over per-architecture binary downloads"
         },
         {
           "name": "tests_each_platform",
