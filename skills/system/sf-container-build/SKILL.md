@@ -109,7 +109,10 @@ Apply these baseline rules:
 - use maintained base images with versions and manifest digests for release
   images, backed by automated reviewed updates
 - pin direct tool versions and use dependency lockfiles
-- verify every downloaded artifact with a target-specific checksum or signature
+- verify every downloaded artifact against a target-specific digest pinned in
+  the repository, or verify its signature with a trusted public key pinned in
+  the repository; do not fetch an unsigned checksum from the artifact's
+  download location at build time
 - use BuildKit secret or SSH mounts instead of `ARG`, `ENV`, or copied secrets
 - run as non-root by default and keep executable content non-writable at runtime
 - use exec-form `ENTRYPOINT` and `CMD`, with entrypoint scripts ending in

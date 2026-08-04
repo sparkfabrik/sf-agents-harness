@@ -51,6 +51,25 @@ Reject unchecked installer scripts and pipelines such as `curl | sh`. Current
 Docker versions also support `ADD --checksum` for immutable remote downloads.
 Use it only when its remote-fetch semantics are intentional.
 
+## Third-party package repositories
+
+Add third-party repositories only when the distribution packages cannot meet
+the image contract. Use the vendor's HTTPS repository for the matching
+distribution release and scope its trust to that repository.
+
+For Debian and Ubuntu images:
+
+- **Pin the trust anchor.** Install the vendor key in `/etc/apt/keyrings/` and
+  verify its fingerprint against an independently published value before use.
+- **Scope the key.** Reference the key with `signed-by=` in the repository
+  entry. Do not add it to the global APT trust store.
+- **Reject trust bypasses.** Do not use deprecated `apt-key add` or repository
+  entries with `[trusted=yes]`.
+
+For Alpine images, install only a verified vendor signing key in
+`/etc/apk/keys/` and use a repository that matches the Alpine release. Do not
+use `apk --allow-untrusted`.
+
 ## Build secrets
 
 Do not put secrets in `ARG`, `ENV`, URLs, copied config files, or shell history.

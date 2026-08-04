@@ -26,7 +26,7 @@ arguments it uses:
 ```dockerfile
 # syntax=docker/dockerfile:1
 
-FROM alpine:3.22 AS artifact
+FROM alpine:<supported-release> AS artifact
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -37,6 +37,9 @@ RUN printf 'target=%s/%s/%s\n' "$TARGETOS" "$TARGETARCH" "$TARGETVARIANT"
 Use these values for target selection. `uname -m` reports the architecture of
 the stage currently executing, which may be the build host under
 `FROM --platform=$BUILDPLATFORM`.
+
+Replace version placeholders with releases inside the vendor support window.
+Keep them current through automated, reviewed updates.
 
 ## Vendor artifact mapping
 
@@ -55,7 +58,8 @@ RUN case "$TARGETARCH" in \
     esac \
     && artifact="tool-${vendor_arch}-linux.tar.gz" \
     && checksum="/checksums/${artifact}.sha256" \
-    && test -s "$checksum" \
+    && { test -s "$checksum" \
+      || { echo "missing checksum file: $checksum" >&2; exit 1; }; } \
     && curl --fail --location --silent --show-error \
       "https://downloads.example.test/${artifact}" \
       --output "/tmp/${artifact}" \
@@ -82,7 +86,7 @@ Pin the builder to the native build platform only for a real cross-compiling
 toolchain:
 
 ```dockerfile
-FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:<supported-minor>-alpine AS build
 ARG TARGETOS
 ARG TARGETARCH
 

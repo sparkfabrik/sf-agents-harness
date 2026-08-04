@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Added
 
-- `sf-container-build` skill: design, modify, review, and debug container images with explicit platform and libc contracts, per-platform runtime tests, supply-chain and rootless runtime guidance, generated-file ownership checks, and SparkFabrik build conventions.
+- `sf-container-build` skill: design, modify, review, and debug container images with explicit platform and libc contracts, per-platform runtime tests, trusted artifact and package repository verification, rootless runtime guidance, generated-file ownership checks, and SparkFabrik build conventions.
 
 ## [2026-08-03]
 
