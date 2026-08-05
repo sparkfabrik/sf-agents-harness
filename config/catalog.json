@@ -60,6 +60,9 @@
     },
     "skill-creator": {
       "description": "Create, iterate, and benchmark agent skills"
+    },
+    "spark-http-proxy": {
+      "description": "Local dev reverse proxy: container domains and HTTPS"
     }
   },
   "agents": {}
