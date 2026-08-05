@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-05]
+
+### Fixed
+
+- `spark-http-proxy` skill: add the missing catalog description so it shows up in the `sjust sf-agents-status` DESCRIPTION column, and list it among the available system skills.
+
 ## [2026-08-04]
 
 ### Added
