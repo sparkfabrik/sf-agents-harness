@@ -11,6 +11,7 @@ Changes are grouped by date.
 ### Fixed
 
 - `spark-http-proxy` skill: add the missing catalog description so it shows up in the `sjust sf-agents-status` DESCRIPTION column, and list it among the available system skills.
+- Documentation: list `adr-creator`, `adversarial-verify`, and `figma-bridge` among the available system skills.
 
 ## [2026-08-04]
 
