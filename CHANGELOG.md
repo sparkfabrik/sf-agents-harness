@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-06]
+
+### Changed
+
+- Expanded the `sf-writing-style` trigger scope to cover tool-mediated human-facing prose, including issue and PR/MR content, comments, reviews, Slack messages, progress updates, release notes, and incident updates.
+
 ## [2026-08-05]
 
 ### Fixed
