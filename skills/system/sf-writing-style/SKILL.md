@@ -1,11 +1,15 @@
 ---
 name: sf-writing-style
-description: 'SparkFabrik markdown writing style, MUST be loaded before writing or rewriting any markdown or prose artifact: docs, READMEs, MR/PR and issue text, comments, changelogs, ADRs. Short aired paragraphs, bulleted lists with bold lead-ins, no em/en dashes, no AI slop. Trigger on: "writing style", "readable markdown", "rewrite this doc", "improve this README", "air out", "too dense", "wall of text", "no slop", "em dash".'
+description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, and onboarding guides. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Enforces short aired paragraphs, bold lead-in lists, no em/en dashes, and no AI slop.'
 ---
 
 # SparkFabrik writing style
 
-Rules for every prose artifact the agent writes: READMEs, docs, onboarding guides, MR/PR and issue descriptions, comments, changelogs, ADRs, review notes. For worked before/after rewrites, see [references/examples.md](references/examples.md).
+Rules for every human-facing prose artifact the agent writes: READMEs, docs, onboarding guides, issue and PR/MR titles and descriptions, comments, reviews, Slack messages, progress updates, changelogs, release notes, incident updates, ADRs, and review notes. For worked before/after rewrites, see [references/examples.md](references/examples.md).
+
+## Tool-mediated writing
+
+Apply this style before sending text through `gh`, `glab`, Slack, an API, an MCP connector, or a webhook. Draft the content under these rules before invoking the external tool. Transport does not change the writing standard.
 
 ## Hard bans
 
