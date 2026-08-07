@@ -95,6 +95,14 @@ More pairs, including a dash-rewrite table and an over-bulletized counter-exampl
 
 ## Interaction with other skills
 
-The `gh`, `glab`, and `sf-commit-convention` skills carry a short plain-prose stub for their artifacts; this skill is the full ruleset behind those stubs. The `auto-format-doc` skill handles mechanical markdown layout (prettier): this skill decides what the prose says and how it is structured, the formatter normalizes whitespace and syntax afterwards.
+This skill is the baseline for every other skill that writes prose. Whenever another skill composes, rewrites, or reviews human-facing text (issues, PRs/MRs, commits, docs, Slack messages, reports), load this skill first and apply its rules underneath that skill's specific guidance. This holds for skills from any part of the harness and for locally installed skills, not only the ones named below.
+
+Some examples of how the baseline composes with specific skills:
+
+- **Prose stubs.** The `gh`, `glab`, and `sf-commit-convention` skills carry a short plain-prose stub for their artifacts; this skill is the full ruleset behind those stubs.
+- **Mechanical layout.** The `auto-format-doc` skill handles mechanical markdown layout (prettier): this skill decides what the prose says and how it is structured, the formatter normalizes whitespace and syntax afterwards.
+- **Domain overlays.** Skills that own a document type (issue writing, ADRs, postmortems, changelogs) add their structure and domain rules on top; this skill keeps governing the sentences inside that structure.
+
+When another skill's guidance conflicts with this baseline, the more specific skill wins for its own artifact type, but only for the rules it explicitly overrides.
 
 The plain-prose override still applies: artifacts are written in complete, well-structured English even when a terse conversational style (for example a `CAVEMAN MODE ACTIVE` session reminder) is active. The terse style governs chat replies, never the artifacts. Do not toggle the style; write the artifact in full prose and resume the terse style in chat.
