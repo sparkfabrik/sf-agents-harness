@@ -16,7 +16,8 @@
         "Uses scoped labels for priority (e.g., `priority::high`) rather than flat labels",
         "Uses `--assignee @me` or equivalent to assign to the current user",
         "Checks the git remote to confirm it's a GitLab project before running glab commands",
-        "Uses `--label` with a bug-related label (e.g., `bug`, `type::bug`)"
+        "Uses `--label` with a bug-related label (e.g., `bug`, `type::bug`)",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     },
     {
@@ -33,7 +34,8 @@
         "Uses `--reviewer marco` to request review from the teammate",
         "Checks git status and branch state before creating the MR",
         "Pushes the branch to remote (with -u) before creating the MR",
-        "Analyzes the changes (git diff/log) to draft a meaningful MR title and description"
+        "Analyzes the changes (git diff/log) to draft a meaningful MR title and description",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR description"
       ]
     },
     {
@@ -48,7 +50,8 @@
         "Uses `glab mr approve 15` to formally approve the MR (GitLab's approval system)",
         "Uses `glab mr note 15` to add a comment about the implementation looking solid",
         "Treats approval and comment as separate operations (not combined into one command)",
-        "Uses glab commands throughout (not gh or curl)"
+        "Uses glab commands throughout (not gh or curl)",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR note"
       ]
     },
     {
@@ -160,7 +163,8 @@
         "Extracts the auth token from `glab auth status -t`",
         "Uses either `Authorization: Bearer` or `PRIVATE-TOKEN` header (not both, not neither)",
         "Parses the upload response to extract the markdown image URL",
-        "Uses `glab mr update` (or `glab mr note`) to attach the image to MR !4"
+        "Uses `glab mr update` (or `glab mr note`) to attach the image to MR !4",
+        "Preserves the existing AI attribution header or prepends the required header when adding the image"
       ]
     },
     {
@@ -175,7 +179,8 @@
         "Uses the correct GitLab project uploads API endpoint",
         "Includes proper authentication header in the curl command",
         "Uses `glab issue note 88` to attach the file link as a comment on the issue",
-        "The comment includes the markdown link from the upload response"
+        "The comment includes the markdown link from the upload response",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue comment"
       ]
     },
     {
@@ -240,7 +245,8 @@
         "Title description is lowercase and concise",
         "Does NOT use a generic title like 'Add new feature' or just restate the user's request verbatim",
         "Uses `--reviewer elena` to request review",
-        "Pushes the branch before creating the MR"
+        "Pushes the branch before creating the MR",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR description"
       ]
     },
     {
@@ -254,7 +260,8 @@
         "Does NOT use `--squash` with `glab mr create` (that flag does not exist on this subcommand)",
         "Uses `--assignee @me` or equivalent to assign to the current user",
         "Pushes the branch before creating the MR",
-        "Checks git status and branch state before creating the MR"
+        "Checks git status and branch state before creating the MR",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR description"
       ]
     },
     {
@@ -269,7 +276,8 @@
         "Uses `--target-branch develop` to target the correct branch",
         "Uses `--label ready-for-review` or `-l ready-for-review`",
         "Does NOT use `--squash` with `glab mr create`",
-        "Does NOT use `--when-pipeline-succeeds` with `glab mr create` (that's a `glab mr merge` flag)"
+        "Does NOT use `--when-pipeline-succeeds` with `glab mr create` (that's a `glab mr merge` flag)",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR description"
       ]
     },
     {
@@ -363,7 +371,8 @@
         "Does NOT use the short form '!34' or '#12' in the issue description body",
         "Uses `glab issue create` to create the issue",
         "Uses `--assignee @me` or equivalent",
-        "Uses a regression-related label"
+        "Uses a regression-related label",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     },
     {
@@ -377,7 +386,8 @@
         "Comment references MR !10 as 'team/infra/platform!10' (not just '!10')",
         "Does NOT use any short-form references in the comment body",
         "Uses `glab mr note 22` to add the comment",
-        "Sets GITLAB_HOST for the self-hosted instance when resolving the cross-project path"
+        "Sets GITLAB_HOST for the self-hosted instance when resolving the cross-project path",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the MR comment"
       ]
     },
     {
@@ -391,7 +401,8 @@
         "Title does NOT contain a scoped Conventional Commits prefix like `fix(checkout):` or `perf(mobile):`",
         "Title does NOT start with a category-like prefix such as `Bug:`, `Feature:`, `Task:`, `Issue:`",
         "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
-        "Title describes the problem/scope (something about slow checkout / mobile / performance), not the commit-style fix"
+        "Title describes the problem/scope (something about slow checkout / mobile / performance), not the commit-style fix",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     },
     {
@@ -405,7 +416,8 @@
         "Title does NOT contain a scoped Conventional Commits prefix like `feat(dashboard):` or `feat(ui):`",
         "Title does NOT start with `Feature:`, `Feat:`, `Task:`, or similar pseudo-category prefix",
         "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
-        "Title references dark mode and/or the dashboard in plain English"
+        "Title references dark mode and/or the dashboard in plain English",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     },
     {
@@ -419,7 +431,8 @@
         "Title does NOT contain any scoped Conventional Commits prefix like `chore(deps):`",
         "Title does NOT start with `Chore:`, `Task:`, `Maintenance:` pseudo-prefixes",
         "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
-        "Title mentions dependencies/npm/security in plain English"
+        "Title mentions dependencies/npm/security in plain English",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     },
     {
@@ -433,7 +446,8 @@
         "Title does NOT contain any scoped Conventional Commits prefix",
         "Title does NOT start with `Docs:`, `Documentation:`, `Bug:`, or similar pseudo-prefix",
         "Title is human-readable and concise (roughly 3-10 words, under ~60 chars)",
-        "Title mentions rate limiting documentation in plain English"
+        "Title mentions rate limiting documentation in plain English",
+        "Fetches the authenticated GitLab username and prepends the required AI attribution header to the issue description"
       ]
     }
   ]

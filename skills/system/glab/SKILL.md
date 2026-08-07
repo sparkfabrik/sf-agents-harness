@@ -1,6 +1,6 @@
 ---
 name: glab
-description: 'Invoke whenever the user is working with GitLab. Trigger on any of these signals: a URL containing "gitlab" (gitlab.com or any self-hosted instance like gitlab.sparkfabrik.com), a git remote pointing to GitLab (git@gitlab.com:... or https://gitlab...), the !N merge-request notation (!15, !42), or words like "merge request", "MR", "glab", or "gitlab". Handles issues, merge requests, CI/CD pipelines, releases, and reading files from GitLab repos. Always use glab—not WebFetch or curl—for any GitLab URL because GitLab requires authentication. Do not invoke for GitHub tasks (use the gh skill instead).'
+description: 'MUST be loaded before any GitLab-related action, including `glab auth status`, any other `glab` command, or composing and sending GitLab issue or merge request content. If repository inspection reveals a GitLab remote, load this skill before the next GitLab action. Trigger on the words "GitLab" or "glab", GitLab URLs or remotes, issues, merge requests, MRs, !N references, pipelines, releases, and repository files. This skill carries mandatory, non-derivable policy: AI attribution on every write, fully-qualified references, self-hosted host targeting, safe mutation rules, and CLI/API traps. Use `glab`, not `gh`, WebFetch, or curl, except where the skill explicitly requires curl for uploads. Do not invoke for GitHub tasks.'
 ---
 
 # glab CLI Skill
