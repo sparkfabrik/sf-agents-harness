@@ -254,7 +254,7 @@ structuring complex business logic in Drupal modules.
 While a change is still in an open, unmerged MR, treat all of the branch's own
 code as fully editable. When something you added earlier in the same MR needs to
 change, EDIT IT IN PLACE. Do NOT add new code that compensates for, wraps, or
-sequels it. The MR lands as one unit, so nothing outside the branch depends on
+works around it. The MR lands as one unit, so nothing outside the branch depends on
 an intermediate state: layering a fix on your own unmerged code only adds churn
 and a harder review, with no safety benefit.
 
