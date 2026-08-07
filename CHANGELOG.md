@@ -15,6 +15,7 @@ Changes are grouped by date.
 ### Changed
 
 - Generalized the `sf-writing-style` skill interaction rules: it is now the explicit baseline for every prose-writing skill (harness or locally installed), with the previously named skills kept as examples.
+- Updated upstream skill sync workflows to use `actions/checkout@v7`.
 
 ### Fixed
 
