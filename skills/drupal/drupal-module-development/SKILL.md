@@ -249,6 +249,61 @@ structuring complex business logic in Drupal modules.
 
 # Development Workflow
 
+## Edit in-flight MR code in place; never stack on top of it
+
+While a change is still in an open, unmerged MR, treat all of the branch's own
+code as fully editable. When something you added earlier in the same MR needs to
+change, EDIT IT IN PLACE. Do NOT add new code that compensates for, wraps, or
+sequels it. The MR lands as one unit, so nothing outside the branch depends on
+an intermediate state: layering a fix on your own unmerged code only adds churn
+and a harder review, with no safety benefit.
+
+This applies to everything the MR introduces, not just hooks:
+
+- `hook_update_N` / `hook_post_update_NAME`: change the existing hook; do NOT add
+  a follow-up update hook to correct it.
+- Migrations and applied one-off scripts: fix the migration; do not add a fix-up
+  migration.
+- Config and schema (config entities, field definitions, `config_ignore` /
+  `config_split` rules): correct the originating change; do not add a corrective
+  override.
+- Code added in this MR (services, classes, function signatures, helpers,
+  plugins): refactor it directly; do not overload it with a second method or
+  wrap it in an adapter.
+- Generated code, fixtures, and seed data from this MR: regenerate; do not append
+  corrections.
+- Tests from this MR: fix them; do not add compensating tests.
+
+Kill these wrong assumptions before acting on them:
+
+- "This update hook or migration already ran, so I can't change it." That is a
+  PRODUCTION rule; it holds only for code already merged and deployed to a
+  persistent environment. Pre-merge nothing persistent has run it, so the hook is
+  free to change.
+- "It is committed or pushed, so it is fixed." Pushed-but-unmerged is not
+  released. Rework the code in an amend (unpushed commit) or a follow-up commit
+  (pushed).
+- "Adding is safer than editing." That heuristic is for other people's shipped
+  code, not your own in-flight change.
+
+Rework the code, not published history: amend only unpushed commits, otherwise
+use a follow-up commit, and NEVER `git push --force` a shared branch.
+
+Editing already-applied stateful code (an update hook, a migration, seed data)
+means the local site ran the old version and will not re-run the edited one
+automatically (Drupal skips an applied update number). Tell the user a clean
+rebuild is needed (`make`), then continue. This is a one-time local cost, not a
+reason to stack.
+
+This does NOT apply when the code is already merged, released, or deployed to a
+persistent environment (write a new hook or migration, never rewrite the old
+one); when the code is not yours to edit (contrib, a dependency, an artifact
+generated from an upstream source); or when a reviewer has explicitly mandated a
+preserved, stepwise history.
+
+Smell test: before writing code that works around other code, ask whether that
+code is part of THIS MR and still unmerged. If yes, edit it in place.
+
 ## Project Structure
 - **Modules** → `modules/custom/<module_name>`
 - **Themes** → `themes/custom/<theme_name>`
