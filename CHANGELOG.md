@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 - Generalized the `sf-writing-style` skill interaction rules: it is now the explicit baseline for every prose-writing skill (harness or locally installed), with the previously named skills kept as examples.
 
-- `glab` skill: require loading before every GitLab command or write, expose attribution, reference, host, and safety policy in the trigger description, and add trigger plus attribution regression evals.
+- `glab` skill: require loading before every GitLab command or write, expose attribution, reference, host, and safety policy in the trigger description, add trigger plus attribution regression evals, and ignore educational, terminology, news, and wording-only mentions.
 
 ## [2026-08-06]
 
