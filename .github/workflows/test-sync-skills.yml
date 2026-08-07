@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate manifest against schema
         run: npx ajv-cli validate -s config/upstream-skills.schema.json -d config/upstream-skills.json --spec=draft2020

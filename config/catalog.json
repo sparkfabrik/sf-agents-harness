@@ -25,6 +25,18 @@
     "doc-coauthoring": {
       "description": "Co-author docs, proposals, and technical specs"
     },
+    "domain-modeling": {
+      "description": "Build domain glossaries and qualifying ADRs"
+    },
+    "grilling": {
+      "description": "Stress-test plans through structured interviews"
+    },
+    "grill-me": {
+      "description": "Explicit entry point for a structured grilling session"
+    },
+    "grill-with-docs": {
+      "description": "Stress-test designs while documenting terms and decisions"
+    },
     "gh": {
       "description": "GitHub CLI (issues, PRs, Actions, releases)"
     },

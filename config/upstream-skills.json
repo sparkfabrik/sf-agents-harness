@@ -32,6 +32,30 @@
       }
     },
     {
+      "name": "grilling",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/productivity/grilling"
+    },
+    {
+      "name": "grill-me",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/productivity/grill-me"
+    },
+    {
+      "name": "domain-modeling",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/domain-modeling"
+    },
+    {
+      "name": "grill-with-docs",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/grill-with-docs"
+    },
+    {
       "name": "angular-developer",
       "category": "angular",
       "repo": "angular/skills",
