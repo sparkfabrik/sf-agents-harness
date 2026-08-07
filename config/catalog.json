@@ -26,10 +26,10 @@
       "description": "Co-author docs, proposals, and technical specs"
     },
     "domain-modeling": {
-      "description": "Build domain glossaries and qualifying architecture decisions"
+      "description": "Build domain glossaries and qualifying ADRs"
     },
     "grilling": {
-      "description": "Stress-test plans and decisions through structured interviews"
+      "description": "Stress-test plans through structured interviews"
     },
     "grill-me": {
       "description": "Explicit entry point for a structured grilling session"
