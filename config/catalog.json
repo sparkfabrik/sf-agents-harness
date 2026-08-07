@@ -32,7 +32,7 @@
       "description": "Review AI-generated code changes before committing"
     },
     "glab": {
-      "description": "GitLab CLI (issues, MRs, pipelines, repos)"
+      "description": "GitLab CLI with mandatory write and host policies"
     },
     "mermaid-diagrams": {
       "description": "Create clear Mermaid diagrams in Markdown docs"

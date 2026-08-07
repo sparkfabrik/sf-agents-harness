@@ -1,0 +1,22 @@
+[
+  {"query": "Draft a GitLab merge request note for !22 saying the deployment fix is verified. Start by checking the repository remote and glab authentication, then post the note.", "should_trigger": true},
+  {"query": "We use a self-hosted GitLab instance. Add a short review comment to MR !47 after confirming which account is authenticated.", "should_trigger": true},
+  {"query": "Explain this merge request and summarize its pipeline and comments: https://gitlab.sparkfabrik.com/team/platform/-/merge_requests/67", "should_trigger": true},
+  {"query": "Safely update the existing GitLab issue #88 description without overwriting edits another reviewer may have made.", "should_trigger": true},
+  {"query": "Run glab auth status, then create a high-priority bug issue for the checkout crash and assign it to me.", "should_trigger": true},
+  {"query": "Check MR !15, read the discussion, verify the pipeline, and approve it with a note if everything passed.", "should_trigger": true},
+  {"query": "The origin remote is git@gitlab.example.com:team/service.git. List all closed issues in that project.", "should_trigger": true},
+  {"query": "Open an issue on our GitLab project for outdated rate-limiting documentation and use the available issue template.", "should_trigger": true},
+  {"query": "Read this GitLab file and compare it with our local CI config: https://gitlab.example.com/team/infra/-/raw/main/.gitlab-ci.yml", "should_trigger": true},
+  {"query": "Upload tmp/failure.png to the GitLab project and append it to merge request !9 without erasing the existing description.", "should_trigger": true},
+  {"query": "Comment on GitHub pull request #22 after checking its Actions status.", "should_trigger": false},
+  {"query": "Show the read-only git commands used to inspect remotes and the current branch in an unknown repository.", "should_trigger": false},
+  {"query": "Summarize the differences between GitHub and GitLab terminology for an onboarding glossary.", "should_trigger": false},
+  {"query": "Configure a Gitea repository and explain how its pull request workflow works.", "should_trigger": false},
+  {"query": "Find the latest public news about GitLab quarterly earnings and summarize it.", "should_trigger": false},
+  {"query": "Write unit tests for the MergeRequestParser class in src/parser.ts.", "should_trigger": false},
+  {"query": "Review the wording of this sentence: GitLab calls pull requests merge requests.", "should_trigger": false},
+  {"query": "Create a Dockerfile for a Node.js service and add a health check.", "should_trigger": false},
+  {"query": "Take a screenshot of the checkout page with Playwright and save it locally.", "should_trigger": false},
+  {"query": "List the files changed on my current local branch compared with main.", "should_trigger": false}
+]
