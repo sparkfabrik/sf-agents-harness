@@ -35,7 +35,7 @@
       "description": "Explicit entry point for a structured grilling session"
     },
     "grill-with-docs": {
-      "description": "Grill designs while maintaining glossaries and ADRs"
+      "description": "Stress-test designs while documenting terms and decisions"
     },
     "gh": {
       "description": "GitHub CLI (issues, PRs, Actions, releases)"
