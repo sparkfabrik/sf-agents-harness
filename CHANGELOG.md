@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-13]
+
+### Changed
+
+- Taught the `spark-http-proxy` skill about `VIRTUAL_PATH`, which mounts a container under a path of its `VIRTUAL_HOST` so a browser-served frontend and its API can share one origin locally. Covers the compose shape, that matching is by path segment and nothing is stripped, that a certificate covers a hostname rather than a path, and the failure modes that do not produce a 404: a stopped mounted container falling through to the domain's container, and any `traefik.` label disabling both variables.
+
 ## [2026-08-07]
 
 ### Added

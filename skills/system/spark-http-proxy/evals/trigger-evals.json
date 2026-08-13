@@ -9,6 +9,9 @@
   {"query": "i added VIRTUAL_HOST to the service but traefik still isn't routing to the container, nothing shows on the http-proxy network", "should_trigger": true},
   {"query": "how do I uninstall the local http proxy and remove the .loc resolver from my mac, and drop the mkcert CA", "should_trigger": true},
   {"query": "new laptop provisioned by sparkdock, how do I check the local dev proxy is set up and expose my first project at app.spark.loc", "should_trigger": true},
+  {"query": "my react app and its api are on different local hostnames and the browser blocks the calls with a CORS error, can I serve them from one domain instead", "should_trigger": true},
+  {"query": "I want my frontend at myapp.spark.loc and the backend under myapp.spark.loc/api locally, how do I set that up", "should_trigger": true},
+  {"query": "added VIRTUAL_PATH=/api to my api container but requests to /api still hit the frontend, what did I get wrong", "should_trigger": true},
 
   {"query": "configure Traefik as the production ingress on our k8s cluster with Let's Encrypt and cert-manager", "should_trigger": false},
   {"query": "set up an nginx reverse proxy in production to load balance three API backend servers", "should_trigger": false},
