@@ -44,8 +44,41 @@ under "Certificate untrusted or mismatched" below. Work down this list instead:
 3. **Wrong backend port.** If the app listens on a port the proxy did not guess,
    set `VIRTUAL_PORT` (or the `loadbalancer.server.port` label) to the real
    in-container port. The proxy defaults to the lowest exposed TCP port, then 80.
-4. **Both label and `VIRTUAL_HOST` present.** Any `traefik.*` label makes the
-   compatibility layer skip `VIRTUAL_HOST`. Use one mechanism, not both.
+4. **Both label and `VIRTUAL_HOST` present.** Any `traefik.` label makes the
+   compatibility layer skip the container entirely, `VIRTUAL_HOST` and
+   `VIRTUAL_PATH` included. A middleware label alone is enough to trigger it, so
+   this bites people who add CORS or headers to an otherwise working service. Use
+   one mechanism, not both; the proxy warns when it happens, so check
+   `spark-http-proxy logs dinghy_layer`.
+
+## A path reaches the wrong container
+
+Symptoms specific to `VIRTUAL_PATH`. Note that the first two do **not** produce a
+404, which is why they are confusing.
+
+1. **The mounted container is not running.** Its routes go with it, so its paths
+   fall through to whatever serves the domain. A dev server answers unknown paths
+   with its own page and a `200`, so every API call silently returns HTML. Check
+   the container is up before suspecting the routing.
+2. **The path is not what you think.** Matching is by segment: `/api` matches
+   `/api` and everything under it, never `/api-docs`. If a request you expected to
+   be captured is not, check whether it is a sibling rather than a child.
+3. **The API 404s on its own routes.** Nothing is stripped, so the container
+   receives `/api/users`, not `/users`. The application has to serve the prefix
+   itself, usually through a global route-prefix setting.
+4. **`VIRTUAL_PATH` with no `VIRTUAL_HOST`.** A path needs a domain to sit on, and
+   without `VIRTUAL_HOST` the container is not exposed at all. The proxy warns;
+   see `spark-http-proxy logs dinghy_layer`.
+5. **Two containers claim the same path.** Which one answers is not defined. The
+   proxy warns and names both.
+6. **The value changed but nothing did.** Environment variables cannot change in
+   place, so the container has to be recreated: `docker compose up -d`.
+
+Confirm what the proxy actually generated when in doubt:
+
+```bash
+spark-http-proxy logs dinghy_layer   # warnings about ignored or conflicting values
+```
 
 ## Does not resolve
 

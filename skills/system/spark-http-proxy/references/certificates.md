@@ -59,6 +59,16 @@ match. If none match, it falls back to a generated self-signed certificate (the
 warning case). The startup logs list which domains each loaded certificate
 covers — useful when diagnosing a mismatch.
 
+A certificate therefore covers a **hostname**, never a path. A container mounted
+under a path with `VIRTUAL_PATH` is served by the certificate of the domain it
+sits on and needs none of its own. Passing a path to the certificate commands is
+refused:
+
+```bash
+spark-http-proxy generate-mkcert myapp.spark.loc       # correct
+spark-http-proxy generate-mkcert myapp.spark.loc/api   # refused
+```
+
 ## Manual generation (alternative)
 
 If you would rather drive mkcert directly:

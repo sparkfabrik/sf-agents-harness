@@ -1,6 +1,6 @@
 ---
 name: spark-http-proxy
-description: 'Configure, run, and troubleshoot Spark HTTP Proxy, the Traefik-based local development reverse proxy that gives Docker containers clean domain names (for example myapp.spark.loc) over HTTP and HTTPS. Use this skill whenever the user wants to expose a local container under a domain, edit a docker-compose service to add VIRTUAL_HOST/VIRTUAL_PORT or traefik.* labels, generate trusted local certificates with mkcert, set up .loc/.dev domain resolution, or debug why a container is not reachable through the proxy. Trigger on signals like VIRTUAL_HOST, VIRTUAL_PORT, spark-http-proxy, "http-proxy", *.spark.loc / *.loc / *.dev / .local dev domains, "my app is not routing locally", "expose this container", "localhost port chaos", mkcert / trusted local HTTPS, configure-dns, or a docker-compose.yml in a local project that should be reachable by name. This is for LOCAL DEVELOPMENT only; it is not for configuring a production Traefik deployment.'
+description: 'Configure, run, and troubleshoot Spark HTTP Proxy, the Traefik-based local development reverse proxy that gives Docker containers clean domain names (for example myapp.spark.loc) over HTTP and HTTPS. Use this skill whenever the user wants to expose a local container under a domain, edit a docker-compose service to add VIRTUAL_HOST/VIRTUAL_PORT or traefik.* labels, generate trusted local certificates with mkcert, set up .loc/.dev domain resolution, or debug why a container is not reachable through the proxy. Trigger on signals like VIRTUAL_HOST, VIRTUAL_PORT, VIRTUAL_PATH, spark-http-proxy, "http-proxy", *.spark.loc / *.loc / *.dev / .local dev domains, "my app is not routing locally", "expose this container", "localhost port chaos", serving a frontend and its API on one origin or one domain to avoid CORS, mounting an app under a path such as /api, "why is /api not routing locally", mkcert / trusted local HTTPS, configure-dns, or a docker-compose.yml in a local project that should be reachable by name. This is for LOCAL DEVELOPMENT only; it is not for configuring a production Traefik deployment.'
 ---
 
 # Spark HTTP Proxy
@@ -101,8 +101,38 @@ Two things to know before editing:
   published host port. You usually do not need to publish ports at all once the
   app is behind the proxy.
 
-For multiple domains, wildcards/regex, the native `traefik.*` label form, and
-when to prefer labels over `VIRTUAL_HOST`, read `references/expose-container.md`.
+### Two containers on one domain
+
+When a browser-served frontend and its API must share an origin (no CORS, no
+preflight, one certificate), give both the same `VIRTUAL_HOST` and mount one
+under a path:
+
+```yaml
+services:
+  frontend:
+    environment:
+      - VIRTUAL_HOST=myapp.spark.loc
+      - VIRTUAL_PORT=5173
+
+  api:
+    environment:
+      - VIRTUAL_HOST=myapp.spark.loc # the same domain
+      - VIRTUAL_PATH=/api # mounted under it
+      - VIRTUAL_PORT=3000
+```
+
+The page can then call `/api/...` with no host in front of it. Two things to say
+when suggesting this: the API must serve the `/api` prefix itself, because nothing
+is stripped, and `/api` never captures `/api-docs`, because matching is by path
+segment.
+
+Do **not** reach for `traefik.*` labels to achieve this. They work, but adding any
+`traefik.` label to a container makes the proxy ignore its `VIRTUAL_HOST`
+entirely, so you then own every router by hand.
+
+For multiple domains, wildcards/regex, the full `VIRTUAL_PATH` rules, the native
+`traefik.*` label form, and when to prefer labels over `VIRTUAL_HOST`, read
+`references/expose-container.md`.
 
 ## Certificates (trusted local HTTPS)
 
