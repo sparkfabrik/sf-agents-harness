@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-17]
+
+### Changed
+
+- Upstream skill sync: refresh `system/domain-modeling`, `system/grill-me`, `system/grill-with-docs`, and `system/grilling` from the declared source repositories.
+
 ## [2026-08-13]
 
 ### Changed
