@@ -15,8 +15,7 @@ description: >-
   hardcoded -- with optional per-project overrides in `.claude/gitlab-issue.json`.
   Defers to the glab skill for the actual GitLab API calls and shows a draft for
   approval before creating, unless the invocation passes `-y`/`--yes` to
-  auto-confirm or `-n`/`--dry-run` to stop at the draft. Do not use for GitHub
-  issues -- use the gh skill instead.
+  auto-confirm or `-n`/`--dry-run` to stop at the draft.
 ---
 
 # Create GitLab issue
@@ -30,11 +29,6 @@ linked to related work, and lands in the correct board column via labels.
 All GitLab calls go through the **glab skill** -- load it for the create call and
 any list/view queries. It owns authentication, host targeting, and TLS handling;
 do not re-derive those rules here.
-
-If the target resolves to a GitHub project, **stop** and use the `gh` skill
-instead. This applies to the auto-detected case only: a GitLab URL in the prompt
-wins over the current repo's remote, so a GitLab target given explicitly from
-inside a GitHub-hosted checkout is valid work, not a reason to bail.
 
 ## Arguments
 
