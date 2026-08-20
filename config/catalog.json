@@ -22,6 +22,9 @@
     "angular-new-app": {
       "description": "Create modern Angular applications with Angular CLI"
     },
+    "create-gitlab-issue": {
+      "description": "Open grounded GitLab issues after auditing the project"
+    },
     "doc-coauthoring": {
       "description": "Co-author docs, proposals, and technical specs"
     },
