@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-20]
+
+### Added
+
+- Added the `create-gitlab-issue` skill, which turns a short task description into a grounded GitLab issue. It audits git state, open issues and MRs, in-flight specs, and the relevant source files before drafting, resolves host, labels, attribution, and test gates at runtime with optional overrides in `.claude/gitlab-issue.json`, and defers to the `glab` skill for the API calls.
+
 ## [2026-08-17]
 
 ### Changed
