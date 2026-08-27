@@ -24,8 +24,9 @@ Words to replace with plainer ones: delve, leverage (as a verb), utilize, robust
 Patterns to cut:
 
 - **Throat-clearing openers.** "This document aims to", "In this section we will", "It's worth noting that", "In today's fast-paced world". Start with the point instead.
+- **Reveal framing.** "the key insight", "the crux", "the smoking gun", "the core of it", "the telling detail", "load-bearing". State the fact directly; do not announce that it matters first.
 - **Summary outros.** "In conclusion", "Overall", "To summarize". Just stop.
-- **Hype symmetry.** "not only X but also Y", "whether you're X or Y", decorative triads ("fast, reliable, and scalable") unless each item is a load-bearing fact.
+- **Hype symmetry.** "not only X but also Y", "whether you're X or Y", decorative triads ("fast, reliable, and scalable") unless each item states a distinct fact.
 - **Enthusiasm markers.** Exclamation points, emoji decoration, "Great question".
 
 ## Air: paragraphs and whitespace

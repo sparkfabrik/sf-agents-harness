@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-27]
+
+### Changed
+
+- `sf-writing-style`: added a **Reveal framing** pattern to the slop blacklist, covering "the key insight", "the crux", "the smoking gun", "the core of it", "the telling detail", and "load-bearing". Matches the banned-phrase list the org-wide managed settings now inject on every prompt ([sparkfabrik/claude-code-managed-settings#54](https://github.com/sparkfabrik/claude-code-managed-settings/issues/54)).
+- `sf-writing-style`: rewrote the hype-symmetry rule, which used "load-bearing" while the same skill now bans it.
+
 ## [2026-08-24]
 
 ### Changed
