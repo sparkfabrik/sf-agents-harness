@@ -11,6 +11,7 @@ Changes are grouped by date.
 ### Added
 
 - `spark-http-proxy`: cover tailnet peer routing, which makes a hostname served on one machine reachable under the same name from the other machines of the same Tailscale account. New `references/peer-routing.md` with how to turn it on, how to read the discovery report, why a hostname is not reachable yet, what `not this proxy` means, and what differs on macOS.
+- `spark-http-proxy`: cover why HTTPS to a peer hostname is untrusted. TLS terminates locally, so the machine doing the reaching needs the certificate, and a wildcard covers exactly one label, so `*.spark.loc` does not cover `macos.test.spark.loc`.
 
 ### Fixed
 
