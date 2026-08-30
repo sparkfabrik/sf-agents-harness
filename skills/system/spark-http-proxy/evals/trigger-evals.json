@@ -26,5 +26,7 @@
   {"query": "I started a container on my desktop and the same spark.loc hostname 404s on my laptop, both are on tailscale", "should_trigger": true},
   {"query": "how do I make my other machine reach app.spark.loc that is served on this one", "should_trigger": true},
   {"query": "tailscale-peers says my desktop is 'not this proxy', what does that mean", "should_trigger": true},
-  {"query": "is there a way to force spark-http-proxy to look for peers now instead of waiting a minute", "should_trigger": true}
+  {"query": "is there a way to force spark-http-proxy to look for peers now instead of waiting a minute", "should_trigger": true},
+  {"query": "chrome says the certificate is invalid for a spark.loc hostname that lives on my other machine", "should_trigger": true},
+  {"query": "why does https fail with TRAEFIK DEFAULT CERT for a hostname forwarded from my desktop", "should_trigger": true}
 ]

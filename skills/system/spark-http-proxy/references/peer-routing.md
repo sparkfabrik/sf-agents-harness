@@ -76,6 +76,40 @@ Work down this list.
 5. **Are both machines online in Tailscale?** A machine that is offline is
    `skipped`, and no amount of proxy configuration changes that.
 
+## "HTTPS to the peer hostname is not trusted"
+
+TLS terminates on the machine the browser is talking to, so the peer's
+certificate is never presented. The machine doing the reaching needs a
+certificate for a hostname it does not serve. Without one, Traefik serves its
+default and the browser refuses:
+
+```
+SSL: no alternative certificate subject name matches target hostname 'macos.test.spark.loc'
+subject: CN=TRAEFIK DEFAULT CERT
+```
+
+Fix it on the machine doing the reaching, not the one serving:
+
+```bash
+spark-http-proxy generate-mkcert 'macos.test.spark.loc'
+```
+
+**A wildcard covers exactly one label.** This is the part that catches people, so
+check the label count before assuming an existing wildcard applies. Measured
+against a machine holding `*.spark.loc`:
+
+| Hostname               | Certificate served |
+| ---------------------- | ------------------ |
+| `test123.spark.loc`    | `*.spark.loc`      |
+| `a.b.spark.loc`        | Traefik's default  |
+| `macos.test.spark.loc` | Traefik's default  |
+
+A nested name needs its own certificate, or a wildcard at its own level
+(`*.test.spark.loc`), which then covers every name directly under it.
+
+Nothing generates these automatically. `spark-http-proxy status` names the
+command when machines are forwarding, and the user runs it.
+
 ## "Why does this peer say `not this proxy`"
 
 Every proxy publishes a declaration of itself, and a machine is adopted only
