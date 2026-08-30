@@ -107,8 +107,8 @@ against a machine holding `*.spark.loc`:
 A nested name needs its own certificate, or a wildcard at its own level
 (`*.test.spark.loc`), which then covers every name directly under it.
 
-Nothing generates these automatically. `tailscale-peers` names the command when
-machines are forwarding, and the user runs it.
+Nothing generates these automatically. `spark-http-proxy status` names the
+command when machines are forwarding, and the user runs it.
 
 ## "Why does this peer say `not this proxy`"
 
