@@ -6,7 +6,9 @@
       "name": "expose-drupal-with-https",
       "prompt": "I'm working on a Drupal site for a client in this repo. The docker-compose.yml has a `web` service that serves the app on port 8080. I want to reach it at drupal.acme.spark.loc over trusted HTTPS while I develop locally. Set it up.",
       "expected_output": "Edits the web service to add VIRTUAL_HOST=drupal.acme.spark.loc and VIRTUAL_PORT=8080, and generates a trusted certificate with the correct nested wildcard `*.acme.spark.loc` (not *.loc or *.spark.loc). Recreates the container and mentions DNS resolves via the built-in server.",
-      "files": ["docker-compose.yml"]
+      "files": [
+        "docker-compose.yml"
+      ]
     },
     {
       "id": 1,
@@ -20,6 +22,20 @@
       "name": "guide-simple-expose",
       "prompt": "I'm new here. How do I use spark-http-proxy to expose a local nginx container at nginx.spark.loc? Just walk me through it.",
       "expected_output": "Guides the user: add VIRTUAL_HOST=nginx.spark.loc to the container (env var or docker run -e), start the proxy if needed, generate a *.spark.loc certificate for trusted HTTPS, and open the URL. Clear and beginner-friendly.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "peer-hostname-not-reachable-yet",
+      "prompt": "I run the proxy on my laptop and my desktop, both on the same Tailscale account. I started a container on the desktop with VIRTUAL_HOST=api.myapp.spark.loc and it works there, but on the laptop the same URL 404s. Both machines have peer routing started. What is going on and how do I check?",
+      "expected_output": "Explains that discovery polls on an interval, so the container may not have been seen yet, and has them run spark-http-proxy tailscale-refresh-peers on the laptop to force a cycle rather than waiting. Reads spark-http-proxy tailscale-peers to check the desktop shows as ok and whether the hostname is in its list. Does not suggest editing DNS, /etc/hosts, or certificates, since neither changes for peer routing.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "peer-reports-not-this-proxy",
+      "prompt": "spark-http-proxy tailscale-peers on my laptop lists my desktop with status `not this proxy`. The desktop is online and I can ping it over Tailscale. What does that mean and how do I fix it?",
+      "expected_output": "Explains that something answered on the proxy's port but did not publish the proxy's self-declaration, and that the usual cause is a version older than the one that publishes it, so both machines must be upgraded rather than only one. Suggests spark-http-proxy self-update and upgrade on the desktop. Mentions the other possibility, that something unrelated is listening on that port. Does not treat it as a Tailscale connectivity problem, since the machine answered.",
       "files": []
     }
   ]

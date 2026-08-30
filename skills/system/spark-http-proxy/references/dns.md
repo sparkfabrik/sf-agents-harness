@@ -52,14 +52,14 @@ One file per TLD; the filename is the TLD.
 sudo mkdir -p /etc/systemd/resolved.conf.d
 sudo tee /etc/systemd/resolved.conf.d/http-proxy.conf > /dev/null <<EOF
 [Resolve]
-DNS=172.17.0.1:19322
+DNS=127.0.0.1:19322
 Domains=~loc
 EOF
 sudo systemctl restart systemd-resolved
 ```
 
-Note the DNS target is the Docker bridge gateway `172.17.0.1`, not `127.0.0.1`,
-because the query travels into the container. systemd-resolved may still route
+The DNS server publishes port 19322 on all interfaces, so `127.0.0.1` reaches
+it. systemd-resolved may still route
 some unrelated queries to the proxy, producing harmless `REFUSED` log lines;
 that is expected and does not affect resolution.
 

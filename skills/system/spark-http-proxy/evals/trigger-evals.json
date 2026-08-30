@@ -22,5 +22,9 @@
   {"query": "write me a docker-compose.yml for a postgres + redis + node app stack with healthchecks", "should_trigger": false},
   {"query": "our production Traefik dashboard shows 502s for the checkout service, what should I check", "should_trigger": false},
   {"query": "add VIRTUAL_HOST entries to our jwilder nginx-proxy container on the staging server", "should_trigger": false},
-  {"query": "how do I add a custom domain to /etc/hosts pointing at a remote staging IP", "should_trigger": false}
+  {"query": "how do I add a custom domain to /etc/hosts pointing at a remote staging IP", "should_trigger": false},
+  {"query": "I started a container on my desktop and the same spark.loc hostname 404s on my laptop, both are on tailscale", "should_trigger": true},
+  {"query": "how do I make my other machine reach app.spark.loc that is served on this one", "should_trigger": true},
+  {"query": "tailscale-peers says my desktop is 'not this proxy', what does that mean", "should_trigger": true},
+  {"query": "is there a way to force spark-http-proxy to look for peers now instead of waiting a minute", "should_trigger": true}
 ]

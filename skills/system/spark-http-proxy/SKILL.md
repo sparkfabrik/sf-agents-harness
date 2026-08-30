@@ -1,6 +1,6 @@
 ---
 name: spark-http-proxy
-description: 'Configure, run, and troubleshoot Spark HTTP Proxy, the Traefik-based local development reverse proxy that gives Docker containers clean domain names (for example myapp.spark.loc) over HTTP and HTTPS. Use this skill whenever the user wants to expose a local container under a domain, edit a docker-compose service to add VIRTUAL_HOST/VIRTUAL_PORT or traefik.* labels, generate trusted local certificates with mkcert, set up .loc/.dev domain resolution, or debug why a container is not reachable through the proxy. Trigger on signals like VIRTUAL_HOST, VIRTUAL_PORT, VIRTUAL_PATH, spark-http-proxy, "http-proxy", *.spark.loc / *.loc / *.dev / .local dev domains, "my app is not routing locally", "expose this container", "localhost port chaos", serving a frontend and its API on one origin or one domain to avoid CORS, mounting an app under a path such as /api, "why is /api not routing locally", mkcert / trusted local HTTPS, configure-dns, or a docker-compose.yml in a local project that should be reachable by name. This is for LOCAL DEVELOPMENT only; it is not for configuring a production Traefik deployment.'
+description: 'Configure, run, and troubleshoot Spark HTTP Proxy, the Traefik-based local development reverse proxy that gives Docker containers clean domain names (for example myapp.spark.loc) over HTTP and HTTPS. Use this skill whenever the user wants to expose a local container under a domain, edit a docker-compose service to add VIRTUAL_HOST/VIRTUAL_PORT or traefik.* labels, generate trusted local certificates with mkcert, set up .loc/.dev domain resolution, or debug why a container is not reachable through the proxy. Trigger on signals like VIRTUAL_HOST, VIRTUAL_PORT, VIRTUAL_PATH, spark-http-proxy, "http-proxy", *.spark.loc / *.loc / *.dev / .local dev domains, "my app is not routing locally", "expose this container", "localhost port chaos", serving a frontend and its API on one origin or one domain to avoid CORS, mounting an app under a path such as /api, "why is /api not routing locally", mkcert / trusted local HTTPS, configure-dns, tailnet peer routing, tailscale, start-with-tailscale, tailscale-peers, "reachable from my other machine", "same hostname on both machines", or a docker-compose.yml in a local project that should be reachable by name. This is for LOCAL DEVELOPMENT only; it is not for configuring a production Traefik deployment.'
 ---
 
 # Spark HTTP Proxy
@@ -24,7 +24,7 @@ and Linux (Arch and Debian/Ubuntu) by the archlinux-ansible-provisioner. Assume
 `spark-http-proxy` is available and invoke it directly. Two platform differences
 matter: the Linux provisioner installs the CLI but does **not** auto-start the
 proxy, and `*.loc` resolves to `127.0.0.1` on macOS but to the Docker bridge
-`172.17.0.1` on Linux. See `references/provisioning.md` for the full per-platform
+`127.0.0.1` on Linux. See `references/provisioning.md` for the full per-platform
 picture and how to update.
 
 1. **Is the proxy running?** Run `spark-http-proxy status`. If it is not running,
@@ -61,6 +61,7 @@ picture and how to update.
 | Fix "it's not working / not reachable"           | Walk the decision tree         | `references/troubleshooting.md`  |
 | Understand how it's installed / update it        | Per-platform provisioner notes | `references/provisioning.md`     |
 | Check dependencies, or uninstall / clean up      | Verify or remove the pieces    | `references/uninstall.md`        |
+| Reach a hostname served by another machine       | Start peer routing on both     | `references/peer-routing.md`     |
 
 Dependencies: Docker is required (the proxy is a Docker stack; `spark-http-proxy
 self-test` checks the daemon). `mkcert` is only needed for trusted HTTPS and is
@@ -162,21 +163,30 @@ When the user just wants to understand the tool rather than have you change
 files, run `spark-http-proxy help` for the authoritative command list and explain
 the relevant commands. The lifecycle and utility commands:
 
-| Command                                | Purpose                                              |
-| -------------------------------------- | ---------------------------------------------------- |
-| `start` / `start-with-metrics`         | Start the proxy (optionally with Prometheus/Grafana) |
-| `status`                               | Show running services and the dashboard URL          |
-| `restart` / `stop-metrics`             | Restart the stack / stop only monitoring             |
-| `generate-mkcert <domain>`             | Create trusted certificates for a domain             |
-| `configure-dns`                        | Wire system DNS to resolve the proxy TLDs            |
-| `show-config`                          | Print current configuration and file locations       |
-| `logs [service]`                       | Tail logs (optionally for one service)               |
-| `dashboard` / `grafana` / `prometheus` | Open the respective web UI                           |
-| `upgrade` / `self-update`              | Update images / update the script and compose files  |
-| `clean` / `destroy`                    | Stop + remove volumes / remove everything            |
+| Command                                       | Purpose                                              |
+| --------------------------------------------- | ---------------------------------------------------- |
+| `start` / `start-with-metrics`                | Start the proxy (optionally with Prometheus/Grafana) |
+| `status`                                      | Show running services and the dashboard URL          |
+| `restart` / `stop-metrics`                    | Restart the stack / stop only monitoring             |
+| `start-with-tailscale` / `stop-tailscale`     | Start with, or stop, tailnet peer routing            |
+| `tailscale-peers` / `tailscale-refresh-peers` | Show the last discovery cycle / run one now          |
+| `generate-mkcert <domain>`                    | Create trusted certificates for a domain             |
+| `configure-dns`                               | Wire system DNS to resolve the proxy TLDs            |
+| `show-config`                                 | Print current configuration and file locations       |
+| `logs [service]`                              | Tail logs (optionally for one service)               |
+| `dashboard` / `grafana` / `prometheus`        | Open the respective web UI                           |
+| `upgrade` / `self-update`                     | Update images / update the script and compose files  |
+| `clean` / `destroy`                           | Stop + remove volumes / remove everything            |
 
 Behavior is tuned with env vars, most usefully `HTTP_PROXY_DNS_TLDS` (default
 `loc`) to serve additional TLDs such as `dev`. See `references/dns.md`.
+
+## Hostnames from another machine
+
+A hostname served on one machine can be reached under the same name from the
+other machines of the same Tailscale account. Off by default, started per
+machine with `start-with-tailscale`, and a local container always wins over a
+peer. See `references/peer-routing.md`.
 
 ## When something does not work
 

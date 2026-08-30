@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-30]
+
+### Added
+
+- `spark-http-proxy`: cover tailnet peer routing, which makes a hostname served on one machine reachable under the same name from the other machines of the same Tailscale account. New `references/peer-routing.md` with how to turn it on, how to read the discovery report, why a hostname is not reachable yet, what `not this proxy` means, and what differs on macOS.
+
+### Fixed
+
+- `spark-http-proxy`: the Linux DNS drop-in was documented as pointing at the Docker bridge `172.17.0.1:19322` in a file named `docker-dev-dns.conf`. It is `127.0.0.1:19322` in `/etc/systemd/resolved.conf.d/http-proxy.conf`, so advice based on the old text sent users to a target that does not answer.
+
 ## [2026-08-24]
 
 ### Changed
