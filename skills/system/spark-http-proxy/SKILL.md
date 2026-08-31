@@ -163,20 +163,20 @@ When the user just wants to understand the tool rather than have you change
 files, run `spark-http-proxy help` for the authoritative command list and explain
 the relevant commands. The lifecycle and utility commands:
 
-| Command                                       | Purpose                                              |
-| --------------------------------------------- | ---------------------------------------------------- |
-| `start` / `start-with-metrics`                | Start the proxy (optionally with Prometheus/Grafana) |
-| `status`                                      | Show running services and the dashboard URL          |
-| `restart` / `stop-metrics`                    | Restart the stack / stop only monitoring             |
-| `start-with-tailscale` / `stop-tailscale`     | Start with, or stop, tailnet peer routing            |
-| `tailscale-peers` / `tailscale-refresh-peers` | Show the last discovery cycle / run one now          |
-| `generate-mkcert <domain>`                    | Create trusted certificates for a domain             |
-| `configure-dns`                               | Wire system DNS to resolve the proxy TLDs            |
-| `show-config`                                 | Print current configuration and file locations       |
-| `logs [service]`                              | Tail logs (optionally for one service)               |
-| `dashboard` / `grafana` / `prometheus`        | Open the respective web UI                           |
-| `upgrade` / `self-update`                     | Update images / update the script and compose files  |
-| `clean` / `destroy`                           | Stop + remove volumes / remove everything            |
+| Command                                   | Purpose                                              |
+| ----------------------------------------- | ---------------------------------------------------- |
+| `start` / `start-with-metrics`            | Start the proxy (optionally with Prometheus/Grafana) |
+| `status`                                  | Show running services and the dashboard URL          |
+| `restart` / `stop-metrics`                | Restart the stack / stop only monitoring             |
+| `start-with-tailscale` / `stop-tailscale` | Start with, or stop, tailnet peer routing            |
+| `tailscale-peers [--refresh]`             | Show the last discovery cycle, or run one first      |
+| `generate-mkcert <domain>`                | Create trusted certificates for a domain             |
+| `configure-dns`                           | Wire system DNS to resolve the proxy TLDs            |
+| `show-config`                             | Print current configuration and file locations       |
+| `logs [service]`                          | Tail logs (optionally for one service)               |
+| `dashboard` / `grafana` / `prometheus`    | Open the respective web UI                           |
+| `upgrade` / `self-update`                 | Update images / update the script and compose files  |
+| `clean` / `destroy`                       | Stop + remove volumes / remove everything            |
 
 Behavior is tuned with env vars, most usefully `HTTP_PROXY_DNS_TLDS` (default
 `loc`) to serve additional TLDs such as `dev`. See `references/dns.md`.

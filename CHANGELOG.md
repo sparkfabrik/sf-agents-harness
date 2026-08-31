@@ -10,6 +10,13 @@ Changes are grouped by date.
 
 ### Changed
 
+- `spark-http-proxy` skill: `tailscale-peers --refresh` replaces the removed `tailscale-refresh-peers`
+- `spark-http-proxy` skill: the peer table has two groups, `PROXY` and `EXCLUDED`, with the reason in a `STATUS` column
+
+### Removed
+
+- `spark-http-proxy` skill: the `evals/` directory, because nothing in this repository runs it (see #159)
+
 - Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
 
 ## [2026-08-30]
