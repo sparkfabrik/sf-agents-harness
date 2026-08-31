@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-08-31]
+
+### Changed
+
+- Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
+
 ## [2026-08-30]
 
 ### Added
