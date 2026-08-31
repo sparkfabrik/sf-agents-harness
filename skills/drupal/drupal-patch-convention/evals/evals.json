@@ -1,0 +1,47 @@
+{
+  "skill_name": "drupal-patch-convention",
+  "evals": [
+    {
+      "id": 0,
+      "name": "apply-mr-patch",
+      "prompt": "Our paragraphs module needs the fix discussed in https://www.drupal.org/project/paragraphs/issues/3107684 — the maintainers pushed it as merge request 270. Apply it to this project as a patch, following our patch convention. Don't run composer yourself.",
+      "expected_output": "Downloads the MR diff to src/drupal/addons/patches/3107684_MR270.patch (valid diff content, not HTML), adds a composer.patches.json entry under drupal/paragraphs keyed '#3107684: <issue title>', and hands the composer step to the user.",
+      "files": ["fixture project with cweagans/composer-patches configured"],
+      "assertions": [
+        "Patch file exists at src/drupal/addons/patches/3107684_MR270.patch (no '#' in the filename)",
+        "Patch file content is a valid unified diff (contains 'diff --git'), not HTML or empty",
+        "composer.patches.json entry under 'drupal/paragraphs' keyed '#3107684: <title>' (issue number only, no MR suffix in the key) pointing at the vendored path",
+        "Pre-existing patch entries preserved",
+        "No composer command run; composer step handed to user"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "apply-comment-patch",
+      "prompt": "There's a patch on https://www.drupal.org/project/paragraphs/issues/3270166 that fixes validation of collapsed nested paragraphs. Vendor it into this project per our patch convention. Don't run composer yourself.",
+      "expected_output": "Resolves the patch attachment to comment 6 via the api-d7 comment list, downloads it to src/drupal/addons/patches/3270166_CM6.patch, and adds a composer.patches.json entry under drupal/paragraphs keyed '#3270166: <issue title>'.",
+      "files": ["fixture project with cweagans/composer-patches configured"],
+      "assertions": [
+        "Patch file exists at src/drupal/addons/patches/3270166_CM6.patch (no '#' in the filename; comment number resolved via api-d7)",
+        "Patch file content matches the drupal.org attachment (valid unified diff)",
+        "composer.patches.json entry under 'drupal/paragraphs' keyed '#3270166: <title>' (issue number only, no CM suffix in the key) pointing at the vendored path",
+        "Pre-existing patch entries preserved",
+        "No composer command run; composer step handed to user"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "missing-plugin-setup",
+      "prompt": "Apply https://git.drupalcode.org/project/paragraphs/-/merge_requests/270.diff as a patch to drupal/paragraphs in this project.",
+      "expected_output": "Detects that cweagans/composer-patches is not configured, sets up composer.json (require + extra.patches-file + allow-plugins), vendors the patch per convention, creates composer.patches.json, does NOT run composer, and lists the composer.json changes prominently in the report.",
+      "files": ["fixture project WITHOUT cweagans/composer-patches"],
+      "assertions": [
+        "composer.json set up correctly: cweagans/composer-patches in require, extra.patches-file pointing at composer.patches.json, no inline extra.patches",
+        "Patch file exists at src/drupal/addons/patches/3107684_MR270.patch",
+        "Patch file is a valid unified diff",
+        "composer.patches.json created with key '#3107684: <title>' pointing at the vendored path",
+        "No composer command run; composer step and the composer.json changes reported to the user"
+      ]
+    }
+  ]
+}
