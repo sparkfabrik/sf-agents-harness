@@ -30,24 +30,30 @@ self-declaration described below. One machine alone forwards nothing.
 ## Seeing what happened
 
 ```bash
-spark-http-proxy tailscale-peers          # the last discovery cycle
-spark-http-proxy tailscale-peers --json   # the same, machine-readable
+spark-http-proxy tailscale-peers            # the last discovery cycle
+spark-http-proxy tailscale-peers --refresh  # run a cycle first, then show it
+spark-http-proxy tailscale-peers --json     # the same, machine-readable
 ```
 
 Every machine on the tailnet appears with an outcome, so a machine that
 contributes nothing says why rather than being absent:
 
-| Status           | Meaning                                                                   |
-| ---------------- | ------------------------------------------------------------------------- |
-| `ok`             | answered, and the hostnames it contributes are listed                     |
-| `unreachable`    | did not answer; the detail says when it will be tried again               |
-| `not this proxy` | answered, but it is not running this proxy, so nothing is taken from it   |
-| `no proxy`       | nothing is listening where the proxy would be                             |
-| `skipped`        | not probed: offline, belongs to another account, or the cycle ended early |
+The table has two groups. `PROXY` lists the machines running this proxy and the
+hostnames they contribute. `EXCLUDED` lists everything else, with the reason in a
+`STATUS` column:
 
-The failures are deliberately distinct: a machine that did not answer, one that
-answered with something else, and one excluded on ownership are different
-problems with different fixes.
+| Status in `--json` | Shown as                                                                  |
+| ------------------ | ------------------------------------------------------------------------- |
+| `ok`               | in `PROXY`, with its hostnames                                            |
+| `unreachable`      | did not answer; the status says when it will be tried again               |
+| `not this proxy`   | answered, but it is not running this proxy, so nothing is taken from it   |
+| `no proxy`         | nothing is listening where the proxy would be                             |
+| `skipped`          | not probed: offline, belongs to another account, or the cycle ended early |
+
+An empty group is not printed, so on a tailnet with one proxy there is no `PROXY`
+group. The distinctions above stay visible in the `STATUS` column: a machine that
+did not answer, one that answered with something else, and one excluded on
+ownership are different problems with different fixes.
 
 ## "It is not reachable from my other machine yet"
 
@@ -61,7 +67,7 @@ Work down this list.
    been seen yet. Force a cycle rather than waiting:
 
    ```bash
-   spark-http-proxy tailscale-refresh-peers
+   spark-http-proxy tailscale-peers --refresh
    ```
 
    It runs a cycle now, waits for it, and prints the resulting report. It exits
@@ -140,13 +146,13 @@ This is handled automatically:
   refreshes it every 300 seconds.
 - The source is **detected, not configured**: the CLI reports which one it is
   using, and `HTTP_PROXY_TAILSCALE_SOURCE` overrides it only if asked.
-- `tailscale-refresh-peers` rewrites the document before forcing a cycle, so a
+- `tailscale-peers --refresh` rewrites the document before forcing a cycle, so a
   machine that came online since the last refresh is found rather than missed.
 
 What this means in practice: the machine list on macOS can be up to five minutes
 old, while what each machine serves is always read live. So a container that
 appeared on a machine already known shows up within one cycle, but a machine
-that joined the tailnet minutes ago may need `tailscale-refresh-peers`.
+that joined the tailnet minutes ago may need `tailscale-peers --refresh`.
 
 If the document cannot be written, the Tailscale command-line client is missing.
 Install Tailscale and run `start-with-tailscale` again.
