@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-09-02]
+
+### Changed
+
+- `spark-http-proxy` skill: `hosts describe` is documented as reading the container live (image, status, routed port and backend, network, reachability, mounts, redacted command)
+
 ## [2026-09-01]
 
 ### Changed
