@@ -97,7 +97,9 @@ The symptom here is a **browser TLS trust warning** ("not secure", `NET::ERR_CER
 on a page that otherwise loads — not a 404 and not a refused connection. If the
 page does not load at all, it is a routing or DNS problem above, not this.
 
-1. Trusted cert never generated → run `spark-http-proxy generate-mkcert "*.spark.loc"`.
+1. Trusted cert never generated → run `spark-http-proxy certs generate "*.spark.loc"`.
+   `spark-http-proxy certs describe <hostname>` says whether any installed
+   certificate covers the hostname, and which one to generate if none does.
 2. Warning on a nested domain (`drupal.client.spark.loc`) while `*.spark.loc`
    exists → wildcards cover one level only; generate the wildcard one level above
    the host, here `*.client.spark.loc`. See `certificates.md`.
