@@ -176,7 +176,7 @@ the relevant commands. The lifecycle and utility commands:
 | ------------------------------------------ | ------------------------------------------------------------------- |
 | `start` / `start-with-metrics`             | Start the proxy (optionally with Prometheus/Grafana)                |
 | `status`                                   | Show running services and the dashboard URL                         |
-| `hosts [describe <hostname>]`              | What is served, by which machine, from which directory              |
+| `hosts [describe <hostname>]`              | What is served and from where; `describe` reads one container live  |
 | `restart` / `stop-metrics`                 | Restart the stack / stop only monitoring                            |
 | `start-with-tailscale` / `stop-tailscale`  | Start with, or stop, tailnet peer routing                           |
 | `tailscale-peers [--refresh]`              | Show the last discovery cycle, or run one first                     |
@@ -196,12 +196,21 @@ Behavior is tuned with env vars, most usefully `HTTP_PROXY_DNS_TLDS` (default
 
 ```bash
 spark-http-proxy hosts                       # every hostname, and what serves it
-spark-http-proxy hosts describe <hostname>   # one host, including how it is routed
+spark-http-proxy hosts describe <hostname>   # one container, read live from Docker and the proxy
 ```
 
-Reach for this before inspecting Docker by hand. It is the fastest way from a
-hostname back to the directory the project runs from, and it names whether a
-container is routed by `VIRTUAL_HOST` or by native `traefik.*` labels.
+Reach for this before inspecting Docker by hand. `hosts` is the fastest way from
+a hostname back to the directory the project runs from. `hosts describe` answers
+"what is this container": image, status and uptime, the port and backend Traefik
+routes to (the same for `VIRTUAL_HOST` and native `traefik.*` labels), its
+networks, whether a request through the proxy with that `Host` header is
+answered, its mounts, and its command. Secrets in the command are redacted by
+flag name, assignment name and URL userinfo, never by the shape of a value, so
+treat the output as something that may still carry a secret before pasting it.
+
+A `reachable` other than `200` with a `backend` present points at the app, not
+the proxy. A record whose container is gone is reported as not found and the
+command fails; the proxy drops the record on its next Docker event.
 
 Directories are shown for containers on this machine only. A hostname served by a
 peer shows the machine and no directory, because local paths are not published
