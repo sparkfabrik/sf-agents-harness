@@ -9,7 +9,7 @@ platform, and they differ in important ways — especially the DNS target IP.
 | Installs CLI     | git clone to `/opt/sparkdock/http-proxy` + symlink `/usr/local/bin/spark-http-proxy` | `get_url` of `bin/spark-http-proxy` → `/usr/local/bin/spark-http-proxy` (0755); no clone |
 | Compose file     | from the clone                                                                       | `bin/compose.yml` → `~/.local/spark/http-proxy/compose.yml`                              |
 | Starts the proxy | **yes** (`spark-http-proxy start`)                                                   | **no** — run `spark-http-proxy start` yourself                                           |
-| mkcert local CA  | package only; CA trust via `sjust system-install-mkcert` or `generate-mkcert`        | `mkcert -install` **is** run during provisioning                                         |
+| mkcert local CA  | package only; CA trust via `sjust system-install-mkcert` or `certs generate`         | `mkcert -install` **is** run during provisioning                                         |
 | `*.loc` DNS      | `/etc/resolver/loc` → `127.0.0.1` port `19322`                                       | systemd-resolved drop-in → `127.0.0.1:19322` (Arch and Debian/Ubuntu)                    |
 | CLI guaranteed   | yes (fail-fast verification)                                                         | no explicit verification step                                                            |
 
@@ -32,7 +32,7 @@ interfaces. What differs is the mechanism, not the target.
   `spark-http-proxy start` — the user does that. If `*.loc` still does not resolve
   on a Linux box, run `configure-dns`.
 - **mkcert CA trust differs.** Linux provisioning trusts the CA (`mkcert -install`)
-  automatically; macOS does not until `generate-mkcert` or `sjust
+  automatically; macOS does not until `certs generate` or `sjust
 system-install-mkcert` runs. A lingering TLS warning on macOS often means that
   step has not run.
 

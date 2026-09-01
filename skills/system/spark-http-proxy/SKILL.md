@@ -56,7 +56,7 @@ picture and how to update.
 | The user wants to…                               | Do this                        | Read                             |
 | ------------------------------------------------ | ------------------------------ | -------------------------------- |
 | Make a container reachable at a domain           | Edit its `compose.yml` service | `references/expose-container.md` |
-| Get trusted HTTPS / fix certificate warnings     | Run `generate-mkcert`          | `references/certificates.md`     |
+| Get trusted HTTPS / fix certificate warnings     | Run `certs generate`           | `references/certificates.md`     |
 | Resolve `*.loc` (or other TLDs) on their machine | Run `configure-dns`            | `references/dns.md`              |
 | Fix "it's not working / not reachable"           | Walk the decision tree         | `references/troubleshooting.md`  |
 | Understand how it's installed / update it        | Per-platform provisioner notes | `references/provisioning.md`     |
@@ -65,7 +65,7 @@ picture and how to update.
 
 Dependencies: Docker is required (the proxy is a Docker stack; `spark-http-proxy
 self-test` checks the daemon). `mkcert` is only needed for trusted HTTPS and is
-installed automatically by `generate-mkcert` — you rarely check it yourself. See
+installed automatically by `certs generate`, so you rarely check it yourself. See
 `references/uninstall.md` for how to verify what is installed, where certificates
 and config live, and how to uninstall.
 
@@ -139,23 +139,32 @@ For multiple domains, wildcards/regex, the full `VIRTUAL_PATH` rules, the native
 
 HTTPS works out of the box with a self-signed certificate (browser warning). For
 a trusted certificate, generate one with mkcert — it installs mkcert if needed,
-writes the cert, and restarts Traefik:
+writes the cert, and applies it to the running proxy without a restart:
 
 ```bash
 # Wildcard for the SparkFabrik convention: covers myapp.spark.loc, api.spark.loc, …
-spark-http-proxy generate-mkcert "*.spark.loc"
+spark-http-proxy certs generate "*.spark.loc"
 
 # Or a specific host
-spark-http-proxy generate-mkcert "myapp.spark.loc"
+spark-http-proxy certs generate "myapp.spark.loc"
 ```
 
 The key gotcha: a wildcard covers exactly one label level, so match it to the
 level directly above the host. `*.spark.loc` covers `myapp.spark.loc` but **not**
-a deeper host like `drupal.client.spark.loc` — that needs `*.client.spark.loc`.
+a deeper host like `drupal.client.spark.loc`, which needs `*.client.spark.loc`.
 And `*.loc` does **not** cover `myapp.spark.loc` at all, which is why the
-convention's base certificate is `*.spark.loc`, not `*.loc`. Full details, the
-cert directory, SNI matching, and manual generation are in
-`references/certificates.md`.
+convention's base certificate is `*.spark.loc`, not `*.loc`. When a user reports a
+warning on a hostname, run `spark-http-proxy certs describe <hostname>` first: it
+names the certificate that covers it, or says which wildcard falls one label
+short and which one to generate. `certs list` shows every installed certificate
+with its files. Full details, `delete`, SNI matching, and manual generation are
+in `references/certificates.md`.
+
+The certificate commands were `generate-mkcert`, `list-certs` and `remove-cert`
+until September 2026. Those names still run and print
+`generate-mkcert is deprecated, use: spark-http-proxy certs generate` on stderr.
+That warning is expected on an up-to-date CLI, not a broken install; use the
+`certs` form in anything you write.
 
 ## Guiding a user
 
@@ -163,21 +172,22 @@ When the user just wants to understand the tool rather than have you change
 files, run `spark-http-proxy help` for the authoritative command list and explain
 the relevant commands. The lifecycle and utility commands:
 
-| Command                                   | Purpose                                                |
-| ----------------------------------------- | ------------------------------------------------------ |
-| `start` / `start-with-metrics`            | Start the proxy (optionally with Prometheus/Grafana)   |
-| `status`                                  | Show running services and the dashboard URL            |
-| `hosts [describe <hostname>]`             | What is served, by which machine, from which directory |
-| `restart` / `stop-metrics`                | Restart the stack / stop only monitoring               |
-| `start-with-tailscale` / `stop-tailscale` | Start with, or stop, tailnet peer routing              |
-| `tailscale-peers [--refresh]`             | Show the last discovery cycle, or run one first        |
-| `generate-mkcert <domain>`                | Create trusted certificates for a domain               |
-| `configure-dns`                           | Wire system DNS to resolve the proxy TLDs              |
-| `show-config`                             | Print current configuration and file locations         |
-| `logs [service]`                          | Tail logs (optionally for one service)                 |
-| `dashboard` / `grafana` / `prometheus`    | Open the respective web UI                             |
-| `upgrade` / `self-update`                 | Update images / update the script and compose files    |
-| `clean` / `destroy`                       | Stop + remove volumes / remove everything              |
+| Command                                    | Purpose                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------- |
+| `start` / `start-with-metrics`             | Start the proxy (optionally with Prometheus/Grafana)                |
+| `status`                                   | Show running services and the dashboard URL                         |
+| `hosts [describe <hostname>]`              | What is served, by which machine, from which directory              |
+| `restart` / `stop-metrics`                 | Restart the stack / stop only monitoring                            |
+| `start-with-tailscale` / `stop-tailscale`  | Start with, or stop, tailnet peer routing                           |
+| `tailscale-peers [--refresh]`              | Show the last discovery cycle, or run one first                     |
+| `certs list` / `certs describe <domain>`   | Installed certificates, or what one covers and whether it is served |
+| `certs generate` / `certs delete <domain>` | Create, or remove, trusted certificates for a domain                |
+| `configure-dns`                            | Wire system DNS to resolve the proxy TLDs                           |
+| `show-config`                              | Print current configuration and file locations                      |
+| `logs [service]`                           | Tail logs (optionally for one service)                              |
+| `dashboard` / `grafana` / `prometheus`     | Open the respective web UI                                          |
+| `upgrade` / `self-update`                  | Update images / update the script and compose files                 |
+| `clean` / `destroy`                        | Stop + remove volumes / remove everything                           |
 
 Behavior is tuned with env vars, most usefully `HTTP_PROXY_DNS_TLDS` (default
 `loc`) to serve additional TLDs such as `dev`. See `references/dns.md`.

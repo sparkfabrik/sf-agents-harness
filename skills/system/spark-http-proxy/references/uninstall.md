@@ -7,7 +7,7 @@
 - **Docker** — required; the proxy is a Docker stack. `spark-http-proxy self-test`
   checks the daemon and reports problems.
 - **mkcert** — only needed for trusted HTTPS. `command -v mkcert`. You usually do
-  not check it yourself: `spark-http-proxy generate-mkcert` installs it
+  not check it yourself: `spark-http-proxy certs generate` installs it
   automatically (Homebrew on macOS, pacman on Arch) and runs `mkcert -install` to
   add the local CA. On other Linux distros it cannot auto-install and prints
   manual steps, so install mkcert + nss first there. `mkcert -CAROOT` shows where

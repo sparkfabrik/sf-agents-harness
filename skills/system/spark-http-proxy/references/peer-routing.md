@@ -97,7 +97,7 @@ subject: CN=TRAEFIK DEFAULT CERT
 Fix it on the machine doing the reaching, not the one serving:
 
 ```bash
-spark-http-proxy generate-mkcert 'macos.test.spark.loc'
+spark-http-proxy certs generate 'macos.test.spark.loc'
 ```
 
 **A wildcard covers exactly one label.** This is the part that catches people, so
