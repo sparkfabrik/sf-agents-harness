@@ -163,23 +163,39 @@ When the user just wants to understand the tool rather than have you change
 files, run `spark-http-proxy help` for the authoritative command list and explain
 the relevant commands. The lifecycle and utility commands:
 
-| Command                                   | Purpose                                              |
-| ----------------------------------------- | ---------------------------------------------------- |
-| `start` / `start-with-metrics`            | Start the proxy (optionally with Prometheus/Grafana) |
-| `status`                                  | Show running services and the dashboard URL          |
-| `restart` / `stop-metrics`                | Restart the stack / stop only monitoring             |
-| `start-with-tailscale` / `stop-tailscale` | Start with, or stop, tailnet peer routing            |
-| `tailscale-peers [--refresh]`             | Show the last discovery cycle, or run one first      |
-| `generate-mkcert <domain>`                | Create trusted certificates for a domain             |
-| `configure-dns`                           | Wire system DNS to resolve the proxy TLDs            |
-| `show-config`                             | Print current configuration and file locations       |
-| `logs [service]`                          | Tail logs (optionally for one service)               |
-| `dashboard` / `grafana` / `prometheus`    | Open the respective web UI                           |
-| `upgrade` / `self-update`                 | Update images / update the script and compose files  |
-| `clean` / `destroy`                       | Stop + remove volumes / remove everything            |
+| Command                                   | Purpose                                                |
+| ----------------------------------------- | ------------------------------------------------------ |
+| `start` / `start-with-metrics`            | Start the proxy (optionally with Prometheus/Grafana)   |
+| `status`                                  | Show running services and the dashboard URL            |
+| `hosts [describe <hostname>]`             | What is served, by which machine, from which directory |
+| `restart` / `stop-metrics`                | Restart the stack / stop only monitoring               |
+| `start-with-tailscale` / `stop-tailscale` | Start with, or stop, tailnet peer routing              |
+| `tailscale-peers [--refresh]`             | Show the last discovery cycle, or run one first        |
+| `generate-mkcert <domain>`                | Create trusted certificates for a domain               |
+| `configure-dns`                           | Wire system DNS to resolve the proxy TLDs              |
+| `show-config`                             | Print current configuration and file locations         |
+| `logs [service]`                          | Tail logs (optionally for one service)                 |
+| `dashboard` / `grafana` / `prometheus`    | Open the respective web UI                             |
+| `upgrade` / `self-update`                 | Update images / update the script and compose files    |
+| `clean` / `destroy`                       | Stop + remove volumes / remove everything              |
 
 Behavior is tuned with env vars, most usefully `HTTP_PROXY_DNS_TLDS` (default
 `loc`) to serve additional TLDs such as `dev`. See `references/dns.md`.
+
+## What is served, and where it runs
+
+```bash
+spark-http-proxy hosts                       # every hostname, and what serves it
+spark-http-proxy hosts describe <hostname>   # one host, including how it is routed
+```
+
+Reach for this before inspecting Docker by hand. It is the fastest way from a
+hostname back to the directory the project runs from, and it names whether a
+container is routed by `VIRTUAL_HOST` or by native `traefik.*` labels.
+
+Directories are shown for containers on this machine only. A hostname served by a
+peer shows the machine and no directory, because local paths are not published
+across the tailnet.
 
 ## Hostnames from another machine
 
