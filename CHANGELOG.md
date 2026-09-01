@@ -11,11 +11,6 @@ Changes are grouped by date.
 ### Changed
 
 - `spark-http-proxy` skill: the certificate commands are documented as the `certs` topic (`list`, `describe`, `generate`, `delete`); `certs describe` is the first step on a certificate warning, and the deprecated `generate-mkcert`, `list-certs` and `remove-cert` warnings are explained as expected
-
-## [2026-09-01]
-
-### Changed
-
 - `security-assessment` and `agentic-security-audit` skills: moved from `skills/system/` to a new optional `security` category. They are no longer installed by default; enable them with `ajust sf-harness-category enable security` or `sjust sf-harness-category enable security`
 
 ## [2026-09-01]
