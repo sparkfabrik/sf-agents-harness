@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-09-01]
+
+### Changed
+
+- `security-assessment` and `agentic-security-audit` skills: moved from `skills/system/` to a new optional `security` category. They are no longer installed by default; enable them with `ajust sf-harness-category enable security` or `sjust sf-harness-category enable security`
+
 ## [2026-08-31]
 
 ### Changed
