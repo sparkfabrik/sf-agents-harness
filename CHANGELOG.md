@@ -12,6 +12,12 @@ Changes are grouped by date.
 
 - `security-assessment` and `agentic-security-audit` skills: moved from `skills/system/` to a new optional `security` category. They are no longer installed by default; enable them with `ajust sf-harness-category enable security` or `sjust sf-harness-category enable security`
 
+## [2026-09-01]
+
+### Added
+
+- `spark-http-proxy` skill: document `hosts`, which reports what the proxy serves and the directory local containers run from
+
 ## [2026-08-31]
 
 ### Changed
