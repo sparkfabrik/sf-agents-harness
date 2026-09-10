@@ -258,7 +258,7 @@
       "files": [],
       "assertions": [
         "The body has at most 120 words",
-        "Uses no decorative headings or bold labels",
+        "Uses formatting only where it helps scanning, without empty sections or repeated facts",
         "Omits unrequested implementation details, even a single file or function name, as well as rejected approaches and unsolicited follow-up explanations",
         "Keeps the stated problem and expected result, changed behavior and required deployment action, or direct answer to the review question",
         "Does not need sf-writing-style to apply these writing rules",
@@ -272,7 +272,7 @@
       "files": [],
       "assertions": [
         "The body has at most 80 words",
-        "Uses no decorative headings or bold labels",
+        "Uses formatting only where it helps scanning, without empty sections or repeated facts",
         "Omits unrequested implementation details, even a single file or function name, as well as rejected approaches and unsolicited follow-up explanations",
         "Keeps the stated problem and expected result, changed behavior and required deployment action, or direct answer to the review question",
         "Does not need sf-writing-style to apply these writing rules",
@@ -286,7 +286,7 @@
       "files": [],
       "assertions": [
         "The body has at most 60 words",
-        "Uses no decorative headings or bold labels",
+        "Uses formatting only where it helps scanning, without empty sections or repeated facts",
         "Omits unrequested implementation details, even a single file or function name, as well as rejected approaches and unsolicited follow-up explanations",
         "Keeps the stated problem and expected result, changed behavior and required deployment action, or direct answer to the review question",
         "Does not need sf-writing-style to apply these writing rules",

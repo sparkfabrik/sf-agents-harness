@@ -12,16 +12,27 @@ Use the `gh` CLI for ALL GitHub-related tasks including working with issues, pul
 Apply these rules whenever you draft or send a title, description, comment, review, changelog, or release note, including through the API. They apply even when `sf-writing-style` has not been loaded.
 
 - **Content.** PR/MR descriptions state what changes. Issues state the problem and wanted result. Comments answer the point. Changelog entries state one change each.
-- **Length.** Default to one to three short sentences. Maximum: 80 words for a PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are ceilings, not targets. Attribution and reference lines do not count.
+- **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for a PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are ceilings, not targets. Attribution and reference lines do not count.
 - **Leave out.** No implementation details, even in a single sentence: file paths, function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep an identifier only when it names the changed interface or a required user action. Do not move omitted detail into unsolicited comments.
 - **Select facts.** Investigation notes and the diff are input, not a checklist to summarize. For an issue, keep the symptom and wanted result. For a PR/MR, keep the changed behavior and required action. For a comment, answer only the question.
 - **Evidence.** Use only supplied facts or results you observed. Omit unknowns. An error does not establish side effects, data loss, partial success, or affected environments. Do not invent causes, sample values, test cases, or reproduction results.
-- **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon, decorative headings, or bold labels. Short text still uses complete sentences.
-- **Exceptions.** Include essential breaking changes and required user actions. Expand only for explicitly requested detail or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
+- **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
+- **Layout.** Open with the main change. Bold a short key phrase, not a whole sentence. Put distinct features or changes in bullets instead of a comma-packed paragraph. Use headings only to separate useful sections, not generic labels like "MR description". One uncomplicated behavior change needs no list; a feature with several visible parts should list those parts. No empty sections, mandatory headings, bullet counts, or minimum length. State each fact once; do not restate the fix as its opposite in the old behavior unless the comparison is needed.
+- **Supporting evidence.** Include supplied screenshots when they clarify a visible change; label before/after only when both are supplied. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results.
+- **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, necessary validation, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
 
-Before posting, read the actual outgoing text. Cut every sentence that does not state the change, problem, answer, or required action. Remove code locations and test details unless explicitly requested. Check each factual claim against the source, then check the length and remove repetition. Reading the diff is required; narrating it is not. Rewrite commit-generated descriptions before posting.
+Before posting, read the actual outgoing text. Cut every sentence that does not state the change, problem, answer, required action, or useful verified evidence. Remove code locations and test inventories unless explicitly requested. Check each factual claim against the source, then check the length and remove repetition. Reading the diff is required; narrating it is not. Rewrite commit-generated descriptions before posting. Return the description itself, without code fences, block quotes, or commentary about omitted details unless requested.
 
-Example description: "Rejects empty passwords with a validation message instead of returning a 500 error."
+Example of a small fix: "Rejects empty passwords with a validation message instead of returning a 500 error."
+
+Example of a feature with several visible parts (copy the layout, not these facts):
+
+> Adds **export controls**:
+>
+> - Date-range selection.
+> - CSV download.
+
+The lead sentence names the feature; the bullets name its parts. The description remains short without becoming a bare paragraph.
 
 ## Before you start
 

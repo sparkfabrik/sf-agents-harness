@@ -1,0 +1,101 @@
+{
+  "skill_name": "sf-writing-style",
+  "evals": [
+    {
+      "id": 1,
+      "name": "small-fix",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description: submitting an empty password now shows a validation message instead of returning a server error. No other behavior changed. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "One sentence is enough: no forced heading or bullet list",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "standby-features",
+      "skill": "glab",
+      "prompt": "Draft only the MR description for a completed change: when no sessions run, the console now displays an animated standby state with a rotating message, a stardate display and a scanning animation. Notes: IdleConsole.tsx uses setInterval; we tried a static banner first and changed the CSS keyframes. No deployment action is needed. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "The rotating message, stardate and scanning animation appear as distinct bullet items",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "required-action",
+      "skill": "gh",
+      "prompt": "Draft only the PR description: sessions now expire after 30 minutes without activity. Operators must replace SESSION_TTL_SECONDS with SESSION_TIMEOUT_MINUTES before deployment. Notes: middleware/session.ts updates lastSeen and config/session.ts renames the field. No validation result is available. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "The setting replacement is clearly separated from the changed timeout",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "screenshot",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description: the dashboard now has a search field for customer names and a date filter. A screenshot of the new view is available at /uploads/fixture/customer-filters.png. Include it. No before screenshot is available. These are the only verified changes. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "Embeds the supplied screenshot URL without inventing a before image",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "verified-validation",
+      "skill": "glab",
+      "prompt": "Draft only the MR description: expired invite links now show an expiration message and a button to request a new invitation. Verified manually: expired links show both controls; valid links still open the signup form. This distinction matters for review. Notes: invite_handler.py changes two branches and 19 tests pass. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "Preserves both supplied manual verification results without a test count",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "small-fix-cli",
+      "skill": "gh",
+      "prompt": "Draft only the PR description: CSV exports now preserve accents in customer names. This fixes corrupted accented names in downloaded files. No other changes or test results are provided. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise, factual description whose layout fits the change: simple fixes remain one sentence; distinct features are easy to scan; supplied actions, screenshots and useful verification remain visible.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words excluding image markup",
+        "Preserves supplied behavior and any required action without invented facts",
+        "Uses structure suited to the change without repetition or empty sections",
+        "Omits implementation stories and test inventories",
+        "States the export fix without repeating the same fact as previous behavior",
+        "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+      ]
+    }
+  ]
+}

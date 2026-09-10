@@ -1,0 +1,138 @@
+{
+  "date": "2026-09-10",
+  "model": "claude-opus-5",
+  "method": "Controlled old/new comparisons with claude -p, tools disabled and one full skill supplied in the system context. Six cases per version. This tests drafting, not automatic skill triggering. Formatting and fidelity were reviewed inline; word counts and wrappers were checked programmatically.",
+  "iteration": 3,
+  "limits": [
+    "One sample per case and version; results do not establish a reliable success rate.",
+    "The revised CSV fix still repeats the old behavior unnecessarily.",
+    "Earlier iterations exposed bare feature paragraphs and draft wrappers; the final revision adds a worked layout example."
+  ],
+  "skill_sha256": {
+    "sf-writing-style": "84b2421e400b67cf13dfc668fd0958a827bacbc50e8caeab9a8dac5ea8fcb044",
+    "gh": "075ad0459461b3ddac2cc5fb20f91c97f81a0fcf8bf19027baf9078c1731395c",
+    "glab": "a9588dc06e74a10526f37fd4755eef66fb0da751ea832d47aada8df6865d564e"
+  },
+  "cases": [
+    {
+      "name": "small-fix",
+      "skill": "sf-writing-style",
+      "revised": {
+        "body": "Rejects empty passwords with a validation message instead of returning a server error.",
+        "word_count": 13,
+        "all_checks_passed": true,
+        "failed_checks": []
+      },
+      "baseline": {
+        "body": "Rejects empty passwords with a validation message instead of returning a server error.",
+        "word_count": 13,
+        "all_checks_passed": true,
+        "failed_checks": []
+      }
+    },
+    {
+      "name": "standby-features",
+      "skill": "glab",
+      "revised": {
+        "body": "Adds an **animated standby state** to the console when no sessions are running:\n\n- Rotating status message.\n- Stardate display.\n- Scanning animation.",
+        "word_count": 20,
+        "all_checks_passed": true,
+        "failed_checks": []
+      },
+      "baseline": {
+        "body": "```\nfeat: add animated standby state to the console\n```\n\nShows an animated standby state when no sessions are running, with a rotating message, a stardate display and a scanning animation.",
+        "word_count": 29,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "Uses structure suited to the change without repetition or empty sections",
+          "The rotating message, stardate and scanning animation appear as distinct bullet items",
+          "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+        ]
+      }
+    },
+    {
+      "name": "required-action",
+      "skill": "gh",
+      "revised": {
+        "body": "Sessions now expire after 30 minutes without activity.\n\n**Breaking change:** replace `SESSION_TTL_SECONDS` with `SESSION_TIMEOUT_MINUTES` before deployment.",
+        "word_count": 16,
+        "all_checks_passed": true,
+        "failed_checks": []
+      },
+      "baseline": {
+        "body": "```\nSessions now expire after 30 minutes without activity. Before deploying, replace `SESSION_TTL_SECONDS` with `SESSION_TIMEOUT_MINUTES` in your configuration.\n```",
+        "word_count": 17,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "The setting replacement is clearly separated from the changed timeout",
+          "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+        ]
+      }
+    },
+    {
+      "name": "screenshot",
+      "skill": "sf-writing-style",
+      "revised": {
+        "body": "Adds **customer filters** to the dashboard:\n\n- Search field for customer names.\n- Date filter.\n\n![Dashboard with customer search and date filter](/uploads/fixture/customer-filters.png)",
+        "word_count": 13,
+        "all_checks_passed": true,
+        "failed_checks": []
+      },
+      "baseline": {
+        "body": "```markdown\nAdds a search field for customer names and a date filter to the dashboard.\n\n![Dashboard with the customer name search field and date filter](/uploads/fixture/customer-filters.png)\n```",
+        "word_count": 15,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+        ]
+      }
+    },
+    {
+      "name": "verified-validation",
+      "skill": "glab",
+      "revised": {
+        "body": "Expired invite links now show an **expiration message** and a **button to request a new invitation**.\n\nVerified manually: expired links show both controls, and valid links still open the signup form.",
+        "word_count": 31,
+        "all_checks_passed": true,
+        "failed_checks": []
+      },
+      "baseline": {
+        "body": "```\nExpired invite links now show an expiration message and a button to request a new invitation. Valid links still open the signup form.\n```\n\nLeft out `invite_handler.py` and the test count per the writing rules; no attribution header, as requested.",
+        "word_count": 40,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "Uses structure suited to the change without repetition or empty sections",
+          "Omits implementation stories and test inventories",
+          "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
+        ]
+      }
+    },
+    {
+      "name": "small-fix-cli",
+      "skill": "gh",
+      "revised": {
+        "body": "CSV exports now preserve accented characters in customer names. Previously, accented names were corrupted in downloaded files.",
+        "word_count": 17,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "Uses structure suited to the change without repetition or empty sections",
+          "States the export fix without repeating the same fact as previous behavior"
+        ]
+      },
+      "baseline": {
+        "body": "CSV exports now preserve accents in customer names. Accented names were corrupted in downloaded files.",
+        "word_count": 15,
+        "all_checks_passed": false,
+        "failed_checks": [
+          "Uses structure suited to the change without repetition or empty sections",
+          "States the export fix without repeating the same fact as previous behavior"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "revised_cases_passing_all_checks": 5,
+    "baseline_cases_passing_all_checks": 1,
+    "cases_per_version": 6
+  }
+}

@@ -14,6 +14,32 @@ After:
 
 The secret change remains because it affects deployment. File names and validation counts do not explain the result.
 
+## Small fix
+
+> Empty passwords now show a **validation message** instead of returning a server error.
+
+One change needs one sentence. Do not manufacture sections or bullets.
+
+## Several visible changes
+
+> Adds an **animated standby state** when no sessions are running:
+>
+> - Rotating standby message.
+> - Stardate display.
+> - Scanning animation.
+
+Place a supplied screenshot after the description. The opening states the feature; the bullets explain its visible parts without repeating the opening.
+
+## Required action and validation
+
+> Sessions now expire after **30 minutes of inactivity**.
+>
+> **Required action:** Replace `SESSION_TTL_SECONDS` with `SESSION_TIMEOUT_MINUTES` before deploying.
+>
+> **Validation:** Confirmed that active sessions remain open and inactive sessions expire.
+
+Include the validation sentence only when those checks were performed and their result helps the reviewer. Do not replace it with a test count or an implementation walkthrough.
+
 ## Issue
 
 Before:
