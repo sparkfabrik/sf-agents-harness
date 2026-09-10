@@ -1,0 +1,71 @@
+{
+  "skill_name": "sf-writing-style",
+  "evals": [
+    {
+      "id": 1,
+      "name": "essential-context",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the PR description. Final change: closed accounts retain access to invoice downloads. Requirement: customers must be able to retrieve billing records after closing their accounts. Investigation notes: three meetings, an account_status branch and seven updated tests. No observed validation result. Use only these facts. Do not post or use tools or add attribution.",
+      "assertions": [
+        "States invoice access for closed accounts",
+        "Preserves the billing-record requirement in at most one context sentence",
+        "Omits investigation and implementation notes",
+        "Invents no validation result",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "final-scope",
+      "skill": "gh",
+      "prompt": "Rewrite only the PR description for the final change. Old draft: Adds customer search and a date filter to the dashboard. All tests pass. Final diff: customer-name search only; the date filter was dropped. Current evidence: manually verified that searching by customer name returns matching customers. No automated tests were run. Use only these facts. Do not post or use tools or add attribution.",
+      "assertions": [
+        "States customer-name search",
+        "Omits the dropped date filter",
+        "Preserves the manual verification result",
+        "Removes the stale all-tests-pass claim",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "plain-fix",
+      "skill": "glab",
+      "prompt": "Draft only the MR description: CSV exports now preserve accents in customer names. No other changes, purpose, required actions or verification results are supplied. Do not post or use tools or add attribution.",
+      "assertions": [
+        "States the export change once",
+        "Invents no context, required action or validation",
+        "Uses one sentence without forced sections",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "exclude-already-merged-history",
+      "skill": "glab",
+      "prompt": "Draft only the MR description from these verified facts. Current MR: console scale controls with seven steps from 100% to 200%; remembers the selection; defaults to 125%; the frame stays inside the window and content scrolls inside it; model labels show only the model name. Historical notes, already on main and outside this diff: MR !3 added a standby message, stardate and scanning sweep; commit 3ccfdb31 added yellow alerts, crew ranks, a spacedock list and a Konami easter egg. That commit went directly to main by mistake. These historical changes are not required context for the current change. No verification results or screenshots supplied. Do not post, use tools or add attribution.",
+      "assertions": [
+        "Preserves current scale behavior including range, steps, persistence and default",
+        "Preserves frame scrolling and model-label changes",
+        "Uses bullets for distinct changes",
+        "Omits already-merged features and the accidental push story",
+        "Invents no verification or screenshots",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "requested-formatting-and-related-scope",
+      "skill": "glab",
+      "prompt": "Rewrite this MR description with a bullet list and some styling. Keep the related changes already on main in a separate section because I explicitly want them reviewed together. Facts: This MR adds console scale controls from 100% to 200%, default 125%, and remembers the choice. The frame fits the window; its content scrolls inside it. Model labels show only the model name. Already on main: MR !3 adds a rotating standby message, a stardate and a scanning animation. No tests or screenshots supplied. Return only the description. Do not post, use tools or add attribution.",
+      "assertions": [
+        "Uses headings to separate this MR from explicitly requested related changes",
+        "Uses bullets and focused bold labels or phrases",
+        "Preserves current scale, scrolling and model-label behavior",
+        "Keeps the requested related changes without claiming they belong to this diff",
+        "Invents no verification or screenshots",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "method": "Five focused Claude Opus drafts with full skill injected, tools disabled. Tests content, not automatic skill loading. No baseline comparison.",
+  "results": [
+    {
+      "id": 1,
+      "name": "essential-context",
+      "skill": "sf-writing-style",
+      "skill_sha256": "257cc75d244e428ea24c4d25e2507b9cc14a7d36a0daf5abfa40f41d742a9b92",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5"
+      ],
+      "draft": "Closed accounts keep access to invoice downloads, so customers can still retrieve billing records after closing their account.",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": 2,
+      "name": "final-scope",
+      "skill": "gh",
+      "skill_sha256": "a5d294142fcd4176e2625658f3ddb8b0df4f721db6dfd5d348d33d3a105e6fe6",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5"
+      ],
+      "draft": "Adds **customer-name search** to the dashboard.\n\nVerified manually: searching by customer name returns matching customers.",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": 3,
+      "name": "plain-fix",
+      "skill": "glab",
+      "skill_sha256": "bcbafc2b253841557caa5ea90d7adfc266c807ad56899e621aa7de00e56df985",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5"
+      ],
+      "draft": "CSV exports now keep accented characters in customer names.",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": 4,
+      "name": "exclude-already-merged-history",
+      "skill": "glab",
+      "skill_sha256": "bcbafc2b253841557caa5ea90d7adfc266c807ad56899e621aa7de00e56df985",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5"
+      ],
+      "draft": "Adds **console scale controls**:\n\n- Seven steps from 100% to 200%, defaulting to 125%.\n- The selected scale is remembered between sessions.\n- The frame stays inside the window and content scrolls within it.\n\nModel labels now show only the model name.",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": 5,
+      "name": "requested-formatting-and-related-scope",
+      "skill": "glab",
+      "skill_sha256": "bcbafc2b253841557caa5ea90d7adfc266c807ad56899e621aa7de00e56df985",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5"
+      ],
+      "draft": "Adds **console scale controls**:\n\n- Zoom from 100% to 200%, default 125%.\n- The chosen scale is remembered.\n- The console frame fits the window; its content scrolls inside it.\n- Model labels show only the model name.\n\n**Related changes already on main (!3)** \u2014 included here because they should be reviewed together:\n\n- Rotating standby message.\n- Stardate display.\n- Scanning animation.\n\nOne thing to fix before posting: qualify `!3` as `group/project!3` so it links outside this project.",
+      "passed": false,
+      "failures": [
+        "Uses an em dash",
+        "Appends unsolicited posting advice instead of returning only the description"
+      ]
+    }
+  ],
+  "review": "Manual review against the supplied facts and case assertions. Four of five drafts met all checks. The requested-related-scope draft added an em dash and unsolicited posting advice. This small sample does not establish reliability."
+}

@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style`, `gh` and `glab` now use bold text, lists and sections where they make short descriptions easier to scan, with relevant screenshots and verified validation.
+- `sf-writing-style`, `gh` and `glab` now use bold text, lists and sections where they make short descriptions easier to scan, with relevant screenshots and verified validation. Descriptions retain essential context and match the final scope, with public writing guidance linked as references.
 
 ## [2026-09-09]
 
