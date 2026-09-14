@@ -500,6 +500,44 @@
         "Does not need sf-writing-style to apply these writing rules",
         "Does not invent side effects, sample values, test cases, or reproduction results absent from the supplied facts"
       ]
+    },
+    {
+      "id": 34,
+      "prompt": "Create a GitLab issue for a CSV import bug. Available project templates are `bug` (Problem, Steps to reproduce, Expected behavior, Observed behavior) and `generic_short` (Goal description, Task checklist, Time tracking). Importing a CSV with accented customer names returns a 500 error; it should import successfully. All known reproduction facts are supplied. Draft the command and body, but do not post.",
+      "expected_output": "The agent should select and fetch the `bug` template without asking because it clearly matches, fill its useful sections from supplied facts, and prepare issue creation only after template discovery.",
+      "files": [],
+      "assertions": [
+        "Selects the `bug` template without asking the user to choose",
+        "Fetches the selected template content before drafting the issue body",
+        "Preserves the useful bug template structure",
+        "Does not invent missing reproduction details",
+        "Does not run or propose `glab issue create` before template discovery and selection"
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "Create a GitLab issue for an unused publishing token. Available project templates are `generic_short` (Goal description, Task checklist, Time tracking), `generic` (Goal description, Constraints, Task, How to evaluate results, Time tracking), and `generic_long` (Description, Done when, Testing/Validation, Tasks, Time tracking). The issue has one goal: decide whether to revoke the unused token. Draft the command and body, but do not post.",
+      "expected_output": "The agent should select and fetch `generic_short` without asking because it is the smallest suitable template, then keep its useful headings and task checklist.",
+      "files": [],
+      "assertions": [
+        "Selects `generic_short` without asking the user to choose",
+        "Fetches the selected template content before drafting the issue body",
+        "Keeps the goal, task checklist, and time tracking structure",
+        "Removes placeholder instructions and inapplicable quick actions",
+        "Does not add sections from the longer generic templates"
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "Create a GitLab issue to assess and remove an unused production credential. Available project templates are `security_review` (Risk, Findings, Decision) and `credential_cleanup` (Credential, Owner, Removal checklist). Both templates plausibly fit, and I did not choose one. Draft only; do not post.",
+      "expected_output": "The agent should show the two plausible templates and ask which structure the user wants before creating the issue.",
+      "files": [],
+      "assertions": [
+        "Does not choose a template arbitrarily",
+        "Asks the user to choose between `security_review` and `credential_cleanup`",
+        "Explains the structural difference briefly",
+        "Does not prepare or run `glab issue create` before the ambiguity is resolved"
+      ]
     }
   ]
 }

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-09-14]
+
+### Fixed
+
+- `glab` now requires issue template discovery, selects clear matches automatically, and asks only when several templates fit.
+
 ## [2026-09-10]
 
 ### Changed

@@ -1,6 +1,6 @@
 ---
 name: glab
-description: 'MUST be loaded before any GitLab-related action, including `glab auth status`, any other `glab` command, or composing and sending GitLab issue or merge request content. If repository inspection reveals a GitLab remote, load this skill before the next GitLab action. Trigger on the words "GitLab" or "glab", GitLab URLs or remotes, issues, merge requests, MRs, !N references, pipelines, releases, and repository files. This skill carries mandatory, non-derivable policy: AI attribution on every write, fully-qualified references, self-hosted host targeting, safe mutation rules, and CLI/API traps. Use `glab`, not `gh`, WebFetch, or curl, except where the skill explicitly requires curl for uploads. Do not invoke for GitHub tasks.'
+description: 'MUST be loaded before any GitLab-related action, including `glab auth status`, any other `glab` command, or composing and sending GitLab issue or merge request content. If repository inspection reveals a GitLab remote, load this skill before the next GitLab action. Trigger on the words "GitLab" or "glab", GitLab URLs or remotes, issues, merge requests, MRs, !N references, pipelines, releases, and repository files. This skill carries mandatory, non-derivable policy: issue template discovery before creation, AI attribution on every write, fully-qualified references, self-hosted host targeting, safe mutation rules, and CLI/API traps. Use `glab`, not `gh`, WebFetch, or curl, except where the skill explicitly requires curl for uploads. Do not invoke for GitHub tasks.'
 ---
 
 # glab CLI Skill
@@ -283,14 +283,21 @@ glab issue reopen 42
 
 ### Issue template selection
 
-Many GitLab projects define issue templates (stored in `.gitlab/issue_templates/`) that encode the team's expected structure -- sections to fill, checklists, labels via quick actions. Skipping these creates issues that don't match the project's conventions and forces manual cleanup.
+Project issue templates are mandatory input. Never skip them because the user did not name one.
 
-Before creating any issue, check for templates:
+Before every issue creation:
 
-1. **List templates**: `glab api projects/:id/templates/issues` -- returns `[{key, name}, ...]`. If empty or 404, the project has none; proceed without a template.
-2. **Present choices**: show the available template names and ask the user which one to use.
-3. **Fetch the selected template**: `glab api projects/:id/templates/issues/<key>` -- returns `{name, content}` with the full markdown body.
-4. **Fill in the template**: use the template content as the issue description. Ask the user for any information the template sections require that they haven't provided yet.
+1. **List templates.** Run `glab api projects/:id/templates/issues`. It returns `[{key, name}, ...]`. An empty response or 404 means the project has no templates, so proceed without one.
+2. **Select a template.** Use a template named by the user. Otherwise, select a clear subject match without asking. If only generic variants fit, choose the shortest one that covers the known goal, tasks, constraints, acceptance criteria, and validation needs. Ask only when two or more templates plausibly fit and the choice changes the issue structure or quick actions.
+3. **Fetch the template.** Run `glab api projects/:id/templates/issues/<key>`. It returns `{name, content}` with the full Markdown body.
+4. **Fill the template.** Preserve required headings, checklists, and project instructions such as time tracking. Do not infer that a section is optional because the user did not supply content for it. Remove hints, placeholder text, explicitly optional empty sections, and mutually exclusive quick actions that do not apply. Keep an applicable quick action only when the available facts support it. Ask only for missing information required to create a correct issue.
+5. **Check before creation.** Do not run `glab issue create` until template discovery completed and either a template was applied, the user was asked to resolve a real ambiguity, or the project was confirmed to have no templates.
+
+Common generic variants usually map as follows:
+
+- `generic_short`: one goal and a small task list.
+- `generic`: constraints or a measurable result matter.
+- `generic_long`: several acceptance criteria, validation steps, or task groups matter.
 
 To list just the template names: `glab api projects/:id/templates/issues | jq '.[].name'`.
 
