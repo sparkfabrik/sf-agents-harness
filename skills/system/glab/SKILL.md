@@ -293,12 +293,6 @@ Before every issue creation:
 4. **Fill the template.** Preserve required headings, checklists, and project instructions such as time tracking. Do not infer that a section is optional because the user did not supply content for it. Remove hints, placeholder text, explicitly optional empty sections, and mutually exclusive quick actions that do not apply. Keep an applicable quick action only when the available facts support it. Ask only for missing information required to create a correct issue.
 5. **Check before creation.** Do not run `glab issue create` until template discovery completed and either a template was applied, the user was asked to resolve a real ambiguity, or the project was confirmed to have no templates.
 
-Common generic variants usually map as follows:
-
-- `generic_short`: one goal and a small task list.
-- `generic`: constraints or a measurable result matter.
-- `generic_long`: several acceptance criteria, validation steps, or task groups matter.
-
 To list just the template names: `glab api projects/:id/templates/issues | jq '.[].name'`.
 
 ### Label selection process
