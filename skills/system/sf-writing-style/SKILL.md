@@ -70,6 +70,7 @@ Patterns to cut:
 - Use **bold lead-ins** when they help scanning. Plain bullets are enough for short feature lists. Two available shapes:
   - Label plus period: `- **The script-name contract.** Every generated app exposes ...`
   - Verb: `- **builds** each app's dev image (from its build/Dockerfile)`
+- In issue task checklists, start each detailed item with a short **bold outcome** followed by a period. Use this when the item also explains scope, constraints, or acceptance criteria. Keep simple one-line checklist items plain.
 - Ordered processes: introduce with a colon line ("The deploy triggers, in order:") followed by steps.
 - In longer documents, a key instruction can have a bold lead-in: `**Rule of thumb:** if a file says "do not edit", edit the generator instead.`
 
@@ -118,8 +119,9 @@ See [references/examples.md](references/examples.md) for issues, descriptions, c
 4. Sentences use familiar words and concrete verbs. No blacklist word, invented jargon, or filler survives.
 5. No em or en dash survives outside quotations and code. Paragraphs have three sentences or fewer.
 6. Check that formatting makes the change easier to scan without repeating facts or adding empty sections.
-7. Check the actual outgoing body before a tool call, including text generated from commits. Do not append extra explanations in a follow-up comment.
-8. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
+7. Detailed issue checklist items have short bold outcomes; simple checklist items remain plain.
+8. Check the actual outgoing body before a tool call, including text generated from commits. Do not append extra explanations in a follow-up comment.
+9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
 
 ## Interaction with other skills
 

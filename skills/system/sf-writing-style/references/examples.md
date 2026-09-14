@@ -68,6 +68,20 @@ After:
 
 The issue states the trigger, actual result, and wanted result. It does not prescribe an implementation. Even one sentence naming the validator and source line is unnecessary.
 
+## Detailed issue task checklist
+
+Before:
+
+> - [ ] Show what each service enables, access changes, and questions for review.
+> - [ ] Exclude secrets, credentials, raw state, and unrestricted plan values from reports.
+
+After:
+
+> - [ ] **Explain service changes.** Show what each service enables, access changes, and questions for review.
+> - [ ] **Protect sensitive data.** Exclude secrets, credentials, raw state, and unrestricted plan values from reports.
+
+The bold outcome lets readers scan detailed tasks before reading the explanation. Keep a short checklist such as `- [ ] Update docs` plain.
+
 ## Status comment
 
 Before:

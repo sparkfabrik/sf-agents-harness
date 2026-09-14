@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-14",
+  "model": "codex/gpt-5",
+  "method": "Two issue drafts were run once against the previous and revised sf-writing-style skill. One case used detailed tasks with explanations; the other used three simple tasks.",
+  "skill_sha256": {
+    "previous": "257cc75d244e428ea24c4d25e2507b9cc14a7d36a0daf5abfa40f41d742a9b92",
+    "revised": "723ff1fc7d1d5bfeb3e809cca00cdd4737e97cd7ddbbdd4b0fa3d20cf377f002"
+  },
+  "cases": [
+    {
+      "name": "detailed-issue-checklist",
+      "previous": {
+        "pass_rate": 0.8,
+        "failed_checks": [
+          "Each detailed task is a checkbox item"
+        ]
+      },
+      "revised": {
+        "pass_rate": 1.0,
+        "failed_checks": []
+      }
+    },
+    {
+      "name": "simple-issue-checklist",
+      "previous": {
+        "pass_rate": 0.75,
+        "failed_checks": [
+          "Each task is a checkbox item"
+        ]
+      },
+      "revised": {
+        "pass_rate": 1.0,
+        "failed_checks": []
+      }
+    }
+  ],
+  "summary": {
+    "previous_mean_pass_rate": 0.775,
+    "revised_mean_pass_rate": 1.0
+  },
+  "limitations": [
+    "One run per case does not measure reliability.",
+    "The previous skill used bold labels in this detailed sample, but its optional rule did not require them and the reported production case omitted them.",
+    "Timing and token metrics were unavailable from the agent runner."
+  ]
+}

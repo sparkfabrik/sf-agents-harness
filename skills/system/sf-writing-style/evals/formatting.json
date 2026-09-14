@@ -96,6 +96,35 @@
         "States the export fix without repeating the same fact as previous behavior",
         "Returns the description directly, without fences, block quotes, generic labels or commentary about omissions"
       ]
+    },
+    {
+      "id": 7,
+      "name": "detailed-issue-checklist",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the issue description for a plain-language Terraform plan report. Goal: developers should understand planned cloud changes without cloud expertise. Tasks: explain what each service enables and flag access questions for platform review; exclude secrets, credentials, raw state and unrestricted plan values; publish one MR comment for all selected projects and prevent older pipelines from replacing newer reports; show exact plan facts when AI is unavailable. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A concise issue with detailed checklist items that are easy to scan by outcome.",
+      "files": [],
+      "assertions": [
+        "The issue states the user problem and wanted result without implementation history",
+        "Each detailed task is a checkbox item",
+        "Each detailed task starts with a short bold outcome followed by a period",
+        "The explanation after each bold outcome preserves the supplied scope or constraint",
+        "The body contains no invented facts"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "simple-issue-checklist",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the issue description. Goal: document the new export command. Tasks: update the README; add one example; check links. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A short issue whose simple checklist remains plain.",
+      "files": [],
+      "assertions": [
+        "The issue states the documentation goal",
+        "Each task is a checkbox item",
+        "Simple one-line checklist items do not gain bold labels or explanations",
+        "The body contains no invented facts"
+      ]
     }
   ]
 }
