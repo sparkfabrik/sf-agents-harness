@@ -81,6 +81,24 @@
         "Uses useful sections for the complex breaking change without empty headings",
         "Returns only the description, with no em or en dashes outside quotes or code"
       ]
+    },
+    {
+      "id": 7,
+      "name": "cross-cutting-contract-coverage",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description from these verified facts. Purpose: serve a browser frontend and its API from one origin so requests do not need CORS or cross-origin basic authentication. Final diff: the frontend owns the public ingress and routes /api to the API service; the API has no public ingress or hostname of its own but stays reachable through /api and inside the cluster; the public project configuration is FRONTEND_INGRESS_ROUTES with path /api and application api plus API_INGRESS_ENABLED set to false; deployment environment URLs are now derived from that route instead of configured as literals; the frontend, API and shared platform package releases are updated to versions that provide this contract. Local development remains out of scope. Commit history includes two discarded ingress designs. No validation result is supplied. Use only these facts. Do not post, use tools or add attribution.",
+      "assertions": [
+        "Opens with the one-origin outcome and explains why it matters",
+        "States that the frontend owns the ingress and routes /api to the API service",
+        "States that the API has neither a public ingress nor a hostname of its own",
+        "Includes the complete public configuration contract without file narration",
+        "Preserves derived environment URLs and the package releases that enable the contract",
+        "Keeps local development explicitly out of scope",
+        "Omits discarded designs and commit history",
+        "Invents no validation result",
+        "Uses useful structure without empty sections or repeated facts",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
     }
   ]
 }
