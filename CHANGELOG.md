@@ -10,6 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- `sf-writing-style`, `gh` and `glab` now scale PR/MR descriptions to the change, preserving reviewer-relevant scope, breaking changes, required actions, and verified validation without file-level narration.
 - Upstream skill sync: refresh `system/playwright-cli` from the declared source repository.
 
 ## [2026-09-14]

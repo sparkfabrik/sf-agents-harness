@@ -66,6 +66,21 @@
         "Invents no verification or screenshots",
         "Returns only the description, with no em or en dashes outside quotes or code"
       ]
+    },
+    {
+      "id": 6,
+      "name": "complex-breaking-change",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description from these verified facts. Purpose: make deployment routing explicit and consistent across environments. Final diff: one environment map replaces DEPLOY_TARGET, DEPLOY_REGION and DEPLOY_CREDENTIAL; scheduled and manual deployments resolve the same target; generated configuration and credentials are limited to the selected environment; the deploy command prints the resolved target. Operators must remove the retired keys and define the environment map before deploying. Verified: configuration parsing and target selection pass for development, staging and production. Implementation notes: six files changed, a resolver helper was renamed twice, 48 tests pass, and an earlier nested-map approach was reverted. Use only these facts. Do not post, use tools or add attribution.",
+      "assertions": [
+        "Opens with the deployment-routing outcome and purpose",
+        "Groups all four reviewer-relevant behavior changes without a file inventory",
+        "Makes the retired keys and required operator migration easy to find",
+        "Includes the supplied validation without test counts or command output",
+        "Omits investigation history and internal helper details",
+        "Uses useful sections for the complex breaking change without empty headings",
+        "Returns only the description, with no em or en dashes outside quotes or code"
+      ]
     }
   ]
 }

@@ -479,10 +479,10 @@
       "expected_output": "Draft the requested artifact from the supplied facts. For this isolated authoring test, only the CLI skill is available; sf-writing-style is unavailable. Do not call external services. Preserve the result and any required deployment action; omit investigation history.",
       "files": [],
       "assertions": [
-        "The body has at most 80 words",
+        "The body is concise but may exceed 80 words when needed to preserve breaking changes and required actions",
         "Uses formatting only where it helps scanning, without empty sections or repeated facts",
         "Omits unrequested implementation details, even a single file or function name, as well as rejected approaches and unsolicited follow-up explanations",
-        "Keeps the stated problem and expected result, changed behavior and required deployment action, or direct answer to the review question",
+        "Keeps the inactivity behavior, renamed configuration key, required deployment action, and supplied validation",
         "Does not need sf-writing-style to apply these writing rules",
         "Does not invent side effects, sample values, test cases, or reproduction results absent from the supplied facts"
       ]

@@ -12,8 +12,8 @@ Use the `glab` CLI for ALL GitLab-related tasks including working with issues, m
 Apply these rules whenever you draft or send a title, description, comment, review, changelog, or release note, including through the API. They apply even when `sf-writing-style` has not been loaded.
 
 - **Content.** PR/MR descriptions lead with what changes, understandable without the task conversation. Add one sentence of context only when omitting it would make the change hard to understand or review. Issues state the problem and wanted result. Comments answer the point. Changelog entries state one change each.
-- **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for a PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are team defaults, not targets or public standards. Preserve essential information even when it needs more words. Attribution and reference lines do not count.
-- **Leave out.** No implementation details, even in a single sentence: file paths, function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep an identifier only when it names the changed interface or a required user action. Do not move omitted detail into unsolicited comments.
+- **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for an uncomplicated PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are team defaults, not targets or public standards. Preserve essential information even when it needs more words. Complex descriptions may expand to cover major scope, required actions, and useful validation. Attribution and reference lines do not count.
+- **Leave out.** No implementation details, even in a single sentence: file paths, internal function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep public interface names, commands, configuration keys, and identifiers only when they help a reviewer understand the contract or a required user action. Do not move omitted detail into unsolicited comments.
 - **Select facts.** Investigation notes and the diff are input, not a checklist to summarize. For an issue, keep the symptom and wanted result. For a PR/MR, keep the changed behavior, essential context and required action. For a comment, answer only the question.
 - **Evidence.** Use only supplied facts or results you observed. Omit unknowns. An error does not establish side effects, data loss, partial success, or affected environments. Do not invent causes, sample values, test cases, or reproduction results.
 - **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
@@ -33,6 +33,8 @@ Example of a feature with several visible parts (copy the layout, not these fact
 > - CSV download.
 
 The lead sentence names the feature; the bullets name its parts. The description remains short without becoming a bare paragraph.
+
+Load `sf-writing-style` for additional writing guidance. Before drafting or publishing an MR description, read and apply the PR/MR description reference required by that skill. The rules above still apply when `sf-writing-style` is unavailable.
 
 ## Before you start
 

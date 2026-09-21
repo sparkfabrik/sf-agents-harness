@@ -11,9 +11,11 @@ Rules for every human-facing prose artifact the agent writes: READMEs, docs, onb
 
 Apply these rules whenever you draft or send a title, description, comment, review, changelog, or release note, including through the API. These rules take priority over the general document formatting below.
 
+Before drafting, rewriting, or publishing a PR/MR description, read [references/pr-mr-descriptions.md](references/pr-mr-descriptions.md) completely and apply it. Its scale and coverage rules override the default length guidance below for complex, cross-cutting, or breaking changes.
+
 - **Content.** PR/MR descriptions lead with what changes, understandable without the task conversation. Add one sentence of context only when omitting it would make the change hard to understand or review. Issues state the problem and wanted result. Comments answer the point. Changelog entries state one change each.
-- **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for a PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are team defaults, not targets or public standards. Preserve essential information even when it needs more words. Attribution and reference lines do not count.
-- **Leave out.** No implementation details, even in a single sentence: file paths, function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep an identifier only when it names the changed interface or a required user action. Do not move omitted detail into unsolicited comments.
+- **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for an uncomplicated PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are team defaults, not targets or public standards. Preserve essential information even when it needs more words. The PR/MR reference governs complex descriptions. Attribution and reference lines do not count.
+- **Leave out.** No implementation details, even in a single sentence: file paths, internal function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep public interface names, commands, configuration keys, and identifiers only when they help a reviewer understand the contract or a required user action. Do not move omitted detail into unsolicited comments.
 - **Select facts.** Investigation notes and the diff are input, not a checklist to summarize. For an issue, keep the symptom and wanted result. For a PR/MR, keep the changed behavior, essential context and required action. For a comment, answer only the question.
 - **Evidence.** Use only supplied facts or results you observed. Omit unknowns. An error does not establish side effects, data loss, partial success, or affected environments. Do not invent causes, sample values, test cases, or reproduction results.
 - **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
@@ -122,6 +124,7 @@ See [references/examples.md](references/examples.md) for issues, descriptions, c
 7. Detailed issue checklist items have short bold outcomes; simple checklist items remain plain.
 8. Check the actual outgoing body before a tool call, including text generated from commits. Do not append extra explanations in a follow-up comment.
 9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
+10. For a PR/MR description, confirm that you read and applied the required PR/MR reference.
 
 ## Interaction with other skills
 
@@ -130,6 +133,7 @@ This skill is the baseline for every other skill that writes prose. Whenever ano
 Some examples of how the baseline composes with specific skills:
 
 - **CLI writing rules.** `gh` and `glab` include the short-artifact rules directly so they do not depend on a second skill load. Keep those rules aligned with this skill.
+- **PR/MR descriptions.** This skill owns the task-specific reference for PR/MR descriptions. Tools and guards should load this parent skill, then follow its reference routing instead of treating the reference as another skill.
 - **Mechanical layout.** The `auto-format-doc` skill handles mechanical markdown layout (prettier): this skill decides what the prose says and how it is structured, the formatter normalizes whitespace and syntax afterwards.
 - **Domain overlays.** Skills that own a document type (issue writing, ADRs, postmortems, changelogs) add their structure and domain rules on top; this skill keeps governing the sentences inside that structure.
 
