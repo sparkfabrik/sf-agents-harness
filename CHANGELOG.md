@@ -12,6 +12,10 @@ Changes are grouped by date.
 
 - `security-audit` skill in the `security` category: multi-phase security audits with independently verified, machine-readable findings. Synced from [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill).
 
+### Changed
+
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.13.1, adding the `propose` and `update` workflows. A weekly workflow now keeps them current.
+
 ## [2026-09-21]
 
 ### Changed

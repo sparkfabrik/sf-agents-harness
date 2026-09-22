@@ -16,6 +16,14 @@ def format_skill_list(skills: list[str]) -> str:
     return f"{', '.join(quoted[:-1])}, and {quoted[-1]}"
 
 
+def skill_sync_entry(skills: list[str]) -> str:
+    source = "repository" if len(set(skills)) == 1 else "repositories"
+    return (
+        f"- Upstream skill sync: refresh {format_skill_list(skills)} from the "
+        f"declared source {source}."
+    )
+
+
 def add_entry(lines: list[str], date: str, entry: str) -> list[str]:
     date_header = f"## [{date}]"
 
@@ -77,9 +85,13 @@ def add_entry(lines: list[str], date: str, entry: str) -> list[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Add a dated upstream skill sync entry to CHANGELOG.md."
+        description="Add a dated entry to the Changed section of CHANGELOG.md."
     )
-    parser.add_argument("skills", nargs="+", help="Category-qualified skill names.")
+    parser.add_argument("skills", nargs="*", help="Category-qualified skill names.")
+    parser.add_argument(
+        "--entry",
+        help="Literal changelog bullet to insert instead of the generated one.",
+    )
     parser.add_argument(
         "--file", type=Path, default=Path("CHANGELOG.md"), help="Changelog path."
     )
@@ -90,12 +102,9 @@ def main() -> None:
     )
     arguments = parser.parse_args()
 
-    skill_list = format_skill_list(arguments.skills)
-    source = "repository" if len(set(arguments.skills)) == 1 else "repositories"
-    entry = (
-        f"- Upstream skill sync: refresh {skill_list} from the declared source "
-        f"{source}."
-    )
+    if not (arguments.entry or arguments.skills):
+        parser.error("provide skill names or --entry")
+    entry = arguments.entry or skill_sync_entry(arguments.skills)
 
     lines = arguments.file.read_text().splitlines()
     updated = add_entry(lines, arguments.date, entry)

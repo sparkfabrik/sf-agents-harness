@@ -1,0 +1,22 @@
+{
+  "profile": "custom",
+  "delivery": "both",
+  "telemetry": {
+    "enabled": false,
+    "noticeSeen": true
+  },
+  "workflows": [
+    "propose",
+    "explore",
+    "new",
+    "continue",
+    "apply",
+    "ff",
+    "sync",
+    "archive",
+    "bulk-archive",
+    "verify",
+    "onboard",
+    "update"
+  ]
+}

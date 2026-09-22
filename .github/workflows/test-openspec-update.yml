@@ -1,0 +1,26 @@
+name: Test OpenSpec generation
+
+on:
+  pull_request:
+    paths:
+      - ".claude/**"
+      - ".github/prompts/**"
+      - ".github/skills/**"
+      - ".opencode/**"
+      - "config/openspec-profile.json"
+      - "scripts/openspec-update.sh"
+      - ".github/workflows/openspec-update.yml"
+      - ".github/workflows/test-openspec-update.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Verify generated files match the pinned OpenSpec profile
+        run: ./scripts/openspec-update.sh --check

@@ -60,3 +60,17 @@ jobs:
             system/playwright-cli
           after=$(sha256sum "$changelog")
           test "$before" = "$after"
+
+      - name: Test literal changelog entry generation
+        run: |
+          changelog=$(mktemp)
+          cp CHANGELOG.md "$changelog"
+          python3 scripts/add-sync-changelog-entry.py \
+            --file "$changelog" \
+            --date 2099-01-01 \
+            --entry "- Literal entry used by the OpenSpec update workflow."
+          grep -F -e '- Literal entry used by the OpenSpec update workflow.' "$changelog"
+          if python3 scripts/add-sync-changelog-entry.py --file "$changelog"; then
+            echo "::error::Expected a failure when neither skills nor --entry is given"
+            exit 1
+          fi

@@ -1,0 +1,142 @@
+name: Update OpenSpec generated files
+
+on:
+  schedule:
+    - cron: "30 9 * * 1" # Every Monday at 09:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-openspec-generated-files
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment: scheduled-sync
+    steps:
+      - name: Create PR automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.SF_PR_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.SF_PR_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Stop when an update PR is already open
+        run: |
+          count=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --search '"chore(openspec): update generated files" in:title' \
+            --state open \
+            --json number \
+            --jq length)
+          if [[ "$count" -gt 0 ]]; then
+            echo "::error::An OpenSpec update PR is already open."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Regenerate OpenSpec files
+        id: openspec
+        run: |
+          echo "version=$(npm view @fission-ai/openspec version)" >> "$GITHUB_OUTPUT"
+          ./scripts/openspec-update.sh
+
+      - name: Check generated changes
+        id: diff
+        run: |
+          mapfile -t generated_paths < <(./scripts/openspec-update.sh --paths)
+          if [[ -z "$(git status --porcelain --untracked-files=all -- "${generated_paths[@]}")" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate generated paths
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          mapfile -t generated_paths < <(./scripts/openspec-update.sh --paths)
+          mapfile -t changed_paths < <(
+            {
+              git diff --name-only
+              git ls-files --others --exclude-standard
+            } | sort -u
+          )
+
+          for changed_path in "${changed_paths[@]}"; do
+            allowed=false
+            for generated_path in "${generated_paths[@]}"; do
+              if [[ "$changed_path" == "$generated_path/"* ]]; then
+                allowed=true
+                break
+              fi
+            done
+            if [[ "$allowed" != true ]]; then
+              echo "::error::Unexpected generated path: $changed_path"
+              exit 1
+            fi
+          done
+
+          if find "${generated_paths[@]}" -type l -print -quit | grep -q .; then
+            echo "::error::Generated trees must not contain symlinks"
+            exit 1
+          fi
+
+      - name: Add dated changelog entry
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          python3 scripts/add-sync-changelog-entry.py \
+            --entry "- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI ${{ steps.openspec.outputs.version }}."
+          npx --yes prettier@3 --write CHANGELOG.md
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        id: pr
+        run: |
+          mapfile -t generated_paths < <(./scripts/openspec-update.sh --paths)
+          branch="chore/update-openspec-$(date +%Y-%m-%d)-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add "${generated_paths[@]}" CHANGELOG.md
+          git commit -m "chore(openspec): update generated files"
+          git push -u origin "$branch"
+          pr_url=$(gh pr create \
+            --title "chore(openspec): update generated files" \
+            --body "$(cat <<EOF
+          > :robot: _This was written by an AI agent on behalf of @paolomainardi._
+
+          ## Automated update
+
+          Regenerated the OpenSpec commands and skills for Claude Code, GitHub Copilot,
+          and OpenCode with OpenSpec CLI ${{ steps.openspec.outputs.version }}.
+
+          The generation profile is pinned in config/openspec-profile.json, so local
+          regeneration produces the same output as this workflow.
+          EOF
+          )")
+          echo "url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Enable auto-merge for scheduled update pull request
+        if: github.event_name == 'schedule' && steps.pr.outputs.url != ''
+        run: |
+          gh pr merge "${{ steps.pr.outputs.url }}" \
+            --auto \
+            --squash \
+            --delete-branch \
+            --match-head-commit "${{ steps.pr.outputs.head_sha }}"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
