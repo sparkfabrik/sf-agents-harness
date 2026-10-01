@@ -63,3 +63,19 @@ traces/
 ### Cleanup
 
 `playwright-cli close` does not remove output files. When output files are no longer needed, remove them or inform the user where they were saved so they can decide.
+
+## Session lifecycle
+
+A browser left running outlives the task. By default, and with `--browser=chrome`, a session runs
+the installed Google Chrome. After a Chrome update, an orphaned session holds the deleted version,
+and macOS gives focus to it when the user opens Chrome. Chrome then looks stuck on load.
+
+- Close every session you open before ending the task, including when the task fails or is
+  abandoned: `playwright-cli close`, or `playwright-cli -s=<name> close` for a named session.
+- Before the final reply, run `playwright-cli list` and close any session this task opened that
+  is still open. Do not close sessions you did not open: another agent may be using them.
+- Headless sessions shut down after one idle hour by default. Pass a shorter
+  `open --idle-timeout=<ms>` for short tasks. Never pass `0` unless the user asks for it.
+- If the user reports that Chrome is stuck or will not open, look for headless Chrome processes
+  whose parent is the `playwright` `run-cli-server` daemon. Close that session, or run
+  `playwright-cli kill-all` when it is stale.
