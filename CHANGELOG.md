@@ -8,9 +8,14 @@ Changes are grouped by date.
 
 ## [2026-10-05]
 
+### Added
+
+- `drupal-migrate` Claude Code plugin (`plugins/drupal-migrate/`): source-agnostic toolkit for content migrations into Drupal from WordPress, Drupal 7/8+, another CMS, or a database dump. Bundles the `drupal-migration-analyst` agent, 21 atomic `drupal-migrate-*` skills covering source detection, as-is analysis, mapping triage, tech analysis, and post-migration content verification, plus reference templates. Installable from the new `sf-agents-harness` plugin marketplace (`.claude-plugin/marketplace.json`).
+
 ### Changed
 
 - Upstream skill sync: refresh `angular/angular-developer`, `system/domain-modeling`, and `system/playwright-cli` from the declared source repositories.
+- CI: the `validate-and-check` job now also runs when a pull request changes `plugins/` or the plugin marketplace, so plugin pull requests get the required status check.
 
 ## [2026-10-01]
 

@@ -10,6 +10,7 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 
 ```
 ├── agents/          # Agent definitions
+├── plugins/         # Claude Code plugins (installable via the plugin marketplace)
 ├── skills/          # Skills organized by technology
 ```
 
@@ -66,6 +67,16 @@ The `security` category holds the security engagement skills: `security-assessme
 Agents are custom Copilot configurations with specific instructions.
 
 Browse the `agents/` directory for available agents.
+
+## Plugins
+
+Claude Code plugins bundle agents, skills and reference files that are installed together and removed together. They are not synced by sparkdock; install them with the `/plugin` command from the marketplace defined in `.claude-plugin/marketplace.json`.
+
+| Plugin             | Description                                                                                                          | Path                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| **drupal-migrate** | Source-agnostic content-migration toolkit into Drupal -- analyst agent, source-analysis skills, content verification | `plugins/drupal-migrate/` |
+
+See each plugin's `README.md` for install instructions and usage.
 
 ## Usage
 

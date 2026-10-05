@@ -11,7 +11,9 @@ This content is largely AI-generated and experimental.
 ```
 .
 ├── agents/           # Agent definitions (.agent.md files)
+├── plugins/          # Claude Code plugins (self-contained bundles of agents, skills, references)
 ├── skills/           # Agent Skills folders (each with SKILL.md and optional bundled assets)
+├── .claude-plugin/   # Plugin marketplace manifest (marketplace.json) listing the plugins above
 ├── config/           # Machine-readable manifests (upstream skills, catalog, OpenSpec profile)
 ├── scripts/          # Sync and regeneration scripts
 ```
@@ -125,6 +127,27 @@ System agents (`agents/system/`) support multiple tools (Copilot, OpenCode). Eac
 5. **Update `SYSTEM.md`** — if the skill belongs to `system/`, add or remove it from the "Available skills" list
 6. **Update `config/catalog.json`** — add or update the short description in the `skills` section
 7. **Update `README.md`** — add or remove the skill from the skills table
+
+### For Plugins
+
+Plugins live under `plugins/<name>/` and are installed with the Claude Code
+`/plugin` command, not synced by sparkdock. Each plugin is self-contained:
+
+```
+plugins/<name>/
+├── .claude-plugin/plugin.json   # name, version, description, keywords
+├── README.md                    # what it does, install and usage
+├── agents/                      # *.agent.md files
+├── skills/                      # <skill-name>/SKILL.md folders
+└── references/                  # optional templates and reference docs
+```
+
+1. Create the folder with `.claude-plugin/plugin.json` and a `README.md`
+2. Add agents and skills using the same file formats described above
+3. **Register the plugin in `.claude-plugin/marketplace.json`** (root of this repo) so it is installable with `/plugin install <name>@sf-agents-harness`
+4. Bump `version` in `plugin.json` on every user-facing change
+5. **Update `README.md`** — add or remove the plugin from the plugins table
+6. Do not touch `SYSTEM.md` or `config/catalog.json`: they cover only sparkdock-synced resources
 
 ## Git Workflow
 
