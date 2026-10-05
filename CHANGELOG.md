@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-05]
+
+### Changed
+
+- Upstream skill sync: refresh `angular/angular-developer`, `system/domain-modeling`, and `system/playwright-cli` from the declared source repositories.
+
 ## [2026-10-01]
 
 ### Changed
