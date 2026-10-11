@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-11]
+
+### Changed
+
+- `glab` no longer recommends the deprecated `--use-keyring` flag: keyring storage is the default, and agents are told never to pass `--insecure-storage`.
+
 ## [2026-10-05]
 
 ### Changed

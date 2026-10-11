@@ -108,7 +108,7 @@ Present the user with these options:
 ### Option 1: OAuth login (preferred -- more secure, tokens auto-refresh)
 
 ```bash
-glab auth login --hostname <hostname> --use-keyring
+glab auth login --hostname <hostname>
 # Select "Web" → browser opens → authorize → done
 ```
 
@@ -124,12 +124,12 @@ Check git protocol to recommend minimal scopes:
 Tell the user to generate a token at: `https://<hostname>/-/user_settings/personal_access_tokens?scopes=api,write_repository` — recommend a short expiry (30-90 days).
 
 ```bash
-glab auth login --hostname <hostname> --token <token> --use-keyring
+glab auth login --hostname <hostname> --token <token>
 ```
 
 ### Option 3: Skip the operation
 
-**Always use `--use-keyring`** to store credentials in the OS keyring. Never store tokens in plaintext config.
+glab stores credentials in the OS keyring by default. **Never pass `--insecure-storage`**: it stores the token in plaintext config.
 
 ## Core terminology
 
