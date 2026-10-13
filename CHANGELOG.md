@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-13]
+
+### Added
+
+- Plugin validation in CI: `scripts/validate-plugins.py` checks the marketplace manifest, each plugin's manifest and README, and the frontmatter of plugin skills and agents; the `validate-and-check` workflow runs it.
+
+### Changed
+
+- `drupal-migrate` plugin: skill descriptions state which source each skill supports, name the sibling skill to use instead where two overlap, and list more of the phrases users actually type, so the right skill triggers.
+
+### Fixed
+
+- `drupal-migrate` plugin: Drupal 7 support now covers container child bundles and active-child counts, paragraph field population restricted to active items, and base fields per entity table; content verification rejects URLs with credentials, query strings or fragments, filters URL-map rows by language, carries the destination entity type through alias, redirect and translation checks, and matches alias redirect targets correctly; example resolution scans every node field table; the ecosystem map lists credential files without printing their contents; the README, manifest and agent state that another CMS is identified but not audited.
+- `drupal-migrate` plugin: Drupal 7 field population uses the Drupal 7 entity tables and entity-type names; content verification validates node IDs read from scope tables and matches redirects stored as entity or alias targets; the analyst agent resolves a bundle's entity type from project config and usage instead of words in its name; the detect-version skill uses the configured drush runner; disposition names, field type ids, and the verification evals are consistent across the agent, skills, and README.
+
 ## [2026-10-12]
 
 ### Changed
@@ -21,9 +36,14 @@ Changes are grouped by date.
 
 ## [2026-10-05]
 
+### Added
+
+- `drupal-migrate` Claude Code plugin (`plugins/drupal-migrate/`): source-agnostic toolkit for content migrations into Drupal from WordPress, Drupal 7/8+, another CMS, or a database dump. Bundles the `drupal-migration-analyst` agent, 21 atomic `drupal-migrate-*` skills covering source detection, as-is analysis, mapping triage, tech analysis, and post-migration content verification, plus reference templates. Installable from the new `sf-agents-harness` plugin marketplace (`.claude-plugin/marketplace.json`).
+
 ### Changed
 
 - Upstream skill sync: refresh `angular/angular-developer`, `system/domain-modeling`, and `system/playwright-cli` from the declared source repositories.
+- CI: the `validate-and-check` job now also runs when a pull request changes `plugins/` or the plugin marketplace, so plugin pull requests get the required status check.
 
 ## [2026-10-01]
 
