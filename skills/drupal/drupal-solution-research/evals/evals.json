@@ -1,0 +1,50 @@
+{
+  "skill_name": "drupal-solution-research",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "known-module-issue",
+      "prompt": "Our Drupal site uses the iubenda_integration module. Translations of the cookie banner don't work \u2014 the Italian strings never show up, always English. Is this a known issue? Is there a patch available?",
+      "expected_output": "Report identifying drupal.org issue 3558311 'Translations not working' (status: closed/works as designed), explaining from the issue comments why it behaves that way and what the supported approach is. Honest 'no patch' conclusion rather than an invented one.",
+      "files": [],
+      "assertions": [
+        "Report cites the real drupal.org issue nid 3558311 ('Translations not working') or its canonical URL",
+        "Report states the issue's actual status (closed / works as designed) rather than presenting it as an open bug",
+        "Report does not fabricate a patch: it either says no patch exists or points only to artifacts (files/MRs) that actually exist on the issue or in the project's GitLab repo",
+        "Report explains the supported approach / reason from the issue discussion (why translations behave this way)",
+        "Report leads with the answer: a 'Bottom line' verdict and a 'Do this' next step appear at the top, before the supporting evidence",
+        "Report is grounded in the actual issue discussion (cites the works-as-designed rationale AND the supported mechanism config translation), not just a link dump"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "pasted-error-core",
+      "prompt": "We're getting this error on our Drupal 10 site during some drush operations:\n\nLogicException: The database connection is not serializable and has been prohibited from destructing. It is potentially in use during a subrequest.\n\nCan you find out if this is a known Drupal issue and whether there's a fix or workaround?",
+      "expected_output": "Report identifying the known Drupal core issue about the non-serializable database connection (long-standing core issue), its current status, and the practical workarounds discussed in the issue/community (e.g. what triggers it, serialization of the container in tests/queues). Links to the actual d.o issue.",
+      "files": [],
+      "assertions": [
+        "Report links at least one real drupal.org core issue (drupal.org/project/drupal/issues/<nid> or node/<nid>) whose topic is the non-serializable database connection error \u2014 verifiable via api-d7 (issue exists and title/body matches the topic)",
+        "Report correctly explains the mechanism: the exception is thrown when a database connection object ends up serialized (e.g. captured in a serialized service/object), not a database outage",
+        "Report gives at least one concrete workaround or fix path (e.g. DependencySerializationTrait, finding the leaking object, core patch/update)",
+        "All cited drupal.org URLs are real (resolve via api-d7), no invented issue numbers",
+        "Report leads with the answer: a 'Bottom line' verdict and a 'Do this' next step appear at the top, before the supporting evidence",
+        "Report names the concrete fix version or fix path accurately (e.g. fixed in 10.5.1/11.2.1, or DependencySerializationTrait) with no wrong version claim"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "module-discovery",
+      "prompt": "In our Drupal 11 project, editors need to share preview links of unpublished content with external reviewers who don't have accounts. Is there an existing module for this, or do we need to build it custom?",
+      "expected_output": "Report recommending an existing contrib module (e.g. access_unpublished) with verification that it supports Drupal 11 (via api-d7 / releases), maintenance status, and possibly alternatives compared. Recommendation to use contrib over custom.",
+      "files": [],
+      "assertions": [
+        "Report recommends a real contrib module that provides tokenized/anonymous preview links for unpublished content (e.g. access_unpublished) with its drupal.org project URL",
+        "The recommended module actually exists on drupal.org (project resolvable via api-d7 field_project_machine_name lookup)",
+        "Report verifies Drupal 11 compatibility with evidence (release/version info), not just an unsupported claim",
+        "Report recommends contrib over custom development, or justifies custom only if no compatible module exists",
+        "Report leads with the answer: a 'Bottom line' verdict and a 'Do this' next step appear at the top, before the supporting evidence",
+        "Report distinguishes the candidates by the project's actual need (previewing drafts of published content under content_moderation), not just listing modules"
+      ]
+    }
+  ]
+}
