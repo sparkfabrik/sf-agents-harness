@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-22]
+
+### Changed
+
+- `sf-writing-style` skill: hosts, domains, ports, labels, versions, and cloud resource names are now shown as code, and issues and comments bold the problem, wanted result, or required action. A new platform reference covers GitHub and GitLab references and task lists, parent issues on trackers without native epics, and Slack formatting for Markdown connectors and raw `mrkdwn`. The `gh` and `glab` skills carry the same emphasis and identifier rule.
+
 ## [2026-10-19]
 
 ### Changed

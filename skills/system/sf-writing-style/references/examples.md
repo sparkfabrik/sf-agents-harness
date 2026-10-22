@@ -68,6 +68,20 @@ After:
 
 The issue states the trigger, actual result, and wanted result. It does not prescribe an implementation. Even one sentence naming the validator and source line is unnecessary.
 
+## Issue with identifiers and emphasis
+
+Before:
+
+> The certificate for docs.example.com is not renewed automatically anymore and it expires on 2026-11-30. Renewal should work again without manual steps, the staging host stage.docs.example.com uses the same setup on port 8443.
+
+After:
+
+> **Automatic renewal stopped** for the `docs.example.com` certificate, which expires on **2026-11-30**.
+>
+> **Wanted:** renewal works again without manual steps for `docs.example.com` and `stage.docs.example.com` (port `8443`), which share the setup.
+
+Bold marks what a scanning reader must catch: the problem, the deadline, and the wanted result. Hostnames and ports are code because they are literal values to copy or search for. Dates and plain words stay as prose.
+
 ## Detailed issue task checklist
 
 Before:

@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-22",
+  "model": "claude-opus-5-5",
+  "method": "Old/new comparison with subagents that read the skill files from disk and could open references, as in normal use. Iteration 1 ran cases 1 to 5 once per version. Iteration 2 ran cases 1 and 6 twice per version after tightening the bold wording. Assertions were checked by a script (code spans matched per span, bold inside and outside checklists, Slack syntax, word counts) and drafts were reviewed inline. This tests drafting, not automatic skill loading.",
+  "summary": {
+    "new_checks_passed": "63/64",
+    "old_checks_passed": "55/64"
+  },
+  "findings": [
+    "Both versions show identifiers as code when the prompt names them as hosts, buckets or projects.",
+    "The old skill left ports as plain text in a short comment in both runs; the new skill showed them as code in both runs.",
+    "The old skill never bolded the problem or wanted result in issue prose; the new skill did in every run.",
+    "With raw Slack mrkdwn, only the new skill started with a bold lead line. Both used single-asterisk bold and Slack link syntax.",
+    "The first new-skill wording bolded a whole sentence. Limiting bold to two to five words fixed it in iteration 2.",
+    "Parent issue, Markdown table and small-fix cases passed for both versions, with no extra formatting on the small fix."
+  ]
+}

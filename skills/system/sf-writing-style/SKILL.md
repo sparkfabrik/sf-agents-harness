@@ -13,6 +13,8 @@ Apply these rules whenever you draft or send a title, description, comment, revi
 
 Before drafting, rewriting, or publishing a PR/MR description, read [references/pr-mr-descriptions.md](references/pr-mr-descriptions.md) completely and apply it. Its scale and coverage rules override the default length guidance below for complex, cross-cutting, or breaking changes.
 
+Before writing text that GitHub, GitLab, or Slack will render, read [references/platforms.md](references/platforms.md). Each platform renders Markdown, references, and tables differently.
+
 - **Content.** PR/MR descriptions lead with what changes, understandable without the task conversation. Add one sentence of context only when omitting it would make the change hard to understand or review. Issues state the problem and wanted result. Comments answer the point. Changelog entries state one change each.
 - **Length.** Let the change determine the layout; a small fix can fit in one sentence. Default maximum: 80 words for an uncomplicated PR/MR description, 120 for an issue, 60 for a comment, and one sentence per changelog entry. These are team defaults, not targets or public standards. Preserve essential information even when it needs more words. The PR/MR reference governs complex descriptions. Attribution and reference lines do not count.
 - **Leave out.** No implementation details, even in a single sentence: file paths, internal function names, internal variables, source lines, test counts, diagnoses, or proposed fixes. Omit workarounds, investigation history, rejected approaches, and repeated summaries. Keep public interface names, commands, configuration keys, and identifiers only when they help a reviewer understand the contract or a required user action. Do not move omitted detail into unsolicited comments.
@@ -20,6 +22,7 @@ Before drafting, rewriting, or publishing a PR/MR description, read [references/
 - **Evidence.** Use only supplied facts or results you observed. Omit unknowns. An error does not establish side effects, data loss, partial success, or affected environments. Do not invent causes, sample values, test cases, or reproduction results.
 - **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
 - **Layout.** Open with the main change. Bold a short key phrase, not a whole sentence. Put distinct features or changes in bullets instead of a comma-packed paragraph. Use headings only to separate useful sections, not generic labels like "MR description". One uncomplicated behavior change needs no list; a feature with several visible parts should list those parts. No empty sections, mandatory headings, bullet counts, or minimum length. State each fact once; do not restate the fix as its opposite in the old behavior unless the comparison is needed.
+- **Emphasis and identifiers.** Readers scan issues and comments as much as descriptions. Bold the two to five words a scanning reader must not miss, such as the problem, the wanted result, a required action, or a deadline, and leave the rest of the sentence plain. A label such as `**Wanted:**` also works. Show every identifier you keep as code, following the sentence-level rules below. Formatting never justifies keeping an identifier the reader does not need.
 - **Supporting evidence.** Include supplied screenshots when they clarify a visible change; label before/after only when both are supplied. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results.
 - **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, essential context, necessary validation, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
 
@@ -72,14 +75,14 @@ Patterns to cut:
 - Use **bold lead-ins** when they help scanning. Plain bullets are enough for short feature lists. Two available shapes:
   - Label plus period: `- **The script-name contract.** Every generated app exposes ...`
   - Verb: `- **builds** each app's dev image (from its build/Dockerfile)`
-- In issue task checklists, start each detailed item with a short **bold outcome** followed by a period. Use this when the item also explains scope, constraints, or acceptance criteria. Keep simple one-line checklist items plain.
+- In issue checklists, including tasks and acceptance criteria, start each detailed item with a short **bold outcome** followed by a period. Use this when the item also explains scope, constraints, or acceptance criteria. Keep simple one-line checklist items plain.
 - Ordered processes: introduce with a colon line ("The deploy triggers, in order:") followed by steps.
 - In longer documents, a key instruction can have a bold lead-in: `**Rule of thumb:** if a file says "do not edit", edit the generator instead.`
 
 ## Sentence-level rules
 
 - Active voice with a concrete subject: "the script builds the image", not "the image is built by the script".
-- Name the thing in backticks: file paths, commands, flags, config keys, exact error strings.
+- Name the thing in backticks: file paths, commands, flags, config keys, environment variables, hostnames and domains, ports, branch names, versions, labels, cloud project and resource names, and exact error strings. A reader then sees at a glance which words are literal values to copy or search for. Keep links, issue and PR/MR references, and people mentions out of backticks, because code formatting stops them from linking.
 - Cut hedges and filler: basically, essentially, simply, just, actually, very, quite.
 - Plain verbs: use, run, build, check (not utilize, orchestrate, facilitate).
 - Prefer sentences under 20 words. Do not pack several clauses into one sentence to meet a sentence limit.
@@ -120,11 +123,12 @@ See [references/examples.md](references/examples.md) for issues, descriptions, c
 3. The text meets its word limit, excluding attribution and reference lines, unless an explicit exception applies. Shorter is better when the meaning stays clear.
 4. Sentences use familiar words and concrete verbs. No blacklist word, invented jargon, or filler survives.
 5. No em or en dash survives outside quotations and code. Paragraphs have three sentences or fewer.
-6. Check that formatting makes the change easier to scan without repeating facts or adding empty sections.
+6. Check that formatting makes the change easier to scan without repeating facts or adding empty sections. The phrases a scanning reader must not miss are bold, and every kept identifier is code.
 7. Detailed issue checklist items have short bold outcomes; simple checklist items remain plain.
 8. Check the actual outgoing body before a tool call, including text generated from commits. Do not append extra explanations in a follow-up comment.
 9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
 10. For a PR/MR description, confirm that you read and applied the required PR/MR reference.
+11. For text that GitHub, GitLab, or Slack will render, confirm that you applied the platform reference.
 
 ## Interaction with other skills
 

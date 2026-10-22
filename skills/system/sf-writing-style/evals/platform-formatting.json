@@ -1,0 +1,90 @@
+{
+  "skill_name": "sf-writing-style",
+  "evals": [
+    {
+      "id": 1,
+      "name": "issue-identifiers-emphasis",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the GitLab issue description. Problem: nightly backups of the orders database stopped on 2026-11-02; the last good backup is in the bucket acme-backups-eu in cloud project acme-prod. The backup job runs from the host db-backup-01.internal.example.com and connects to the database on port 5432. Wanted result: nightly backups run again and a failed backup alerts the on-call channel. Tasks: restore the nightly backup job with a successful run checked in the bucket; add an alert that fires when no backup arrives within 26 hours; document the restore test in the runbook. No template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A short issue that bolds the problem and wanted result, shows hostnames, buckets, projects and ports as code, and gives detailed checklist items bold outcomes.",
+      "files": [],
+      "assertions": [
+        "Hostname, bucket, cloud project and port appear in backticks",
+        "The problem or the wanted result is marked with a short bold phrase",
+        "Each detailed checklist item starts with a short bold outcome",
+        "Bold is used for short phrases, never whole sentences",
+        "States the problem and wanted result without implementation history or invented facts"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "parent-issue-without-native-epics",
+      "skill": "glab",
+      "prompt": "Draft only the description of a GitLab parent issue in project acme/platform/board. The tracker has no native epics. Goal: move the public website to a new CDN. Child issues already exist: acme/platform/board#311 (CDN contract and account), acme/platform/board#312 (DNS cutover plan), acme/platform/board#313 (production cutover). 312 needs 311, and 313 needs 312. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A parent issue whose task list holds the three fully-qualified child references, bare so they link, with dependencies written as text.",
+      "files": [],
+      "assertions": [
+        "Each child appears as a task list item with its fully-qualified reference",
+        "Issue references are not wrapped in backticks",
+        "Dependencies between children are stated in text",
+        "States the goal without invented scope, dates or owners"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "slack-webhook-mrkdwn",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the text of a Slack message sent through an incoming webhook, which takes raw Slack mrkdwn. Update: the staging cluster upgrade to Kubernetes 1.34 finished; two services, billing-api and search-indexer, need a config change before the production upgrade on 2026-11-20; details are in https://git.example.com/acme/infra/-/issues/88. Do not send anything or use tools. Use only the supplied facts.",
+      "expected_output": "A short mrkdwn message with a bold lead line, single-asterisk bold, no headings or tables, and a Slack-style link.",
+      "files": [],
+      "assertions": [
+        "Bold uses single asterisks and no double-asterisk Markdown bold appears",
+        "No Markdown headings or tables appear",
+        "The link uses Slack <url|text> syntax or a bare URL, not [text](url)",
+        "The first line states the update",
+        "Service names appear as code"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "slack-markdown-tool-table",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the text of a Slack message. It will be posted with a connector tool whose documentation says it accepts standard Markdown, including bold, links and tables. Compare three log retention options for the team: 30 days costs 120 EUR per month, 90 days costs 310 EUR per month, 365 days costs 1,150 EUR per month. The team must pick one by Friday. Do not send anything or use tools. Use only the supplied facts.",
+      "expected_output": "A short message that leads with the decision needed, compares the options in a table, and keeps the deadline visible.",
+      "files": [],
+      "assertions": [
+        "The three options appear in a Markdown table",
+        "The first line states that the team must choose and by when",
+        "The deadline is bold or otherwise visibly emphasized",
+        "Invents no recommendation or extra options"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "small-fix-no-overformatting",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description: CSV exports now preserve accents in customer names. No other changes, purpose, required action or validation are available. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "One plain sentence with at most one short bold phrase and no headings or lists.",
+      "files": [],
+      "assertions": [
+        "One sentence without headings or lists",
+        "At most one short bold phrase",
+        "Invents no context, required action or validation"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "comment-casual-identifiers",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only a GitLab issue comment that answers the question 'Which environments are affected, and do we need to do anything?'. Facts: the expired certificate affects shop.example.org and admin.shop.example.org; both run in the shop-prod project behind the load balancer on ports 443 and 8443; the staging site stage.shop.example.org is not affected. Customers see browser warnings until the certificate is replaced. Someone with access to shop-prod must replace it today. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A short comment that answers directly, shows hosts, project and ports as code, and bolds the required action.",
+      "files": [],
+      "assertions": [
+        "Hosts, project and ports appear in backticks",
+        "The required action is marked with a short bold phrase",
+        "Answers both questions within 60 words",
+        "Invents no facts"
+      ]
+    }
+  ]
+}
