@@ -18,6 +18,12 @@
       "prompt": "I want to start documenting architecture decisions in my project. There's no ADR directory yet. The first real decision I want to record is that we chose Next.js with App Router over Remix and SvelteKit for our frontend because of the Vercel deployment story and the team's React experience.",
       "expected_output": "Should detect no ADR directory exists, ask where to create one (or suggest doc/adr/), create ADR 0001 as the standard 'Record architecture decisions' meta-ADR, then create ADR 0002 for the Next.js decision. If adr-tools available use 'adr init' + 'adr new', otherwise create files manually.",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Write an ADR for this. We moved the site theme out of the repo into a Composer package acme/acme_ds. Composer installs it at web/themes/custom/acme_ds. The switch happens via config import in drush deploy: core.extension and system.theme install acme_ds, set it default, uninstall acme_corporate. The old theme code stays for one release, then a cleanup release removes it. The release needs maintenance mode and a DB dump right before drush deploy, rollback means restoring the dump. For local work, `just ds-dev [branch]` swaps the locked package with a git clone, `just ds-build` builds it, `just ds-status` shows what is installed, `just ds-release` puts the archive back. Site glue (field formatters, theme helpers) goes into a separate package acme/acme_theme_support.",
+      "expected_output": "An ADR whose Context explains the forces (design system shared across sites, separate release cadence, design code mixed with site glue), whose Decision states the commitment (consume the design system as a versioned Composer package, keep site glue in modules outside the theme) with its boundaries, and whose Consequences describe lasting changes (theme changes need a package release and a constraint bump; code and config do not land together so a theme switch cannot be rolled back by redeploying code; local theme work happens against an installed package). The ADR must NOT contain the install path, the config file names, the drush deploy sequence, the maintenance mode or DB dump instruction, the one-release cleanup arrangement, or the just recipes. The skill should recognise those as procedures, ask what decision they implement, and offer to put them in a how-to that the ADR links to.",
+      "files": []
     }
   ]
 }

@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-19]
+
+### Changed
+
+- Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
+
+## [2026-10-12]
+
+### Changed
+
+- `adr-creator` skill: ADRs record why a decision was taken, never how to carry it out. Procedures, commands, release and rollback steps, install paths, implementation hook names, and temporary arrangements are now excluded from Context, Decision, and Consequences and routed to a how-to or runbook the ADR links to. Adds the "Runbook disguised as an ADR" anti-pattern, a durability section in the review checklist, and an eval that feeds a procedure-heavy prompt.
+- Upstream skill sync: refresh `angular/angular-developer` and `system/grilling` from the declared source repositories.
+
+## [2026-10-11]
+
+### Changed
+
+- `glab` no longer recommends the deprecated `--use-keyring` flag: keyring storage is the default, and agents are told never to pass `--insecure-storage`.
+
 ## [2026-10-05]
 
 ### Changed
