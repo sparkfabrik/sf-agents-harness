@@ -10,6 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.15.0.
 - Upstream skill sync: refresh `angular/angular-developer` and `system/githuman` from the declared source repositories.
 
 ## [2026-10-22]
