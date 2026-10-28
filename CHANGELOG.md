@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-10]
+
+### Changed
+
+- `drupal-qa` skill: commits go through the project's hooks, and skipping them, disabling GrumPHP tasks, lowering thresholds or adding a baseline needs the user's OK. On projects with a lowered QA bar, new and changed code meets the platform standard while untouched code stays as it is.
+
 ## [2026-11-09]
 
 ### Added

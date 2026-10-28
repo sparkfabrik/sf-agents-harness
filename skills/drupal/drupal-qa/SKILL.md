@@ -66,6 +66,20 @@ Only use suppressions in these specific cases:
 
 **ALWAYS ask the user first** before adding any suppression.
 
+### 6. Commit Through the Hooks
+Every commit runs the project's hooks (GrumPHP and any pre-commit checks): fix the failures until the hooks pass. Getting a commit through any other way needs the user's explicit OK first, exactly like a suppression. That covers:
+
+- `git commit --no-verify`
+- disabling GrumPHP or one of its tasks
+- lowering a tool's threshold or level
+- adding or regenerating a baseline
+
+### 7. Projects With a Lowered QA Bar
+Some projects run QA below the platform standard (a lower PHPStan level, tools turned off, a baseline) because their legacy code would not pass. In those projects:
+
+- **Code you write or change** meets the platform standard described in the `drupal-php-standards` skill, even where the project's QA would accept less.
+- **Code you don't touch** stays as it is, even in the same file, so the diff stays focused on the task. Clean it up only when the user asks, and list the violations you noticed as a follow-up.
+
 ## Workflow
 
 ### Step 1: Analyze QA Report
@@ -307,7 +321,9 @@ QA is complete when:
 
 1. ✅ `make drupal-qa` passes with 0 errors
 2. ✅ No suppressions added (or user explicitly approved them)
-3. ✅ Code is more maintainable than before
-4. ✅ All legitimate technical terms in dictionary
-5. ✅ Type safety improved with assertions
-6. ✅ Complex methods refactored into smaller pieces
+3. ✅ The commit ran through the hooks
+4. ✅ New and changed code meets the platform standard, even on projects with a lowered QA bar
+5. ✅ Code is more maintainable than before
+6. ✅ All legitimate technical terms in dictionary
+7. ✅ Type safety improved with assertions
+8. ✅ Complex methods refactored into smaller pieces
