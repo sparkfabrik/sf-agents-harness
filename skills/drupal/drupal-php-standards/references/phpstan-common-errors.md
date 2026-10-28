@@ -354,6 +354,9 @@ because the dot is unexpected syntax. Wrap it in double quotes:
  */
 ```
 
+Quoting an existing annotation is a syntax fix, not a new suppression. Adding a
+new suppression still needs the user's OK (see the `drupal-qa` skill).
+
 This applies to all PHPMD suppression annotations:
 - `@SuppressWarnings("PHPMD.CyclomaticComplexity")`
 - `@SuppressWarnings("PHPMD.NPathComplexity")`
