@@ -39,6 +39,9 @@ ZERO_ENUMS = ("REDUCE_NONE", "ALIGN_NONE")
 # Keys whose *empty object* value is meaningful widget content, not a
 # strippable default. blankView is intentionally NOT here: the API does not
 # preserve it (provider issue #15245), so keeping it in config would drift.
+# collapsibleGroup {} is kept by the API (verified with a validateOnly
+# create); stripping it leaves a title-only tile that overlaps its members,
+# which the API rejects as "contains overlapping tiles".
 MEANINGFUL_EMPTY_OBJECTS = (
     "blank",
     "sectionHeader",
@@ -46,6 +49,7 @@ MEANINGFUL_EMPTY_OBJECTS = (
     "logsPanel",
     "errorReportingPanel",
     "incidentList",
+    "collapsibleGroup",
 )
 
 # int64-format fields: the API returns them as JSON strings.

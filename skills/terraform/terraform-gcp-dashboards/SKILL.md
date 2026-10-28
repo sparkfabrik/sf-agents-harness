@@ -27,6 +27,10 @@ absent from **config** (`removeComputedKeys` in
   arrays/objects/strings, zero-value enums, `null`s, legacy fields) are NOT
   suppressed. Each one causes a perpetual diff. This is open provider issue
   hashicorp/terraform-provider-google#16173.
+- Exception: an empty object that selects the widget type, such as
+  `blank: {}`, `sectionHeader: {}` or `collapsibleGroup: {}`, is kept by the
+  API and must stay in config. See
+  [the full list](references/normalization-rules.md#empty-widget-objects-that-are-kept).
 
 **Golden rule: the committed JSON must never contain a value the API will
 omit from its response.** Anything the API adds on top is harmless.

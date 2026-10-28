@@ -70,6 +70,19 @@ From the v1 discovery document (35 enum fields total); the ones commonly hit:
 Rule of thumb: anything ending in `_UNSPECIFIED` or named `*_NONE` at enum
 position 0 gets dropped. Never write these; omit the key instead.
 
+### Empty widget objects that are kept
+
+An empty object is not always a default. When it selects the widget type, the
+API keeps it, and removing it changes the dashboard. Keep these as `{}`:
+`blank`, `sectionHeader`, `singleViewGroup`, `logsPanel`,
+`errorReportingPanel`, `incidentList`, `collapsibleGroup`.
+
+`collapsibleGroup` needs care: `{"collapsed": false}` is returned as
+`"collapsibleGroup": {}`. Drop `collapsed: false` but keep the empty object.
+Without it the group tile becomes a title-only widget that overlaps its member
+tiles, and the API rejects the dashboard with
+`Field mosaicLayout has an invalid value: contains overlapping tiles.`
+
 ## 3. Server-injected non-zero defaults
 
 Suppressed by provider >= 5.0.0. Safe to include in config (matching the API)
