@@ -25,14 +25,12 @@ The four tools and what they care about:
 | **PHPMD**   | Code complexity and design           | All rulesets except cleancode                                |
 | **CSpell**  | Spelling in identifiers and comments | en-US + Italian dictionary                                   |
 
-## Suppression Prohibition
+## Suppressions Need the User's OK
 
-**All forms of QA suppression are forbidden when writing code.**
+**Write code that passes QA without suppressions.** Add one of the following
+only after the user's explicit OK:
 
-This is not a preference — it is a hard constraint. Never emit any of the
-following:
-
-| Form                    | Example                                           | Forbidden because                          |
+| Form                    | Example                                           | Why it needs an OK                         |
 |-------------------------|---------------------------------------------------|--------------------------------------------|
 | PHPStan inline ignore   | `// @phpstan-ignore-next-line`                    | Masks a type or logic error                |
 | PHPStan scoped ignore   | `// @phpstan-ignore method.notFound`              | Same                                       |
@@ -41,22 +39,21 @@ following:
 | Global PHPStan baseline | `ignoreErrors:` entry in `phpstan.neon`           | Silently accepts broken types project-wide |
 
 > **Design principle:** if the code you are about to write would need a
-> suppression
-> annotation to pass QA, the code is wrong. Write it differently.
+> suppression annotation to pass QA, the code is wrong. Write it differently.
 
-Think through QA compliance before writing — not after. The sections below give
+Think through QA compliance before writing, not after. The sections below give
 you the patterns to do this.
 The `references/phpstan-common-errors.md` reference lists every frequent error
 class with a clean fix.
 
 **The only valid use of `@phpstan-param` / `@phpstan-return`** is for inherited
 Drupal core / contrib methods where you need to narrow types without conflicting
-with the parent docblock. This is type annotation, not suppression — see the
+with the parent docblock. This is type annotation, not suppression: see the
 patterns in `references/phpstan-common-errors.md` sections 6 and 12.
 
-If you reach a situation where you genuinely cannot write clean code that passes
-QA, **stop and tell the user**.
-See the `drupal-qa` skill for the exact protocol.
+If you cannot write clean code that passes QA, **stop and tell the user**, and
+add a suppression only if they approve it. See the `drupal-qa` skill for the
+report to give them.
 
 ## File Boilerplate
 
@@ -561,10 +558,10 @@ private function buildResult(array $data): mixed {
 | Short method name        | Minimum 2 characters                                                              |
 | Long class name          | Maximum 60 characters (subtracting Controller/Service/Interface/Manager suffixes) |
 | Short/Long variable name | **Not enforced** (excluded)                                                       |
-| CamelCase parameters     | **Not enforced by PHPMD** (excluded) — but snake_case is required (see below)     |
-| CamelCase variables      | **Not enforced by PHPMD** (excluded) — but snake_case is required (see below)     |
+| CamelCase parameters     | **Not enforced by PHPMD** (excluded), but snake_case is required (see below)      |
+| CamelCase variables      | **Not enforced by PHPMD** (excluded), but snake_case is required (see below)      |
 
-### Variable and Parameter Naming — snake_case Required
+### Variable and Parameter Naming: snake_case Required
 
 PHPMD does not enforce a naming convention for variables and parameters (the
 CamelCase rules are excluded). **This project requires snake_case** for:
@@ -572,11 +569,11 @@ CamelCase rules are excluded). **This project requires snake_case** for:
 - **Local variables**: `$my_variable`, `$node_ids`, `$field_value`
 - **Function and method parameters**: `$entity_type`, `$destination_property`
 
-**Class properties stay camelCase** — this includes constructor-promoted
+**Class properties stay camelCase**, including constructor-promoted
 properties injected via dependency injection:
 
 ```php
-// ✅ Correct — properties are camelCase, local vars and params are snake_case
+// ✅ Correct: properties are camelCase, local vars and params are snake_case
 final class NodeProcessor {
 
     public function __construct(
@@ -599,7 +596,7 @@ final class NodeProcessor {
 
 }
 
-// ❌ Wrong — camelCase local variables and parameters
+// ❌ Wrong: camelCase local variables and parameters
 final class NodeProcessor {
 
     public function process(string $bundleName, int $batchSize): void {
@@ -961,5 +958,5 @@ Before writing any PHP, mentally run through this list:
 20. Array params always typed — `array<array-key, mixed>` at minimum, not bare `array`
 21. `@SuppressWarnings("PHPMD.X")` with double quotes (not unquoted)
 22. Don't promote constructor params that are forwarded to `parent::__construct()`
-23. Local variables and parameters use `snake_case` — class properties stay
+23. Local variables and parameters use `snake_case`; class properties stay
     `camelCase`

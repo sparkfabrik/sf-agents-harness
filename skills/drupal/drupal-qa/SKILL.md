@@ -64,7 +64,23 @@ Only use suppressions in these specific cases:
 2. **Drupal core API limitations** - Framework constraints
 3. **False positives** - After confirming with user that it's truly a false positive
 
-**ALWAYS ask the user first** before adding any suppression.
+**ALWAYS ask the user first** before adding any suppression. When you have tried every fix pattern in this skill and still cannot resolve an error cleanly, stop and give the user this report:
+
+> **QA error I could not fix cleanly**
+>
+> **Tool:** [PHPCS | PHPMD | PHPStan | CSpell]
+> **Error:** [exact error message]
+> **File:** [path:line]
+>
+> **What I tried:** [each fix attempt]
+>
+> **Why it did not work:** [third-party code, Drupal core API contract, or suspected false positive, with the reasoning]
+>
+> **Proposed suppression:** [exact annotation and where it goes]
+
+Add the proposed suppression only after the user's explicit OK. A suspected false positive goes through the same report: present your reasoning and let the user decide.
+
+`@phpstan-param` / `@phpstan-return` on inherited Drupal core or contrib methods are type annotations, not suppressions, so they need no report (see Core Principle 2).
 
 ### 6. Commit Through the Hooks
 Every commit runs the project's hooks (GrumPHP and any pre-commit checks): fix the failures until the hooks pass. Getting a commit through any other way needs the user's explicit OK first, exactly like a suppression. That covers:

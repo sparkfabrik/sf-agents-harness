@@ -16,10 +16,10 @@ ALWAYS RUN A FULL QA CHECK WHEN IMPLEMENTATION IS COMPLETE! Use `make drupal-qa`
 issues, even those not introduced by your code. For implementation that impacts the web UI (both admin and frontend),
 check if they are working as expected in a real browser and that no new errors appear in the logs.
 
-NEVER add `@phpstan-ignore`, `@SuppressWarnings`, `// phpcs:ignore`, or any other suppression annotation to silence QA
-errors. If you cannot fix the root cause of a QA failure with a clean code change, STOP and explain the problem to the
-user. Suppressions are a deliberate human decision, never an automated fix. See the `drupal-php-standards` skill for
-write-time prevention and the `drupal-qa` skill for the full fix protocol and the last-resort notification procedure.
+Fix the root cause of every QA failure with a clean code change. A suppression annotation (`@phpstan-ignore`,
+`@SuppressWarnings`, `// phpcs:ignore`, a baseline entry) is the user's decision: if you cannot fix an error cleanly,
+STOP, explain the problem, and add a suppression only after the user's explicit OK. See the `drupal-php-standards` skill
+for write-time prevention and the `drupal-qa` skill for the fix protocol and the report to give the user.
 
 # Code Style and Standards
 Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and PHPCS for enforcement.
@@ -355,9 +355,9 @@ Key essentials:
 - Run all QA checks: `make drupal-qa`
 - Run individual tools: `make drupal-qa phpcs`, `make drupal-qa phpstan`, etc.
 - **NEVER** run QA tools from `bin/` directly — always use `make drupal-qa <tool>`
-- **NEVER** silence QA errors with suppression annotations — fix the root cause. See the
-  `drupal-php-standards` skill (write-time prevention) and `drupal-qa` skill (fix-time
-  remediation and last-resort user notification protocol).
+- **Fix the root cause** of QA errors; a suppression needs the user's explicit OK. See the
+  `drupal-php-standards` skill (write-time prevention) and the `drupal-qa` skill (fix-time
+  remediation and the report to give the user).
 
 # Advanced Development Patterns
 

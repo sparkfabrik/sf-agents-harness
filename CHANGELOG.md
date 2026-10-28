@@ -10,7 +10,9 @@ Changes are grouped by date.
 
 ### Changed
 
-- `drupal-qa` skill: commits go through the project's hooks, and skipping them, disabling GrumPHP tasks, lowering thresholds or adding a baseline needs the user's OK. On projects with a lowered QA bar, new and changed code meets the platform standard while untouched code stays as it is.
+- `drupal-qa` skill: commits go through the project's hooks, and skipping them, disabling GrumPHP tasks, lowering thresholds or adding a baseline needs the user's OK. On projects with a lowered QA bar, new and changed code meets the platform standard while untouched code stays as it is. An error the agent cannot fix cleanly ends in a standard report with the proposed suppression, added only after the user's OK.
+- `drupal-php-standards` skill: suppressions need the user's explicit OK, and local variables and parameters use `snake_case` while class properties stay `camelCase`.
+- `drupal-module-development` skill: points to the suppression rule in `drupal-php-standards` and `drupal-qa`.
 
 ## [2026-11-09]
 
