@@ -46,10 +46,11 @@ you the patterns to do this.
 The `references/phpstan-common-errors.md` reference lists every frequent error
 class with a clean fix.
 
-**The only valid use of `@phpstan-param` / `@phpstan-return`** is for inherited
-Drupal core / contrib methods where you need to narrow types without conflicting
-with the parent docblock. This is type annotation, not suppression: see the
-patterns in `references/phpstan-common-errors.md` sections 6 and 12.
+**`@phpstan-param` / `@phpstan-return` are type annotations, not suppressions.**
+Use them wherever PHPStan needs a more precise type than the native one: array
+shapes, and inherited Drupal core / contrib methods where a plain `@param` would
+conflict with the parent docblock. See `references/phpstan-common-errors.md`
+sections 1, 6 and 12.
 
 If you cannot write clean code that passes QA, **stop and tell the user**, and
 add a suppression only if they approve it. See the `drupal-qa` skill for the
@@ -490,8 +491,9 @@ final class MyAttribute extends AttributeBase {
 
 ### @SuppressWarnings Syntax
 
-When you need `@SuppressWarnings(PHPMD.UnusedFormalParameter)` in a docblock,
-always use double quotes around the value. Without quotes, PHPStan parses the
+When the user has approved a PHPMD suppression such as
+`@SuppressWarnings(PHPMD.UnusedFormalParameter)`, always use double quotes around
+the value. Without quotes, PHPStan parses the
 dot as unexpected syntax and reports `phpDoc.parseError`:
 
 ```php
@@ -626,9 +628,10 @@ final class NodeProcessor {
 
 - Unused local variables are flagged, **except** in foreach loops
 - Unused private methods and properties are flagged
-- Unused formal parameters: use `@SuppressWarnings("PHPMD.UnusedFormalParameter")`
-  only when the parameter is required by a hook or interface signature you cannot
-  change. This is the one suppression that is routinely acceptable.
+- Unused formal parameters: when a hook or interface signature you cannot change
+  requires the parameter, propose `@SuppressWarnings("PHPMD.UnusedFormalParameter")`
+  to the user. It is the suppression users approve most often, but it still needs
+  their OK.
 
 ---
 
@@ -956,7 +959,8 @@ Before writing any PHP, mentally run through this list:
 18. `\in_array($v, $arr, true)` — always pass strict `true` as third param
 19. No short ternary `?:` — use `??` or full ternary with explicit condition
 20. Array params always typed — `array<array-key, mixed>` at minimum, not bare `array`
-21. `@SuppressWarnings("PHPMD.X")` with double quotes (not unquoted)
+21. No suppression without the user's OK; an approved PHPMD one uses
+    `@SuppressWarnings("PHPMD.X")` with double quotes (not unquoted)
 22. Don't promote constructor params that are forwarded to `parent::__construct()`
 23. Local variables and parameters use `snake_case`; class properties stay
     `camelCase`

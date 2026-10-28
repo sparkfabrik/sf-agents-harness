@@ -80,7 +80,7 @@ Only use suppressions in these specific cases:
 
 Add the proposed suppression only after the user's explicit OK. A suspected false positive goes through the same report: present your reasoning and let the user decide.
 
-`@phpstan-param` / `@phpstan-return` on inherited Drupal core or contrib methods are type annotations, not suppressions, so they need no report (see Core Principle 2).
+`@phpstan-param` / `@phpstan-return` are type annotations, not suppressions, so they need no report (see Core Principle 2).
 
 ### 6. Commit Through the Hooks
 Every commit runs the project's hooks (GrumPHP and any pre-commit checks): fix the failures until the hooks pass. Getting a commit through any other way needs the user's explicit OK first, exactly like a suppression. That covers:
