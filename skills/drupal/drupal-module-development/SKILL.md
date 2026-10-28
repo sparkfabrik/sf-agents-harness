@@ -13,7 +13,8 @@ description: >-
 ALWAYS CLEAR CACHES AFTER ANY CODE CHANGE! Use `drush cr` or `drush cache:rebuild` to ensure you see the latest code in action.
 
 ALWAYS RUN A FULL QA CHECK WHEN IMPLEMENTATION IS COMPLETE! Use `make drupal-qa` to run all quality checks and fix any
-issues, even those not introduced by your code. For implementation that impacts the web UI (both admin and frontend),
+issues it reports, even those not introduced by your code. On projects with a lowered QA bar, the `drupal-qa` skill
+says which code to raise to the platform standard and which to leave as it is. For implementation that impacts the web UI (both admin and frontend),
 check if they are working as expected in a real browser and that no new errors appear in the logs.
 
 Fix the root cause of every QA failure with a clean code change. A suppression annotation (`@phpstan-ignore`,

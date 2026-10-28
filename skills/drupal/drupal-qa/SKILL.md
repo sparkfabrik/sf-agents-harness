@@ -94,7 +94,7 @@ Every commit runs the project's hooks (GrumPHP and any pre-commit checks): fix t
 Some projects run QA below the platform standard (a lower PHPStan level, tools turned off, a baseline) because their legacy code would not pass. In those projects:
 
 - **Code you write or change** meets the platform standard described in the `drupal-php-standards` skill, even where the project's QA would accept less.
-- **Code you don't touch** stays as it is, even in the same file, so the diff stays focused on the task. Clean it up only when the user asks, and list the violations you noticed as a follow-up.
+- **Code you don't touch** stays as it is, even in the same file, as long as the project's QA accepts it, so the diff stays focused on the task. Clean it up only when the user asks, and list the violations you noticed as a follow-up. A failure the project's own QA reports still has to be fixed for the commit to pass the hooks.
 
 ## Workflow
 
