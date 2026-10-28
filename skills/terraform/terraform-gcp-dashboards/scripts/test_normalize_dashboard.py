@@ -81,6 +81,14 @@ class NormalizeDashboardTest(unittest.TestCase):
             collapsible_dashboard({"collapsed": True}), "--check")
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
+    def test_empty_text_widget_is_kept(self):
+        data = collapsible_dashboard({})
+        data["mosaicLayout"]["tiles"][1]["widget"]["text"] = {"content": ""}
+        proc, written = self.run_script(data, "--write")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(written["mosaicLayout"]["tiles"][1]["widget"],
+                         {"title": "Notes", "text": {}})
+
 
 if __name__ == "__main__":
     unittest.main()

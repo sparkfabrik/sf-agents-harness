@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Fixed
 
-- `terraform-gcp-dashboards` skill: the normalizer keeps `"collapsibleGroup": {}` widgets instead of removing them, so dashboards with collapsible groups are no longer rejected for overlapping tiles. `collapsed: false` is still removed.
+- `terraform-gcp-dashboards` skill: the normalizer keeps empty `collapsibleGroup` and `text` widgets instead of removing them, so dashboards using them are no longer rejected by the API. `collapsed: false` is still removed.
 
 ## [2026-10-26]
 

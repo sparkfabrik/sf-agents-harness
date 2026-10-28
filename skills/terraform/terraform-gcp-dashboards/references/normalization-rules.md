@@ -75,7 +75,9 @@ position 0 gets dropped. Never write these; omit the key instead.
 An empty object is not always a default. When it selects the widget type, the
 API keeps it, and removing it changes the dashboard. Keep these as `{}`:
 `blank`, `sectionHeader`, `singleViewGroup`, `logsPanel`,
-`errorReportingPanel`, `incidentList`, `collapsibleGroup`.
+`errorReportingPanel`, `incidentList`, `collapsibleGroup`, `text`. A widget
+left with only a title is rejected with
+`Dashboard is missing required field mosaicLayout.tiles[0].widget.content.`
 
 `collapsibleGroup` needs care: `{"collapsed": false}` is returned as
 `"collapsibleGroup": {}`. Drop `collapsed: false` but keep the empty object.
