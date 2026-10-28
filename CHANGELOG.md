@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-28]
+
+### Fixed
+
+- `terraform-gcp-dashboards` skill: the normalizer keeps empty `collapsibleGroup` and `text` widgets instead of removing them, so dashboards using them are no longer rejected by the API. `collapsed: false` is still removed.
+
 ## [2026-10-26]
 
 ### Changed
