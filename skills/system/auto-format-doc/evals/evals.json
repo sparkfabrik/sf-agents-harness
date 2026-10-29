@@ -73,6 +73,18 @@
         "The agent reported the formatting status to the user",
         "The agent detected the platform (uname) to choose sjust or ajust"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "In Codex on Linux, format NOTES.md. `ajust format-md NOTES.md` failed because its npx command could not resolve registry.npmjs.org (EAI_AGAIN), and npm could not write logs under ~/.npm. What do you do next?",
+      "expected_output": "Retry the same ajust command with Codex sandbox escalation. If it succeeds, stop. If escalation is denied or unavailable, report the sandbox access limit and continue without repeating npx in the restricted sandbox.",
+      "files": [],
+      "expectations": [
+        "Retries `ajust format-md NOTES.md` with Codex sandbox escalation",
+        "Does not treat direct npx in the same sandbox as a fix for the access failure",
+        "Reports the access limit if escalation is denied or unavailable",
+        "Does not change the default Just-then-npx flow for agents other than Codex"
+      ]
     }
   ]
 }

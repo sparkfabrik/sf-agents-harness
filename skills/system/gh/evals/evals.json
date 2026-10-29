@@ -292,6 +292,19 @@
         "Does not need sf-writing-style to apply these writing rules",
         "Does not invent side effects, sample values, test cases, or reproduction results absent from the supplied facts"
       ]
+    },
+    {
+      "id": 21,
+      "prompt": "Review GitHub PR #15. In the Codex sandbox, `gh auth status` says the token is invalid, while `gh api user` says `error connecting to api.github.com`. The user says gh works in their terminal. What do you do before asking them to log in?",
+      "expected_output": "Treat the failed sandbox check as inconclusive, retry a read-only check with sandbox escalation, and continue with gh if that check succeeds. If escalation is denied, report the environment access limit without claiming the user is logged out.",
+      "files": [],
+      "assertions": [
+        "Does not treat the sandbox's invalid-token message as proof that the user's credential is invalid",
+        "Retries a read-only gh auth or API check with sandbox escalation before recommending login",
+        "Continues with gh using the required access if the retry succeeds",
+        "Does not print or copy credentials or use curl, WebFetch, or glab as an auth workaround",
+        "Reports an access limit rather than asking for login if escalation is unavailable or denied"
+      ]
     }
   ]
 }

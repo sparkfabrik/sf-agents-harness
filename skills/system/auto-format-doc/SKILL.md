@@ -49,8 +49,8 @@ fi
 
 ### Markdown (.md)
 
-Try the Just recipe first. If it fails for any reason (command not found,
-recipe missing, permission error), fall back to the `npx` equivalent:
+Try the Just recipe first. If it fails, follow [Error handling](#error-handling)
+before falling back to the `npx` equivalent:
 
 **Preferred (Just recipe):**
 
@@ -89,7 +89,7 @@ $JUST_CMD format-md README.md docs/setup.md CHANGELOG.md
 ### Checking without writing
 
 To verify whether files are correctly formatted without modifying them, use the
-check variant. Same try-then-fallback pattern:
+check variant. Use the same error-handling sequence as for formatting:
 
 **Preferred:**
 
@@ -109,6 +109,19 @@ committing to confirm everything is clean. It never writes to disk.
 
 ## Error handling
 
+In Codex only, inspect a failed Just recipe before trying direct `npx`. If the
+failure indicates sandbox-denied network or cache access (for example,
+`EAI_AGAIN` while contacting the npm registry, `operation not permitted`, or
+permission denied under `~/.npm`), rerun the same Just command with Codex sandbox
+escalation. This applies to both `format-md` and `format-md-check`, whether the
+platform uses `ajust` or `sjust`. If the retry succeeds, formatting is done. If
+escalation is unavailable or denied, report the access limit and continue the
+task; direct `npx` in the same sandbox has the same access problem.
+
+For other failures, including a missing Just command or recipe, try the direct
+`npx` fallback. In agents other than Codex, keep the existing Just-then-`npx`
+sequence for every failure.
+
 If both the Just recipe and the `npx` fallback fail (e.g., Node.js is not
 installed at all), **warn the user and continue**. Formatting is cosmetic -- a
 failure should not block the task.
@@ -121,8 +134,8 @@ Example warning:
 
 ## Rules summary
 
-1. After writing or editing any `.md` file, format it: try `$JUST_CMD format-md <path>` first, fall back to `npx --yes prettier@3 --write <path>` if it fails.
+1. After writing or editing any `.md` file, format it: try `$JUST_CMD format-md <path>` first. In Codex, retry sandbox access failures with escalation; otherwise fall back to `npx --yes prettier@3 --write <path>`.
 2. Always pass explicit file paths -- never run without arguments.
 3. Never format Markdown by hand -- delegate to the command.
-4. Always try the Just recipe first; only fall back to `npx` when it fails.
-5. If both methods fail, warn the user and move on.
+4. Always try the Just recipe first; use the `npx` fallback for non-sandbox failures, or for every failure outside Codex.
+5. If formatting remains unavailable, report the cause and move on.

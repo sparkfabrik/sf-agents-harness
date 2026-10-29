@@ -538,6 +538,19 @@
         "Explains the structural difference briefly",
         "Does not prepare or run `glab issue create` before the ambiguity is resolved"
       ]
+    },
+    {
+      "id": 37,
+      "prompt": "Inspect an issue on gitlab.sparkfabrik.com. Inside the Codex sandbox, `glab auth status` fails because it cannot read a keyring token: `dial unix /run/user/1000/bus: connect: operation not permitted`. The user says glab works in their terminal. What do you do before asking them to log in?",
+      "expected_output": "Treat the keyring error as a sandbox access failure, retry a read-only check for gitlab.sparkfabrik.com with sandbox escalation, and continue with glab if it succeeds. If escalation is denied, report the environment access limit without claiming the user is logged out.",
+      "files": [],
+      "assertions": [
+        "Checks authentication for the relevant GitLab host, not every configured host",
+        "Retries a read-only glab check with sandbox escalation before recommending login",
+        "Continues with glab using the required access if the retry succeeds",
+        "Does not print or copy credentials, use insecure storage, or switch to curl, WebFetch, or gh",
+        "Reports an access limit rather than asking for login if escalation is unavailable or denied"
+      ]
     }
   ]
 }
