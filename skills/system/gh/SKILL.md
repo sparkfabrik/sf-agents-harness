@@ -39,7 +39,7 @@ The lead sentence names the feature; the bullets name its parts. The description
 
 1. **Detect GitHub URLs**: if the user provided a URL containing "github.com", this is a GitHub resource. Extract the owner and repo from the URL and proceed with `gh` commands using `-R owner/repo`.
 2. **Confirm it's a GitHub project**: check `git remote -v` for "github" in the URL. If so, use `gh` (not `glab`).
-3. **Verify authentication**: run `gh auth status`. If not authenticated, **stop and ask the user** -- do not proceed.
+3. **Verify authentication**: run `gh auth status`. In Codex, target the host with `gh auth status --hostname <hostname>` (use `github.com` for GitHub.com), then follow [Handling auth errors](#handling-auth-errors) before deciding that the user needs to log in. In other agents, if not authenticated, stop and ask the user.
 
 ## CLI-first principle
 
@@ -65,9 +65,14 @@ Before running any `gh` command, determine the repository context:
 
 ## Handling auth errors
 
-If any `gh` command fails with "authentication", "401", "403", or "could not determine", **stop immediately**. Do NOT work around auth failures with WebFetch, curl, or `glab`.
+In Codex, an auth check that fails inside its sandbox does not establish that the user's login is invalid. Classify the failure before asking the user to log in. In other agents, stop on auth errors and offer the login options below.
 
-Present the user with these options:
+1. **Check for sandbox or connectivity errors.** Examples include `operation not permitted`, a denied keyring or credential-store socket, `error connecting to api.github.com`, DNS or proxy failures, and timeouts. `gh auth status` may say that a token is invalid when the API request could not connect. If the cause is unclear, run a read-only `gh api --hostname <hostname> user >/dev/null` check and inspect its error without printing credentials.
+2. **Retry with the access the CLI needs.** If the Codex sandbox may have blocked the keyring or network, request Codex sandbox escalation for that read-only check. The execution tool's normal approval policy still applies. If the check succeeds, the user is authenticated. Run each subsequent `gh` command in the normal sandbox first; request separate escalation only if that command needs it. A successful auth check does not authorize later writes. Do not copy tokens into environment variables, print them, or change credential storage.
+3. **Report access limits accurately.** If Codex sandbox escalation is unavailable or denied, explain that Codex could not reach the credential store or API. Do not call the user logged out or recommend another login based on that result. Do not switch to WebFetch, curl, or `glab`.
+4. **Handle confirmed failures.** If a check with working credential-store and network access returns `401` or reports an invalid credential, stop and offer the login options below. A `403` may mean insufficient permission for the requested operation; report that permission problem. For `could not determine`, verify the repository and host before treating it as an auth problem.
+
+When authentication is confirmed to be invalid, present the user with these options:
 
 ### Option 1: Browser login (preferred -- more secure, tokens auto-refresh)
 

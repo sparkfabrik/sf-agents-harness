@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-10-29]
+
+### Fixed
+
+- `gh` and `glab` skills: in Codex, distinguish sandbox access failures from invalid credentials before asking users to log in, and verify authentication for the relevant host.
+- `auto-format-doc` skill: in Codex, retry Markdown formatting with sandbox access when npm cannot reach the registry or write its cache.
+
+## [2026-10-28]
+
+### Fixed
+
+- `terraform-gcp-dashboards` skill: the normalizer keeps empty `collapsibleGroup` and `text` widgets instead of removing them, so dashboards using them are no longer rejected by the API. `collapsed: false` is still removed.
+
 ## [2026-10-26]
 
 ### Changed
