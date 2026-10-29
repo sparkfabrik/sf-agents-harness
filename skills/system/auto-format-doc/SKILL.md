@@ -112,8 +112,9 @@ committing to confirm everything is clean. It never writes to disk.
 In Codex only, inspect a failed Just recipe before trying direct `npx`. If the
 failure indicates sandbox-denied network or cache access (for example,
 `EAI_AGAIN` while contacting the npm registry, `operation not permitted`, or
-permission denied under `~/.npm`), rerun the same Just command with Codex sandbox
-escalation. This applies to both `format-md` and `format-md-check`, whether the
+permission denied under `~/.npm`), request Codex sandbox escalation for that
+specific Just command. The execution tool's normal approval policy still applies.
+This applies to both `format-md` and `format-md-check`, whether the
 platform uses `ajust` or `sjust`. If the retry succeeds, formatting is done. If
 escalation is unavailable or denied, report the access limit and continue the
 task; direct `npx` in the same sandbox has the same access problem.
