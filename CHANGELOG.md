@@ -10,6 +10,7 @@ Changes are grouped by date.
 
 ### Fixed
 
+- Scheduled OpenSpec update pull requests merge automatically again: the required `validate-and-check` check now runs on every pull request.
 - `gh` and `glab` skills: in Codex, distinguish sandbox access failures from invalid credentials before asking users to log in, and verify authentication for the relevant host.
 - `auto-format-doc` skill: in Codex, retry Markdown formatting with sandbox access when npm cannot reach the registry or write its cache.
 

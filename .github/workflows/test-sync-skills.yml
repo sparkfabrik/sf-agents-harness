@@ -1,15 +1,9 @@
 name: Test sync skills
 
 on:
+  # No path filter: `validate-and-check` is a required check on `main`, so it
+  # must report on every pull request or the merge stays blocked.
   pull_request:
-    paths:
-      - 'config/upstream-skills.json'
-      - 'config/upstream-skills.schema.json'
-      - 'config/catalog.json'
-      - 'config/catalog.schema.json'
-      - 'scripts/add-sync-changelog-entry.py'
-      - 'scripts/sync-skill.sh'
-      - 'skills/**'
   push:
     branches: [main]
     paths:
