@@ -45,12 +45,14 @@
     },
     {
       "name": "domain-modeling",
+      "category": "architecture",
       "repo": "mattpocock/skills",
       "ref": "main",
       "path": "skills/engineering/domain-modeling"
     },
     {
       "name": "grill-with-docs",
+      "category": "architecture",
       "repo": "mattpocock/skills",
       "ref": "main",
       "path": "skills/engineering/grill-with-docs"
