@@ -143,6 +143,44 @@
         "No colon setup that announces a sentence (a colon before a bulleted or numbered list is fine)",
         "No em or en dash"
       ]
+    },
+    {
+      "id": 9,
+      "name": "it-offer-sparkfabrik-sprawl",
+      "skill": "sf-writing-style",
+      "prompt": "Nella bozza dell'offerta per Cliente Esempio S.p.A. \"SparkFabrik\" compare troppe volte, quasi in ogni frase. Rivedi queste sezioni per togliere le ripetizioni inutili, senza cambiare i fatti e senza aggiungerne. Restituisci solo le sezioni riviste, in Markdown.\n\n### 3. Ruoli\n\n- **SparkFabrik:** conduce il pilota, prepara la baseline e affianca il team di Cliente Esempio nelle attività tecniche.\n- **A&D (Cliente Esempio):** approva i rilasci in produzione e decide sugli strumenti da adottare.\n\n### 4. Avvio\n\nCon il referente tecnico, SparkFabrik raccoglie l'elenco dei repository, gli strumenti AI in uso e i vincoli di sicurezza. Il pilota parte dalla migrazione dei repository scelti, con il supporto di SparkFabrik.\n\n### 5. Attività\n\nNella baseline SparkFabrik fa un audit degli strumenti AI in uso e delle loro configurazioni, e verifica quali impostazioni sono gestite centralmente. SparkFabrik aiuta poi a configurare l'esportazione della telemetria e a costruire cruscotti sui consumi.\n\nSparkFabrik aiuta il team a impostare una pipeline di CI che esegue test e controlli automatici su ogni modifica. SparkFabrik aiuta A&D a definire, e poi verificare in pipeline, cosa può andare in produzione. SparkFabrik valuta con A&D un gateway per l'accesso ai modelli.\n\n### 6. Formazione\n\nSparkFabrik forma referenti interni che seguono il team dopo il pilota.\n\n### 7. Esperienza SparkFabrik\n\nNell'ultimo anno tutta SparkFabrik è passata allo sviluppo assistito dall'AI. Il playbook di SparkFabrik descrive le pratiche adottate, e SparkFabrik è membro di CNCF.\n\n### 8. Avanzamento\n\nOgni settimana SparkFabrik fa il punto con il referente tecnico.",
+      "expected_output": "The same sections with SparkFabrik named in the roles, where it distinguishes roles, and in the experience section; elsewhere the activity, the client's team or an impersonal form is the subject, decisions keep A&D as owner, and no vague stand-in replaces the name.",
+      "files": [],
+      "assertions": [
+        "SparkFabrik appears at most 6 times",
+        "The roles section still names SparkFabrik and A&D with their responsibilities",
+        "The experience section still names SparkFabrik at least once",
+        "Does not replace SparkFabrik with a vague stand-in such as 'l'azienda', 'il fornitore' or 'il partner'",
+        "Decisions keep their owner: A&D still approves releases and takes part in the gateway evaluation",
+        "Does not move work from SparkFabrik to the client's team (for example 'il team configura l'esportazione' where SparkFabrik helped)",
+        "Keeps every supplied fact: repository list, AI tools and security constraints collected with the technical contact; migration of chosen repositories; audit of AI tools and configurations; centrally managed settings; telemetry export and consumption dashboards; CI pipeline with tests and automated checks; what can go to production defined and verified in the pipeline; gateway for model access; internal contacts trained; AI-assisted development across the company in the last year; playbook; CNCF membership; weekly check-in with the technical contact",
+        "Adds no fact that is not in the source",
+        "No first person plural (noi, nostro, verbs ending in -iamo)",
+        "No em or en dash"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "it-offer-draft-roles",
+      "skill": "sf-writing-style",
+      "prompt": "Scrivi le sezioni \"Ruoli\" e \"Attività\" di un'offerta per Comune di Esempio sulla migrazione a Kubernetes. Fatti: SparkFabrik guida il progetto e fornisce due platform engineer; il team IT del Comune gestisce i server attuali e approva i rilasci; si parte da un assessment dei 12 servizi in esercizio; poi si costruisce un cluster di staging; si migrano i servizi uno alla volta, con test di carico prima di ogni passaggio in produzione; il team IT riceve formazione su Helm e sul monitoraggio; ogni due settimane c'è una revisione con il responsabile IT. Solo le due sezioni, in Markdown, in italiano.",
+      "expected_output": "Two Italian sections: roles that name SparkFabrik and the IT team once with their responsibilities, then activities whose subjects are the activities or the IT team, with SparkFabrik named only where it distinguishes roles.",
+      "files": [],
+      "assertions": [
+        "SparkFabrik appears at most 3 times",
+        "The roles section names SparkFabrik and the IT team of the Comune with their responsibilities",
+        "The IT team stays the owner of release approval",
+        "Does not use a vague stand-in such as 'l'azienda', 'il fornitore' or 'il partner'",
+        "Keeps every supplied fact: two platform engineers; 12 services; assessment; staging cluster; one service at a time; load tests before each production step; training on Helm and monitoring; review every two weeks with the IT manager",
+        "Adds no fact that is not in the source",
+        "No first person plural (noi, nostro, verbs ending in -iamo)",
+        "No em or en dash"
+      ]
     }
   ]
 }

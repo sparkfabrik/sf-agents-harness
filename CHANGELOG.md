@@ -21,6 +21,7 @@ Changes are grouped by date.
 
 ### Fixed
 
+- `sf-writing-style` skill: documents for clients name SparkFabrik only where it distinguishes roles or carries credibility, keep the owner of each decision, and no longer replace the name with stand-ins such as "l'azienda".
 - `sf-writing-style` style check: detect English text without a `lang` key, treat front matter without `tipo`, `cliente` or `evento` as plain text, stop reading `us-east-1` and `US` as the first person, and print English suggestions for English documents.
 
 ## [2026-10-29]
