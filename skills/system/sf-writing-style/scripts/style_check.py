@@ -22,11 +22,13 @@ the user's positioning notes (pass only positioning and value sentences, never t
 --compare lists the numbers, names, links, quotes and hedges ("circa", "può", "about", "may") of the first file that
 the second no longer has: a rewrite must keep them all (exit code 1 when one is missing).
 
-The genre defaults to what the file is: plain text (a message, a description, a note) without front matter, a deck or
-a talk when it has `<!-- slide: -->` markers (a talk when it names an `evento`), a document when its front matter has
-`tipo`, else an offer. Plain text gets the tells and the banned phrases only: the first person is normal there.
-Without `lang` in the front matter, the language is guessed from the text. Issue and commit trailers (`Refs:`,
-`Closes:`, `Assisted-by:` …) and the AI attribution header are never read as prose.
+The genre defaults to what the file is: a deck or a talk when it has `<!-- slide: -->` markers (a talk when it names an
+`evento`), a document when its front matter has `tipo`, an offer when it names a `cliente`, a document when it names
+an `evento` only, else plain text (a message, a description, a README, a spec, an ADR, with or without front matter).
+Plain text gets the tells and the banned phrases only: the first person is normal there.
+
+The language is the front matter's `lang` when there is one, else the one whose common words the prose uses most.
+Issue and commit trailers (`Refs:`, `Closes:`, `Assisted-by:` …) and the AI attribution header are never read as prose.
 """
 import argparse
 import json
@@ -107,7 +109,8 @@ FIRST_PERSON = re.compile(r"\b(?:[a-zàèéìòù]+iamo|noi|nostr[oaie])\b", re.
 MARKETING = re.compile(r"\b(?:robust[oaie]|potent[ei]|rivoluzionari[oae]?|senza precedenti|di ultima generazione|"
                        r"best[- ]in[- ]class|chiavi in mano|valore aggiunto|eccellenz[ae]|game[- ]changer|next level|"
                        r"a tutto tondo|all'avanguardia|innovativ[oaie] e)\b", re.I)
-FIRST_PERSON_EN = re.compile(r"\b(?:we|our|ours|us|we're|we've|we'll)\b", re.I)
+# "us" only in lower case and not before a hyphen, so "US" and "us-east-1" are not read as the first person.
+FIRST_PERSON_EN = re.compile(r"\b(?:[Ww]e|WE|[Oo]urs?|OURS?)\b|\bus\b(?!-)")
 MARKETING_EN = re.compile(r"\b(?:robust|powerful|seamless(?:ly)?|cutting[- ]edge|best[- ]in[- ]class|state[- ]of[- ]the[- ]art|"
                           r"game[- ]changer|next[- ]level|world[- ]class|turnkey|revolutionary|unparalleled|holistic)\b", re.I)
 VOICE_MOVES = {
@@ -117,6 +120,18 @@ VOICE_MOVES = {
     'no_bold': "Sezione lunga senza grassetto: metti in grassetto le parole che chi scorre deve cogliere "
                "(il servizio, gli strumenti, i numeri con peso, il confine del perimetro), poche parole alla volta.",
 }
+VOICE_MOVES_EN = {
+    'first_person': "First person plural (we, our): make SparkFabrik the subject, or write the sentence impersonally "
+                    "(\"we propose a pilot\" becomes \"the proposal is a pilot\").",
+    'marketing': "Marketing word: say what the thing does, with a number and its source, or drop the adjective.",
+    'no_bold': "Long section without bold: bold the words a skimming reader must catch (the service, the tools, the "
+               "numbers with weight, the scope boundary), a few words at a time.",
+}
+# Common words of each language, used to tell the language of a text without `lang` in its front matter.
+COMMON_IT = frozenset("il lo la gli le di del della dei delle che è non per con una sono nel nella alla anche più come "
+                      "questo questa ma se ci si al".split())
+COMMON_EN = frozenset("the of and to is are that for with this not be was it as on by or from have has will can "
+                      "which an but".split())
 NO_BOLD_WORDS = 150
 RHYTHM_WORDS = 300
 ECHO_WORDS = 6
@@ -141,20 +156,6 @@ def front_matter(text):
 # header of the gh and glab skills.
 TRAILER = re.compile(r"^(?:>\s*:robot:|(?:refs|closes|fixes|resolves|related|part of|see also|assisted-by|co-authored-by|"
                      r"signed-off-by|reviewed-by)\s*:)", re.I)
-IT_WORDS = {'il', 'lo', 'la', 'gli', 'le', 'che', 'di', 'del', 'della', 'per', 'non', 'è', 'con', 'una', 'sono', 'nel',
-            'nella', 'delle', 'dei', 'anche', 'come', 'più', 'questo', 'questa'}
-EN_WORDS = {'the', 'and', 'of', 'to', 'is', 'with', 'for', 'that', 'this', 'are', 'it', 'on', 'be', 'from', 'by', 'an',
-            'as', 'when', 'which', 'not', 'now', 'instead'}
-
-
-def guess_lang(body):
-    """The language of a text without `lang` in its front matter, from its most common short words."""
-    words = re.findall(r"[a-zàèéìòù]+", body.lower())
-    it = sum(w in IT_WORDS for w in words)
-    en = sum(w in EN_WORDS for w in words)
-    return 'en' if en > it else 'it'
-
-
 def prose_markdown(body):
     """The text as the meter reads it: the `::: block attrs` and `:::` fences of sf-docs become blank lines, so a
     callout or a quote keeps its prose but its attributes are not read as a sentence."""
@@ -193,24 +194,24 @@ def voice(body, genre, lang='it'):
     if genre == 'text':
         return issues
     lines = voice_lines(body)
-    fp, mk = (FIRST_PERSON_EN, MARKETING_EN) if lang == 'en' else (FIRST_PERSON, MARKETING)
+    fp, mk, moves = (FIRST_PERSON_EN, MARKETING_EN, VOICE_MOVES_EN) if lang == 'en' else (FIRST_PERSON, MARKETING, VOICE_MOVES)
     for line in lines:
         text = line.strip()
         if not text:
             continue
         if genre != 'talk':
             for m in fp.finditer(text):
-                issues.append({'issue': 'first_person', 'word': m.group(0), 'text': text[:220], 'move': VOICE_MOVES['first_person']})
+                issues.append({'issue': 'first_person', 'word': m.group(0), 'text': text[:220], 'move': moves['first_person']})
                 break
         for m in mk.finditer(text):
-            issues.append({'issue': 'marketing', 'word': m.group(0), 'text': text[:220], 'move': VOICE_MOVES['marketing']})
+            issues.append({'issue': 'marketing', 'word': m.group(0), 'text': text[:220], 'move': moves['marketing']})
             break
     if genre in ('offer', 'doc'):
         section, words, bold = None, 0, False
 
         def close():
             if section and words >= NO_BOLD_WORDS and not bold:
-                issues.append({'issue': 'no_bold', 'word': '', 'text': section, 'move': VOICE_MOVES['no_bold']})
+                issues.append({'issue': 'no_bold', 'word': '', 'text': section, 'move': moves['no_bold']})
         for line in lines:
             s = line.strip()
             if re.match(r'^#{1,3} ', s):
@@ -270,9 +271,8 @@ def brief_echo(md, brief):
 def check(text, genre=None, brief=None):
     meta, body = front_matter(text)
     genre = genre or guess_genre(meta, body)
-    lang = (meta.get('lang') or guess_lang(body)).lower()[:2]
-    lang = 'en' if lang == 'en' else 'it'
     md = prose_markdown(body)
+    lang = guess_lang(meta, md)
     advice = {'rhythm': [], 'brief_echo': brief_echo(md, brief) if brief else []}
     if lang == 'en':
         banned = [{'phrases': list(h.phrases), 'sentence': h.excerpt.strip()} for h in sm.find_phrases(md, BANNED_EN)]
@@ -293,16 +293,23 @@ def check(text, genre=None, brief=None):
             'tells': tells, 'banned': banned, 'voice': voice(body, genre), 'advice': advice}
 
 
+def guess_lang(meta, md):
+    if meta.get('lang'):
+        return 'en' if meta['lang'].lower().startswith('en') else 'it'
+    words = re.findall(r"[a-zàèéìòù]+", md.lower())
+    return 'en' if sum(w in COMMON_EN for w in words) > sum(w in COMMON_IT for w in words) else 'it'
+
+
 def guess_genre(meta, body=''):
-    if not meta and '<!-- slide:' not in body:
-        return 'text'
     if '<!-- slide:' in body:
         return 'talk' if (meta.get('evento') or '<!-- slide: talk' in body) else 'deck'
     if meta.get('tipo'):
         return 'doc'
     if meta.get('cliente'):
         return 'offer'
-    return 'doc'
+    if meta.get('evento'):
+        return 'doc'
+    return 'text'
 
 
 HEDGES = re.compile(r"\b(?:circa|spesso|può|possono|potrebbe|potrebbero|forse|indicativ[oaie]|stimat[oaie]|fino a|"

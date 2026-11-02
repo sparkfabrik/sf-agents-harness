@@ -1,15 +1,16 @@
 # SparkFabrik's voice
 
-How every SparkFabrik text sounds, in Italian and in English: a Slack message, an MR,
-a README, an offer, a study, a deck, a talk. The rules of the skill say how a text is
-built; this file says who is talking, which patterns make a text read as
-machine-written, and how to check a draft before it goes out. The website has its own
+How a document SparkFabrik sends to a client sounds, in Italian and in English: an
+offer, a study, a report, a handover, a deck, a talk. The `sf-writing-style` skill says
+how every text is built and lists the patterns to avoid in any text; this file adds who
+is talking in a document for a client, the patterns with Italian examples, the evidence
+a claim needs, and the length and formatting of a document. The website has its own
 voice (the `sf-copy` skill of the site repository) and is not covered here.
 
 The tells and the banned openers come from SparkFabrik's editorial pipeline, measured on
 266 Italian texts written by people. The largest gain there came from removing
-instructions that asked for these patterns, not from adding new ones: never ask a
-draft for hooks, rhetorical questions, "non è X, è Y" or closing one-liners. The core
+instructions that asked for these patterns. Never ask a draft for hooks, rhetorical
+questions, "non è X, è Y" or closing one-liners. The core
 voice, the evidence rules and the glossary come from the tone-of-voice guide of the
 same pipeline, built from the site; the vocabulary is in [glossary.md](glossary.md).
 
@@ -23,21 +24,19 @@ production systems, responsibilities and business outcomes, from three perspecti
 - **Technical adviser**: help the reader weigh alternatives against their workloads,
   skills, budget and obligations.
 - **Open-source contributor**: participation, maintenance, funding and shared standards
-  are engineering commitments, not decoration.
+  count as engineering commitments.
 
-The register is semi-formal and technically literate: readable by a CTO, CIO or
-engineering manager, detailed enough for the developers and platform engineers who will
-do the work. Prefer concrete verbs (configurare, rilasciare, verificare, misurare,
+The register is semi-formal and technically literate. A CTO, CIO or engineering manager
+can read it, and it is detailed enough for the developers and platform engineers who
+will do the work. Prefer concrete verbs (configurare, rilasciare, verificare, misurare,
 versionare; configure, deploy, validate, measure, version). The tone is professional,
-pragmatic and confidently explanatory: urgency comes from an identified risk, a support
+pragmatic and confidently explanatory. Urgency comes from an identified risk, a support
 deadline or an obligation; limitations are said without alarm; the people and the
 organisation are part of the picture. The reader is a capable professional deciding
 under constraints, never someone to persuade or to correct.
 
 ## Who is talking
 
-- **Messages, MRs, notes, READMEs.** The author or the team, in the first person when
-  it is natural ("abbiamo rilasciato", "we moved the job").
 - **Documents for clients** (offers, studies, reports, handovers, decks): SparkFabrik in
   the third person, or no subject at all. Never "noi", "facciamo", "proponiamo", "il
   nostro team", "we", "our".
@@ -47,6 +46,25 @@ under constraints, never someone to persuade or to correct.
   - Headings too: `Cosa proponiamo` becomes `La proposta`, `Cosa abbiamo realizzato` becomes `Attività svolte`.
   - The client by name, never "voi" or "il Cliente" in running prose (the terms and
     conditions keep their legal form).
+  - **Name SparkFabrik only where it distinguishes roles or carries credibility**: the
+    roles, the scope, the opening of a phase, experience and memberships. Once the roles
+    are set, the subject is the activity (`la baseline`, `l'audit`), the client's team,
+    or an impersonal form. Repeating the name in every paragraph adds no information.
+    - `SparkFabrik verifica i backup ogni mese.` becomes `I backup sono verificati ogni mese.`
+    - `SparkFabrik aiuta il team a migrare i database.` becomes `La migrazione dei database avviene in affiancamento al team.`
+  - **In Italian, keep the actor with an implied subject.** Once a paragraph names
+    SparkFabrik, the next sentences can leave the subject implied: `SparkFabrik conduce
+l'audit degli strumenti. Affianca poi il team nella configurazione della telemetria.`
+    Prefer it to a passive or "si" when SparkFabrik does the work, because a passive
+    hides who acts. Use the passive or "si" when the doer does not matter.
+  - **Never move work from one party to another** to drop the name. When SparkFabrik
+    does or shares the work, make the activity the subject ("la migrazione avviene in
+    affiancamento"), not the client's team ("il team migra"), which would change who
+    does it.
+  - **Never swap the name for a vague stand-in** such as "l'azienda" or "il fornitore": a
+    reader can take it for the client. Use the name, or rephrase without a subject.
+  - **A decision keeps its owner.** Approvals, the choice of a vendor or a tool, and
+    budget name who decides, because an impersonal form ("si valuta") hides it.
 - **Talks.** The speaker in the first person singular, as a practitioner ("ho
   costruito", "I changed my mind"). The slides themselves stay impersonal.
 - **Words a client or a source said** stay as they were said, in a quote block.
@@ -74,13 +92,20 @@ under constraints, never someone to persuade or to correct.
   Measured results stay apart from forecasts, estimates and targets.
 - **Statistics carry source, date and scope**, and time-sensitive facts (versions,
   support status, regulatory dates) are verified before they are written.
-- **No broad guarantees** of security, compliance, savings or independence: the outcome
+- **No broad guarantees** of security, compliance, savings or independence. The outcome
   depends on scope, implementation and operation, so say which.
+- **No slogans in place of a mechanism.** A motto built on absolute words (niente,
+  ogni, sempre, nothing, every, always) or on a metaphor promises instead of describing.
+  Say who does what, with which tool, at which step.
+  - No: `Nessun rilascio avviene senza controlli.` Yes: `Le merge request eseguono i test della pipeline e richiedono l'approvazione di una persona del team prima del rilascio.`
+  - No: `Il codice smette di essere una scatola nera.` Yes: `I log e le metriche dei servizi sono raccolti in Grafana, con un cruscotto per ogni ambiente.`
 - **Business terms get their concrete basis.** Scalability, resilience, time-to-market,
   cost, productivity: name the observable consequence (see [glossary.md](glossary.md)).
-- **Name the actor** of every action (the provider, the platform team, the maintainer,
-  the client) and make causes explicit. A useful order is the mechanism, then its
-  operational effect, then the business consequence.
+- **Make responsibilities clear once.** Say who does what where the roles are set (the
+  provider, the platform team, the maintainer, the client); after that, name an actor
+  again only where it changes or two actors could be confused. Make causes explicit. A
+  useful order is the mechanism, then its operational effect, then the business
+  consequence.
 - **Trust comes from** named components and responsibilities, clear mechanisms,
   documented contributions and outcomes, explicit prerequisites and limits, and realistic
   trade-offs. For AI, include permissions, data handling, evaluation and human oversight
@@ -98,6 +123,7 @@ number or example.
 - No: `Il team conosce la piattaforma e la gestisce con cura. Sono basi su cui costruire, non da rifare.`
 - Yes: `Il team conosce la piattaforma e la gestisce con cura. Le immagini sono ripetibili e i rilasci passano da una revisione a due persone, quindi il lavoro parte da quello che c'è.`
 - No: `The pipeline runs in four minutes. Speed is a feature.`
+- Yes: `The pipeline runs in four minutes, so a fix reaches staging before the review starts.`
 
 **2. Talking about the text** (meta-discorso). "In questo documento", "come abbiamo
 visto", "vediamo", "il punto è"; "In this document", "As we have seen", "Let's dive
@@ -229,12 +255,13 @@ writing, never decoration.
 A rewrite changes how a sentence is built, never what it says. Prices, amounts,
 numbers, dates, durations, names of people, clients and products, quoted text, links
 and hedges ("circa", "spesso", "può", "forse", "indicativo", "about", "may",
-"likely") stay identical: rewrites drift towards false certainty, which turns an
+"likely") stay identical, because rewrites drift towards false certainty and turn an
 estimate into a promise.
 
-## The check
+## The check (sf-docs)
 
-Run it on the finished Markdown, before a document is rendered or a long text is sent:
+The sf-docs skills run it on the finished Markdown, before a document is rendered.
+Outside sf-docs the patterns above guide the writing and the check is not run:
 
 ```bash
 python3 <skill-dir>/scripts/style_check.py <file>.md
@@ -246,8 +273,8 @@ for documents the first person plural, marketing words and long sections without
 (exit code 1); or "Nothing to rewrite." (exit code 0). On long prose it also gives
 advice on rhythm, which never blocks. Then:
 
-1. Rewrite only the sentences it printed, following the move next to each, with the
-   strongest writing model available. Leave every other sentence as it is.
+1. Rewrite only the sentences it printed, following the move next to each. Leave every
+   other sentence as it is.
 2. Compare the draft before and after the rewrite. It lists every number, name, link,
    quote and hedge that is missing after; put the original sentence back for each and
    rewrite it again:
@@ -257,22 +284,22 @@ advice on rhythm, which never blocks. Then:
    ```
 
 3. Run the check again. A colon that introduces a real list, or a sentence the user
-   wrote and wants as it is, may stay: say so to the user instead of forcing a rewrite.
+   wrote and wants as it is, may stay. Say so to the user instead of forcing a rewrite.
 
 With `--brief notes.md` it also reports, as advice, the sentences that copy six or
 more words in a row from the user's positioning notes: a motto pasted instead of
 explained. Pass only positioning and value sentences, never the client's requirements
 or scope, whose wording an offer should mirror.
 
-The check is a writing aid: never mention it, or this procedure, in the text itself.
+The check is a writing aid. Never mention it, or this procedure, in the text itself.
 
 ## Reviewing a draft
 
 When a skill asks for a review pass (a second reader, a self-review):
 
-- **Counting the tells is the check's job.** The reviewer never reports them and never
-  rewards them: "engaging questions", "smooth transitions" and "punchy closings" are
-  defects, not qualities.
+- **Where the check runs, counting the tells is its job.** The reviewer never reports
+  them there; elsewhere, report a tell only when the text leans on it. Never reward
+  them. "Engaging questions", "smooth transitions" and "punchy closings" are defects.
 - **Look for what the check cannot see**: a passage that repeats without adding
   anything (relevance), an empty claim (density), a fact without a source, a section
   the client does not need to decide.

@@ -11,12 +11,19 @@ Changes are grouped by date.
 ### Added
 
 - `sf-writing-style` skill: SparkFabrik's voice in Italian and English (core voice, who is talking, facts and evidence, the tells of machine-written text, banned openers, length and formatting of documents for clients) and a glossary of SparkFabrik's vocabulary, with a check script that prints each sentence to rewrite and verifies that a rewrite keeps every fact.
+- `sf-writing-style` skill: eval cases for voice and register, including two rejected sections of a client document.
 
 ### Changed
 
 - `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason from the issue, the conversation or the author and never inferred from the diff, and medium or complex changes say where a reviewer should look first. The style check guesses the language of a text without front matter and ignores trailers such as `Refs:`.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
 - Upstream skill sync: refresh `angular/angular-developer`, `system/grilling`, and `system/playwright-cli` from the declared source repositories.
+- `sf-writing-style` skill: describes how SparkFabrik sounds for each kind of reader, in English and Italian, and lists the patterns of machine-written text (including slogans in place of a mechanism) as writing guidance for every text; the voice and glossary references apply to documents for clients only, and the style check is no longer required outside the `sf-docs` plugin.
+
+### Fixed
+
+- `sf-writing-style` skill: documents for clients name SparkFabrik only where it distinguishes roles or carries credibility, keep the owner of each decision, and no longer replace the name with stand-ins such as "l'azienda".
+- `sf-writing-style` style check: detect English text without a `lang` key, treat front matter without `tipo`, `cliente` or `evento` as plain text, stop reading `us-east-1` and `US` as the first person, and print English suggestions for English documents.
 
 ## [2026-10-29]
 
