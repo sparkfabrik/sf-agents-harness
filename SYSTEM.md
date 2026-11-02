@@ -54,7 +54,7 @@ When adding or modifying a system skill or agent, update the catalog entry too.
 - **glab** -- GitLab CLI skill for working with issues, merge requests, CI/CD pipelines, and repositories via the `glab` CLI.
 - **gh** -- GitHub CLI skill for working with issues, pull requests, Actions workflows, releases, and repositories via the `gh` CLI.
 - **playwright-cli** -- Browser automation with the `playwright-cli` CLI tool for web testing, screenshots, form filling, and data extraction. Synced from [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli) with custom output file conventions.
-- **skill-creator** -- Create, iterate, and benchmark agent skills with eval-driven workflows. Synced from [anthropics/skills](https://github.com/anthropics/skills) with custom tool-agnostic usage guidance.
+- **skill-creator** -- Create, iterate, and benchmark agent skills with eval-driven workflows. Vendored from [anthropics/skills](https://github.com/anthropics/skills) with cost limits and tool-agnostic usage guidance.
 - **doc-coauthoring** -- Structured workflow for co-authoring documentation, proposals, and technical specs. Synced from [anthropics/skills](https://github.com/anthropics/skills).
 - **grilling** -- Stress-test a plan, decision, or idea through rounds of design-tree questions. Synced from [mattpocock/skills](https://github.com/mattpocock/skills).
 - **grill-me** -- Explicit entry point that starts a `grilling` session to sharpen a plan or design. Synced from [mattpocock/skills](https://github.com/mattpocock/skills).

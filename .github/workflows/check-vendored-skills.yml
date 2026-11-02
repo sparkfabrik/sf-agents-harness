@@ -1,0 +1,51 @@
+name: Check vendored skills
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Open an issue for new upstream changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jq -c '.skills[]' config/vendored-skills.json | while read -r skill; do
+            name=$(jq -r '.name' <<<"$skill")
+            repo=$(jq -r '.repo' <<<"$skill")
+            ref=$(jq -r '.ref' <<<"$skill")
+            path=$(jq -r '.path' <<<"$skill")
+            base=$(jq -r '.base_sha' <<<"$skill")
+
+            latest=$(gh api "repos/${repo}/commits?sha=${ref}&path=${path}&per_page=1" --jq '.[0].sha')
+            if [[ "$latest" == "$base" ]]; then
+              echo "${name}: no upstream changes since ${base}"
+              continue
+            fi
+
+            title="Upstream changes for vendored skill ${name}"
+            existing=$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq length)
+            if [[ "$existing" -gt 0 ]]; then
+              echo "${name}: issue already open"
+              continue
+            fi
+
+            gh issue create --title "$title" --body "$(cat <<BODY
+          \`${repo}/${path}\` changed upstream since the vendored base commit.
+
+          **Review the changes:** https://github.com/${repo}/compare/${base}...${latest}
+
+          Backport what is useful into \`skills/system/${name}/\`, update its \`UPSTREAM.md\`, and set \`base_sha\` in \`config/vendored-skills.json\` to \`${latest}\`.
+          BODY
+          )"
+          done

@@ -230,6 +230,17 @@ Example entry:
 When `frontmatter_overrides` is omitted, the upstream SKILL.md frontmatter is
 used as-is.
 
+### Vendored skills
+
+A vendored skill started from an upstream copy but is edited in this repository
+and never overwritten by the sync. `config/vendored-skills.json` records its
+source repo, path, and the upstream commit it is based on (`base_sha`). Each
+vendored skill has an `UPSTREAM.md` listing its local changes.
+
+`.github/workflows/check-vendored-skills.yml` runs every Monday and opens an issue
+when the upstream path has new commits. Backport what is useful by hand, update
+`UPSTREAM.md`, and set `base_sha` to the reviewed upstream commit.
+
 ## OpenSpec Generated Files
 
 This repository uses OpenSpec for its own spec-driven workflow. The commands and
