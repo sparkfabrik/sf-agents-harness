@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-02",
+  "model": "claude-opus-5-5",
+  "method": "claude -p with tools limited to Read and skill discovery disabled; SKILL.md supplied as the system prompt and the references readable from the working directory. with_skill is this revision, old_skill is the skill on main after PR #211. Each draft was graded blind against the assertions in voice.json by a separate claude -p call, with word limits and dashes checked by script, and a blind A/B judge picked the better draft per pair.",
+  "iterations": {
+    "1": {
+      "runs_per_case": 1,
+      "assertions_passed": {
+        "with_skill": "49/52",
+        "old_skill": "49/52"
+      },
+      "blind_pairwise_wins": {
+        "with_skill": 4,
+        "old_skill": 4,
+        "tie": 0
+      },
+      "per_case": {
+        "en-client-incident-email": {
+          "old_skill": "7/7",
+          "with_skill": "7/7"
+        },
+        "en-pr-export": {
+          "old_skill": "6/6",
+          "with_skill": "6/6"
+        },
+        "en-readme-internal-deploy": {
+          "old_skill": "5/6",
+          "with_skill": "5/6"
+        },
+        "en-upstream-drupal-comment": {
+          "old_skill": "6/6",
+          "with_skill": "6/6"
+        },
+        "it-offer-context-harness": {
+          "old_skill": "6/7",
+          "with_skill": "6/7"
+        },
+        "it-offer-draft-monitoring": {
+          "old_skill": "7/7",
+          "with_skill": "7/7"
+        },
+        "it-offer-review-delivery": {
+          "old_skill": "5/6",
+          "with_skill": "5/6"
+        },
+        "it-slack-colleague": {
+          "old_skill": "7/7",
+          "with_skill": "7/7"
+        }
+      },
+      "note": "First draft of the revision; assertions were not discriminating."
+    },
+    "2": {
+      "runs_per_case": 2,
+      "assertions_passed": {
+        "with_skill": "112/122",
+        "old_skill": "106/122"
+      },
+      "blind_pairwise_wins": {
+        "with_skill": 11,
+        "old_skill": 5,
+        "tie": 0
+      },
+      "per_case": {
+        "en-client-incident-email": {
+          "old_skill": "13/14",
+          "with_skill": "11/14"
+        },
+        "en-pr-export": {
+          "old_skill": "13/14",
+          "with_skill": "14/14"
+        },
+        "en-readme-internal-deploy": {
+          "old_skill": "13/14",
+          "with_skill": "12/14"
+        },
+        "en-upstream-drupal-comment": {
+          "old_skill": "13/14",
+          "with_skill": "14/14"
+        },
+        "it-offer-context-harness": {
+          "old_skill": "13/16",
+          "with_skill": "15/16"
+        },
+        "it-offer-draft-monitoring": {
+          "old_skill": "15/18",
+          "with_skill": "17/18"
+        },
+        "it-offer-review-delivery": {
+          "old_skill": "10/16",
+          "with_skill": "13/16"
+        },
+        "it-slack-colleague": {
+          "old_skill": "16/16",
+          "with_skill": "16/16"
+        }
+      },
+      "note": "Added: use only supplied facts, colon setup before inline lists, process as subject. Sharper assertions."
+    },
+    "3": {
+      "runs_per_case": 2,
+      "assertions_passed": {
+        "with_skill": "117/124",
+        "old_skill": "113/124"
+      },
+      "blind_pairwise_wins": {
+        "with_skill": 11,
+        "old_skill": 5,
+        "tie": 0
+      },
+      "per_case": {
+        "en-client-incident-email": {
+          "old_skill": "14/16",
+          "with_skill": "16/16"
+        },
+        "en-pr-export": {
+          "old_skill": "14/14",
+          "with_skill": "13/14"
+        },
+        "en-readme-internal-deploy": {
+          "old_skill": "14/14",
+          "with_skill": "14/14"
+        },
+        "en-upstream-drupal-comment": {
+          "old_skill": "12/14",
+          "with_skill": "14/14"
+        },
+        "it-offer-context-harness": {
+          "old_skill": "14/16",
+          "with_skill": "14/16"
+        },
+        "it-offer-draft-monitoring": {
+          "old_skill": "18/18",
+          "with_skill": "18/18"
+        },
+        "it-offer-review-delivery": {
+          "old_skill": "12/16",
+          "with_skill": "12/16"
+        },
+        "it-slack-colleague": {
+          "old_skill": "15/16",
+          "with_skill": "16/16"
+        }
+      },
+      "note": "Final. Incident row no longer invites invented commitments; assertions fixed for label items and channel names."
+    }
+  },
+  "limits": [
+    "Two samples per case and version; results do not establish a reliable success rate.",
+    "Managed SparkFabrik settings were loaded in every run, for both versions.",
+    "The first screenshot case (it-offer-review-delivery) still opens with \"Ogni modifica\" in both versions: the slogan is gone, the universal opener is not.",
+    "The grader is a model; one assertion (\"SparkFabrik is not the subject of more than one sentence\") conflicts with naming the actor and stays strict on purpose."
+  ],
+  "samples_iteration_3_run_1": {
+    "it-offer-review-delivery": {
+      "with_skill": "### 5.4 Review, test e delivery\n\nOgni modifica, scritta a mano o con l'AI, passa da **test**, **controlli automatici** e **review**. Il rilascio in **produzione** avviene dopo questi controlli e richiede l'**approvazione di A&D**.",
+      "old_skill": "### 5.4 Review, test e delivery\n\nOgni modifica, scritta a mano o con l'AI, passa da **test**, **controlli automatici** e **review** prima di arrivare in produzione. Il rilascio in **produzione** richiede inoltre l'**approvazione di A&D**."
+    },
+    "it-offer-context-harness": {
+      "with_skill": "### 5.2 Contesto, specifiche e harness\n\nIl file `AGENTS.md`, nel repository, descrive **architettura, convenzioni, comandi, test e aree protette** del progetto e vale per ogni strumento. Le scelte architetturali sono registrate come **ADR** (Architecture Decision Record).\n\nSparkFabrik costruisce o adatta **skill e plugin** per le attività di sviluppo ricorrenti. Il team ne mantiene un **catalogo versionato**. Per ridurre i **consumi non necessari**, il lavoro riguarda la gestione del contesto, la scelta del modello e l'organizzazione delle sessioni.\n\nLa **telemetria** misura anche gli interventi sull'harness. I consumi sono confrontati su attività comparabili, e si verifica che l'ottimizzazione conservi la qualità del risultato.\n\nPer il pilota SparkFabrik consegna un **pacchetto harness** che contiene:\n\n- il playbook;\n- il profilo organizzativo;\n- le istruzioni di installazione.",
+      "old_skill": "### 5.2 Contesto, specifiche e harness\n\nArchitettura, convenzioni, comandi, test e aree protette del progetto sono scritti nel repository, in **`AGENTS.md`**, invece di restare nella memoria delle persone. Il file vale per ogni strumento, e le scelte architetturali sono registrate come **ADR**.\n\nSparkFabrik costruisce o adatta **skill e plugin** per le attività di sviluppo ricorrenti. Le skill e i plugin sono raccolti in un **catalogo versionato** che il team mantiene. Il lavoro su **contesto, scelta del modello e sessioni** ha l'obiettivo di ridurre i consumi non necessari.\n\nLa **telemetria** misura anche gli interventi sull'harness. I consumi vengono confrontati su attività comparabili, e una verifica controlla che l'ottimizzazione conservi la qualità del risultato. Per il pilota SparkFabrik consegna un **pacchetto harness** con playbook, profilo organizzativo e istruzioni di installazione."
+    }
+  },
+  "skill_sha256": {
+    "SKILL.md": "4b0a4cec63b0d5fb72b099b14e56c60d0954ee5d09f77687cf04f3f039c9865f",
+    "references/voice.md": "b0499de5103c196419b05ea006df106632f87c3bdda99fa6fb934415013383ff"
+  }
+}
