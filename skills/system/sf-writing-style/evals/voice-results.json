@@ -164,5 +164,146 @@
   "skill_sha256": {
     "SKILL.md": "4b0a4cec63b0d5fb72b099b14e56c60d0954ee5d09f77687cf04f3f039c9865f",
     "references/voice.md": "b0499de5103c196419b05ea006df106632f87c3bdda99fa6fb934415013383ff"
+  },
+  "sparkfabrik_naming": {
+    "date": "2026-11-02",
+    "model": "claude-opus-5-5",
+    "goal": "Name SparkFabrik in documents for clients only where it distinguishes roles or carries credibility, without stand-ins such as \"l'azienda\" and without moving work to the client.",
+    "method": "Same harness as the voice iterations. old_skill is the skill on main after PR #213. The source of the sprawl case names SparkFabrik 14 times. The blind A/B judge was made neutral on naming after iteration 1, because it rewarded naming the actor in every sentence.",
+    "iterations": {
+      "1": {
+        "runs_per_case": 2,
+        "cases": "all 10",
+        "assertions_passed": {
+          "with_skill": "151/158",
+          "old_skill": "148/158"
+        },
+        "blind_pairwise_wins": {
+          "with_skill": 7,
+          "old_skill": 11,
+          "tie": 2
+        },
+        "sparkfabrik_count_in_sprawl_case": {
+          "with_skill": [6, 6],
+          "old_skill": [5, 8]
+        },
+        "per_case": {
+          "en-client-incident-email": {
+            "old_skill": "15/16",
+            "with_skill": "12/16"
+          },
+          "en-pr-export": {
+            "old_skill": "13/14",
+            "with_skill": "14/14"
+          },
+          "en-readme-internal-deploy": {
+            "old_skill": "14/14",
+            "with_skill": "14/14"
+          },
+          "en-upstream-drupal-comment": {
+            "old_skill": "14/14",
+            "with_skill": "14/14"
+          },
+          "it-offer-context-harness": {
+            "old_skill": "14/16",
+            "with_skill": "15/16"
+          },
+          "it-offer-draft-monitoring": {
+            "old_skill": "18/18",
+            "with_skill": "18/18"
+          },
+          "it-offer-draft-roles": {
+            "old_skill": "15/16",
+            "with_skill": "16/16"
+          },
+          "it-offer-review-delivery": {
+            "old_skill": "14/16",
+            "with_skill": "15/16"
+          },
+          "it-offer-sparkfabrik-sprawl": {
+            "old_skill": "15/18",
+            "with_skill": "17/18"
+          },
+          "it-slack-colleague": {
+            "old_skill": "16/16",
+            "with_skill": "16/16"
+          }
+        },
+        "note": "Count fell, but the drafts moved SparkFabrik work onto the client team, taught by an example in voice.md."
+      },
+      "2": {
+        "runs_per_case": 3,
+        "cases": "4 client documents",
+        "assertions_passed": {
+          "with_skill": "102/105",
+          "old_skill": "96/105"
+        },
+        "blind_pairwise_wins": {
+          "with_skill": 4,
+          "old_skill": 8,
+          "tie": 0
+        },
+        "sparkfabrik_count_in_sprawl_case": {
+          "with_skill": [4, 6, 6],
+          "old_skill": [8, 8, 7]
+        },
+        "per_case": {
+          "it-offer-context-harness": {
+            "old_skill": "23/24",
+            "with_skill": "24/24"
+          },
+          "it-offer-draft-monitoring": {
+            "old_skill": "27/27",
+            "with_skill": "27/27"
+          },
+          "it-offer-draft-roles": {
+            "old_skill": "22/24",
+            "with_skill": "23/24"
+          },
+          "it-offer-sparkfabrik-sprawl": {
+            "old_skill": "24/30",
+            "with_skill": "28/30"
+          }
+        },
+        "note": "Rule against moving work; drafts used passives that hide the actor."
+      },
+      "3": {
+        "runs_per_case": 3,
+        "cases": "2 role cases",
+        "assertions_passed": {
+          "with_skill": "53/54",
+          "old_skill": "46/54"
+        },
+        "blind_pairwise_wins": {
+          "with_skill": 3,
+          "old_skill": 3,
+          "tie": 0
+        },
+        "sparkfabrik_count_in_sprawl_case": {
+          "with_skill": [5, 6, 8],
+          "old_skill": [8, 8, 7]
+        },
+        "per_case": {
+          "it-offer-draft-roles": {
+            "old_skill": "24/24",
+            "with_skill": "24/24"
+          },
+          "it-offer-sparkfabrik-sprawl": {
+            "old_skill": "22/30",
+            "with_skill": "29/30"
+          }
+        },
+        "note": "Final. Italian implied subject keeps the actor while dropping the name."
+      }
+    },
+    "limits": [
+      "Three samples per case and version.",
+      "One of three final runs of the sprawl case still names SparkFabrik 8 times.",
+      "The judge preferred the old version on the drafting case for unrelated formatting (too much bold)."
+    ],
+    "skill_sha256": {
+      "SKILL.md": "85159b28cfeb157505204fbf70a8587b05a07f816ad62d7512b78110f95b6185",
+      "references/voice.md": "516fdf36280b744c7f588af61607ed6b0339fa13c48181646eb60caebf968af1"
+    }
   }
 }
