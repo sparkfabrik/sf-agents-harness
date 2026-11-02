@@ -1,0 +1,148 @@
+{
+  "skill_name": "sf-writing-style",
+  "description": "Voice cases: whether drafts avoid the patterns of machine-written text, describe mechanisms instead of slogans, and use the person and register that fit the reader, in Italian and English. Cases 1 and 2 are sections of a real client document that the team rejected.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "it-offer-review-delivery",
+      "skill": "sf-writing-style",
+      "prompt": "Sto scrivendo un'offerta per Cliente Esempio S.p.A. su un pilota di sviluppo assistito dall'AI. La sezione qui sotto così non va bene: riscrivila. Usa solo i fatti presenti, senza aggiungerne. Restituisci solo la sezione in Markdown.\n\n### 5.4 Review, test e delivery\n\nNiente va in produzione senza controlli e senza l'approvazione di A&D. Ogni modifica, scritta a mano o con l'AI, passa da test, controlli automatici e review.",
+      "expected_output": "An Italian section that describes the release process step by step (tests, automated checks, review, A&D approval before production) without a motto, in the third person or impersonally, with no invented facts.",
+      "files": [],
+      "assertions": [
+        "The opening sentence describes a step or an actor, not a motto built on niente, nessuno, ogni or sempre",
+        "Keeps every supplied fact: A&D approves before production; tests, automated checks and review; applies to code written by hand and with AI",
+        "Adds no tool, number, role or step that is not in the source",
+        "No first person plural (noi, nostro, verbs ending in -iamo)",
+        "No em or en dash",
+        "No sentence opens with Ogni, Niente or Nessun",
+        "No colon setup that announces an inline list (as in 'segue lo stesso percorso: test, ...')",
+        "Written in Italian"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "it-offer-context-harness",
+      "skill": "sf-writing-style",
+      "prompt": "Sezione di uno studio per Cliente Esempio S.p.A. sull'adozione dell'AI nello sviluppo. Il tono non mi piace, queste frasi mi snervano. Riscrivila senza cambiare i fatti e senza aggiungerne. Solo la sezione, in Markdown.\n\n### 5.2 Contesto, specifiche e harness\n\nIl progetto smette di vivere nella testa delle persone. Scriviamo nel repository architettura, convenzioni, comandi, test e aree protette in AGENTS.md, valido per ogni strumento, così le scelte architetturali diventano ADR.\n\nCostruiamo o adattiamo skill e plugin per le attività di sviluppo ricorrenti, con un catalogo versionato che il team mantiene, e lavoriamo su contesto, scelta del modello e sessioni per ridurre i consumi non necessari.\n\nLa telemetria misura anche gli interventi sull'harness: confrontiamo i consumi su attività comparabili e verifichiamo che l'ottimizzazione conservi la qualità del risultato. Consegniamo un pacchetto harness per il pilota, con playbook, profilo organizzativo e istruzioni di installazione.",
+      "expected_output": "An Italian section that opens on what is written in the repository, uses SparkFabrik or an impersonal subject instead of 'noi', explains each activity concretely, and keeps every fact.",
+      "files": [],
+      "assertions": [
+        "No metaphor or slogan opener such as 'il progetto smette di vivere nella testa delle persone'",
+        "No first person plural (scriviamo, costruiamo, lavoriamo, confrontiamo, consegniamo, noi, nostro)",
+        "Keeps every supplied fact: AGENTS.md in the repository with architecture, conventions, commands, tests and protected areas, valid for every tool; architectural choices as ADR; skills and plugins with a versioned catalog the team maintains; work on context, model choice and sessions to reduce consumption; telemetry compares consumption on comparable tasks and checks that quality is preserved; harness package for the pilot with playbook, organizational profile and installation instructions",
+        "Adds no fact that is not in the source",
+        "No colon setup that hangs an explanation on a colon (as in 'La telemetria misura anche gli interventi sull'harness: confrontiamo')",
+        "No em or en dash",
+        "SparkFabrik is not the subject of more than one sentence",
+        "Written in Italian"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "it-offer-draft-monitoring",
+      "skill": "sf-writing-style",
+      "prompt": "Scrivi la sezione \"Monitoraggio e reperibilità\" di un'offerta per Comune di Esempio. Fatti: monitoraggio con Prometheus e Grafana su tutti gli ambienti; alert su Slack e via telefono per la reperibilità; reperibilità 24/7 per gli incidenti P1, con presa in carico entro 30 minuti; report mensile con disponibilità e incidenti; il cliente nomina un referente tecnico. Solo la sezione, in Markdown, in italiano.",
+      "expected_output": "An Italian offer section that states each service with its tool, time and owner, in the third person or impersonally, bolding the key items, without slogans or marketing words.",
+      "files": [],
+      "assertions": [
+        "No first person plural (noi, nostro, verbs ending in -iamo)",
+        "No slogan or motto sentence (for example 'nessun incidente resta senza risposta')",
+        "Keeps every supplied fact: Prometheus and Grafana on all environments; alerts on Slack and by phone; 24/7 on-call for P1 incidents; taken in charge within 30 minutes; monthly report with availability and incidents; client names a technical contact",
+        "Adds no number, tool or service level that is not in the source",
+        "No marketing words (robusto, eccellenza, all'avanguardia, chiavi in mano, a 360 gradi)",
+        "Bold marks the key items a skimming reader must catch (tools, times, P1)",
+        "Adds no explanation of what a tool does (for example what Prometheus or Grafana are for)",
+        "No colon setup that hangs an explanation on a colon in running prose (`**Label:** text` list items are the house form and are fine)",
+        "No em or en dash"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "en-pr-export",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the PR description. The reports page gets a CSV export button. The download keeps the current filters and date range. It exports the same table you see, it's not a new report. Validated on staging with a 10,000-row report. No template, no attribution, do not post.",
+      "expected_output": "A short PR description that states the export and what it keeps, plus the validation, without antithesis or colon setups.",
+      "files": [],
+      "assertions": [
+        "Body stays within 80 words",
+        "No antithesis such as 'it's not a new report, it's the same table' or 'not X but Y'",
+        "No colon setup such as 'The result: ...'",
+        "Keeps the staging validation with 10,000 rows",
+        "Adds no behavior that is not in the source",
+        "Says the export is the same table shown on screen",
+        "No em or en dash"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "it-slack-colleague",
+      "skill": "sf-writing-style",
+      "prompt": "Scrivi il messaggio Slack per il canale del team piattaforma. Abbiamo spostato la pipeline di build sui nuovi runner. Il job di build ora dura 4 minuti invece di 12. Domani alle 10 passiamo in produzione se i test notturni restano verdi. Serve che Marco controlli i permessi del service account entro stasera. Solo il testo del messaggio.",
+      "expected_output": "A short Italian Slack message from a teammate, in the first person, that leads with the update and makes Marco's action easy to spot.",
+      "files": [],
+      "assertions": [
+        "Written in Italian",
+        "Uses the first person or the team's voice, not SparkFabrik in the third person",
+        "The first line states the update",
+        "The request to Marco, with its deadline, stands out (bold or its own line)",
+        "Keeps 4 and 12 minutes, tomorrow at 10, and the nightly tests condition",
+        "Stays within 80 words",
+        "The first line is a full sentence, not a label ending in a colon",
+        "No closing one-liner or slogan"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "en-client-incident-email",
+      "skill": "sf-writing-style",
+      "prompt": "Write the email to Laura Bianchi, IT lead at Acme Pharma, about yesterday's incident. Facts: the customer portal was unavailable from 14:10 to 14:52 CET on 2026-10-30. The cause was an expired TLS certificate on the load balancer. The certificate was renewed at 14:50. We are adding an alert 30 days before any certificate expires, in place by 2026-11-06. No data was lost. Give the subject line and the body only.",
+      "expected_output": "A plain email that states the impact and time window first, then cause, fix and next step with its date, addressed to Laura, without minimizing or marketing.",
+      "files": [],
+      "assertions": [
+        "Impact and time window appear in the first two sentences of the body",
+        "Addresses Laura by name",
+        "Keeps every time and date: 14:10, 14:52, 14:50, 2026-10-30, 2026-11-06, 30 days",
+        "No minimizing words (only, brief, minor, small, just)",
+        "No marketing or reassurance slogans (for example 'your trust is our priority')",
+        "Adds no fact that is not in the source",
+        "Makes no commitment the source does not contain (for example a promise to write again)",
+        "No em or en dash"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "en-upstream-drupal-comment",
+      "skill": "sf-writing-style",
+      "prompt": "Write my comment for a drupal.org issue in the Search API module queue. I reproduced the bug on 8.x-1.38 with PHP 8.3. The facet count is wrong when a filter uses OR. Patch #12 fixes it for me and its tests pass locally. I'd suggest adding a kernel test for the OR case. Comment text only.",
+      "expected_output": "A short contributor comment in the first person singular, with versions and the suggestion, and no company promotion.",
+      "files": [],
+      "assertions": [
+        "Uses the first person singular",
+        "Does not mention SparkFabrik or promote a company",
+        "Keeps 8.x-1.38, PHP 8.3, patch #12 and the kernel test suggestion",
+        "Stays within 60 words",
+        "No enthusiasm markers (exclamation points, 'Great work')",
+        "No label-style opener such as 'Suggestion:' or 'Reproduced:'",
+        "No em or en dash"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "en-readme-internal-deploy",
+      "skill": "sf-writing-style",
+      "prompt": "Write the 'Deploy' section of our internal platform runbook README. We deploy with Terraform first, then Helm. The Terraform state lives in a GCS bucket that only the platform team can write. The clusters run in us-east-1 and europe-west1. If a deploy fails, ask in #support-infra-platform. The rollback steps for each service, with the person who approves them, are listed further down. Section only, Markdown.",
+      "expected_output": "A short internal README section in the team's voice or in the imperative, with identifiers as code and no slogans.",
+      "files": [],
+      "assertions": [
+        "Does not refer to SparkFabrik in the third person; first person or imperative is fine",
+        "Shows us-east-1 and europe-west1 as code",
+        "Keeps the order Terraform then Helm, the bucket write restriction, the support channel and the pointer to rollback steps",
+        "Paragraphs have three sentences or fewer",
+        "No slogan opener or closing one-liner",
+        "No colon setup that announces a sentence (a colon before a bulleted or numbered list is fine)",
+        "No em or en dash"
+      ]
+    }
+  ]
+}

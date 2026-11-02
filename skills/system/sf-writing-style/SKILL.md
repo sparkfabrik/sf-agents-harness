@@ -1,6 +1,6 @@
 ---
 name: sf-writing-style
-description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, onboarding guides, and documents for clients (offers, studies, reports, decks, talks), in English or Italian, with SparkFabrik's voice and a check for the tells of machine-written text. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
+description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, onboarding guides, and documents for clients (offers, studies, reports, decks, talks), in English or Italian. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
 ---
 
 # SparkFabrik writing style
@@ -55,16 +55,46 @@ Apply this style before sending text through `gh`, `glab`, Slack, an API, an MCP
 
 Words to replace with plainer ones: delve, leverage (as a verb), utilize, robust, seamless, seamlessly, comprehensive, crucial, pivotal, foster, streamline, empower, elevate, unlock, supercharge, game-changer, cutting-edge, holistic, synergy.
 
-Patterns to cut:
+Patterns that make a text read as machine-written, in English and Italian. Each one is fine once in a long text; a draft that leans on them reads generated. Write the alternative instead:
 
-- **Throat-clearing openers.** "This document aims to", "In this section we will", "It's worth noting that", "In today's fast-paced world". Start with the point instead.
-- **Summary outros.** "In conclusion", "Overall", "To summarize". Just stop.
-- **Hype symmetry.** "not only X but also Y", "whether you're X or Y", decorative triads ("fast, reliable, and scalable") unless each item is a load-bearing fact.
+- **Throat-clearing openers and talk about the text.** "This document aims to", "Let's dive in", "As we have seen", "In today's fast-paced world", "In questo documento", "Come abbiamo visto", "Nel contesto attuale". Start with the point instead.
+- **Slogans and metaphors in place of a mechanism.** A sentence that sounds like a motto: "Nothing ships without review", "Nessun rilascio avviene senza controlli", "Il codice smette di essere una scatola nera". Absolute words (nothing, every, always, niente, ogni, sempre) without the mechanism turn a process into a promise. Make the process or its owner the subject instead: "I backup sono verificati con un ripristino mensile" rather than "Nessun dato va mai perso", "The on-call engineer takes the alert within 15 minutes" rather than "Every alert gets an answer".
+- **Summary outros.** "In conclusion", "Overall", "To summarize", "In sintesi". End on the last fact or the next step.
+- **Closing one-liners.** A short aphorism that ends a paragraph ("Speed is a feature."). Fold it into the previous sentence as a consequence with its fact, or drop it.
+- **Rhetorical bridges.** "Here's the thing", "That's where X comes in", "Ed è proprio qui che", a paragraph that ends on a question. Let the next paragraph open on its own fact.
+- **Antithesis.** "It's not X, it's Y", "not only X but also Y", "Non è X, è Y". Say what Y is, directly. Keep the correction of X only when someone actually holds X.
+- **Colon setups.** "The result: …", "One rule: …", "il flusso è semplice: build, deploy e verifica". Write a full sentence with a verb that carries the items. Keep colons before a bulleted or numbered list, a quote, code, and precise figures.
+- **Triads and noun piles.** "fast, reliable, and scalable", "contesto, scelta del modello e sessioni". A list of abstract nouns hides what happens. Keep the items that carry a fact, and say what is done to each.
 - **Enthusiasm markers.** Exclamation points, emoji decoration, "Great question".
+
+Never ask a draft for hooks, rhetorical questions, or punchy closings, because asking for them produces these patterns.
+
+## How SparkFabrik sounds
+
+Write as practitioners explaining how something works in production. The reader is a capable professional deciding under constraints. Inform them; never persuade or perform.
+
+- **Describe, do not promise.** Say what happens, who does it, with what, and when. A claim about quality, speed, or savings needs a number and its source; without one, describe the mechanism and leave the claim out.
+- **Use only the facts you have.** When the source gives no mechanism, state the fact plainly and stop. Never add an explanation of how a tool works, a step, or a benefit to make a sentence sound concrete.
+- **Concrete over abstract.** A named tool, step, owner, or number beats a category noun. "Merge requests run the unit tests and need one approval before merge" beats "rigorous quality processes".
+- **Keep uncertainty honest.** Estimates stay estimates, unknowns are said as unknowns, and a trade-off names both options and why one was chosen.
+- **Write in the language of the text.** English and Italian follow the same rules. Italian examples of the patterns are in `references/voice.md`.
+
+Who you are writing for sets the person and the register:
+
+| Reader                                                     | Person                                                   | Register                                                                                                                                                                                         |
+| ---------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Colleague (Slack, issue, internal doc, README)             | First person: "I", "we", "io", "noi"                     | Direct, as to a teammate. Lead with the update or the ask.                                                                                                                                       |
+| Reviewer (PR/MR)                                           | The change is the subject                                | What changes, what to check, what was verified.                                                                                                                                                  |
+| Upstream maintainer (drupal.org, open-source issue queues) | First person singular, as a contributor                  | Follow the project's conventions and language. No company promotion.                                                                                                                             |
+| Client, technical                                          | Documents: SparkFabrik in the third person or impersonal | Mechanisms, prerequisites, limits, trade-offs.                                                                                                                                                   |
+| Client, executive                                          | Same as technical                                        | Lead with the decision, cost, risk, and timing; the mechanism in a sentence.                                                                                                                     |
+| Client email                                               | The author in the first person; address people by name   | Follow the register the client uses. One request or update per email.                                                                                                                            |
+| Bad news or incident update to a client                    | As in a client email                                     | Impact and time window first, then what is known, what is not, and the next step with its date when you have one. No minimizing, no blame, no guessing at causes, no promise you were not given. |
+| Talk                                                       | The speaker in the first person singular                 | A practitioner's account; slides stay impersonal.                                                                                                                                                |
 
 ## Air: paragraphs and whitespace
 
-- One idea per paragraph. One to three sentences, then a blank line.
+- One idea per paragraph. One to three sentences, then a blank line. Documents for clients follow the paragraph rules of `references/voice.md`.
 - A paragraph over three sentences gets split, or restructured into a list.
 - Blank line before and after every heading, list, and code block.
 - Prefer a full stop over a subordinate-clause chain. Two short sentences beat one long one.
@@ -116,26 +146,21 @@ After:
 
 See [references/examples.md](references/examples.md) for issues, descriptions, comments, changelogs, and necessary exceptions.
 
-## SparkFabrik's voice
+## Documents for clients
 
-Read [references/voice.md](references/voice.md) before writing anything longer than a short message, in Italian or in English, and always for a document SparkFabrik sends to a client (offer, study, report, handover, deck, talk). It defines:
+Before writing a document SparkFabrik sends to a client (offer, study, report, handover, deck, talk), in Italian or in English, read [references/voice.md](references/voice.md) and [references/glossary.md](references/glossary.md). They add:
 
-- **Who is talking.** The author in messages and MRs; SparkFabrik in the third person or impersonally in documents for clients, never "noi" or "we"; the speaker in the first person in a talk.
+- **Who is talking.** SparkFabrik in the third person or impersonally, never "noi" or "we"; the speaker in the first person in a talk.
 - **Facts, not claims.** Facts only from a source the user gave, no marketing words, no announcements or slogans.
-- **The six tells** of machine-written text, with Italian and English examples: the closing one-liner, talking about the text, the rhetorical bridge, "non è X, è Y" / "it's not X, it's Y", the colon chain, the fixed triad. They come from SparkFabrik's editorial pipeline, measured on 266 Italian texts written by people.
-- **The banned openers and fillers**, headings that name their topic, the length of a document for a client, and formatting: bold carries the skim, `**Label:** text` for descriptive items, italics rarely.
-- **How to review a draft** without rewarding the tells.
+- **The patterns above with Italian examples**, the banned Italian openers, and how to review a draft without rewarding them.
+- **Length and formatting** of a document: paragraph length, headings that name their topic, bold that carries the skim, `**Label:** text` items.
+- **The vocabulary** of SparkFabrik's practice, with the concrete basis each business term needs.
 
-The vocabulary (preferred terms by area, positioning concepts and their guardrails, business terms with their concrete basis) is in [references/glossary.md](references/glossary.md).
+Messages, issues, PR/MR descriptions, comments, READMEs, and internal docs follow this file only.
 
-The check measures a Markdown file and prints each sentence to rewrite with its move:
+When you rewrite a sentence, keep what it says: numbers, dates, names, quotes, links, and hedges ("about", "may", "circa") stay identical.
 
-```bash
-python3 <skill-dir>/scripts/style_check.py <file>.md
-python3 <skill-dir>/scripts/style_check.py --compare before.md after.md
-```
-
-Rewrite only the sentences it prints. `--compare` lists the numbers, names, links, quotes and hedges ("circa", "about") that a rewrite lost: put each back. A message or a description without front matter gets the tells and the banned phrases only, because the first person is normal there.
+The `scripts/` directory holds the check that the `sf-docs` plugin runs on its documents. Outside `sf-docs`, do not run it. The patterns above guide the writing, and you judge each sentence in context.
 
 ## Self-check before returning any prose
 
@@ -143,14 +168,15 @@ Rewrite only the sentences it prints. `--compare` lists the numbers, names, link
 2. Every sentence adds a needed fact. No implementation story or repeated summary survives in a short artifact.
 3. The text meets its word limit, excluding attribution and reference lines, unless an explicit exception applies. Shorter is better when the meaning stays clear.
 4. Sentences use familiar words and concrete verbs. No blacklist word, invented jargon, or filler survives.
-5. No em or en dash survives outside quotations and code. Paragraphs have three sentences or fewer.
+5. No em or en dash survives outside quotations and code. Paragraphs have three sentences or fewer, except in documents for clients, which follow `references/voice.md`.
 6. Check that formatting makes the change easier to scan without repeating facts or adding empty sections. The phrases a scanning reader must not miss are bold, and every kept identifier is code.
 7. Detailed issue checklist items have short bold outcomes; simple checklist items remain plain.
 8. Check the actual outgoing body before a tool call, including text generated from commits. Do not append extra explanations in a follow-up comment.
 9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
 10. For a PR/MR description, confirm that you read and applied the required PR/MR reference.
 11. For text that GitHub, GitLab, or Slack will render, confirm that you applied the platform reference.
-12. For a long text and for any document for a client, confirm that you applied `references/voice.md` and that `scripts/style_check.py` reports nothing left to rewrite.
+12. No paragraph leans on the machine-written patterns listed above, and the person and register fit the reader.
+13. For a document for a client, confirm that you applied `references/voice.md` and `references/glossary.md`.
 
 ## Interaction with other skills
 
@@ -166,4 +192,4 @@ Some examples of how the baseline composes with specific skills:
 
 Document skills can require structure for ADRs, postmortems, and specifications. Their longer formats do not carry over to issues, PR/MR descriptions, comments, or changelog entries. For short artifacts, only the exceptions listed above allow extra detail.
 
-The plain-prose override still applies: artifacts are written in complete, well-structured English even when a terse conversational style (for example a `CAVEMAN MODE ACTIVE` session reminder) is active. The terse style governs chat replies, never the artifacts. Do not toggle the style; write the artifact in full prose and resume the terse style in chat.
+The plain-prose override still applies: artifacts are written in complete, well-structured prose, in the language of the text, even when a terse conversational style (for example a `CAVEMAN MODE ACTIVE` session reminder) is active. The terse style governs chat replies, never the artifacts. Do not toggle the style; write the artifact in full prose and resume the terse style in chat.
