@@ -25,6 +25,8 @@ the second no longer has: a rewrite must keep them all (exit code 1 when one is 
 The genre defaults to what the file is: plain text (a message, a description, a note) without front matter, a deck or
 a talk when it has `<!-- slide: -->` markers (a talk when it names an `evento`), a document when its front matter has
 `tipo`, else an offer. Plain text gets the tells and the banned phrases only: the first person is normal there.
+Without `lang` in the front matter, the language is guessed from the text. Issue and commit trailers (`Refs:`,
+`Closes:`, `Assisted-by:` …) and the AI attribution header are never read as prose.
 """
 import argparse
 import json
@@ -135,13 +137,31 @@ def front_matter(text):
     return meta, text[m.end():]
 
 
+# Lines that are references or signatures, never prose: issue and MR trailers, commit trailers, the AI attribution
+# header of the gh and glab skills.
+TRAILER = re.compile(r"^(?:>\s*:robot:|(?:refs|closes|fixes|resolves|related|part of|see also|assisted-by|co-authored-by|"
+                     r"signed-off-by|reviewed-by)\s*:)", re.I)
+IT_WORDS = {'il', 'lo', 'la', 'gli', 'le', 'che', 'di', 'del', 'della', 'per', 'non', 'è', 'con', 'una', 'sono', 'nel',
+            'nella', 'delle', 'dei', 'anche', 'come', 'più', 'questo', 'questa'}
+EN_WORDS = {'the', 'and', 'of', 'to', 'is', 'with', 'for', 'that', 'this', 'are', 'it', 'on', 'be', 'from', 'by', 'an',
+            'as', 'when', 'which', 'not', 'now', 'instead'}
+
+
+def guess_lang(body):
+    """The language of a text without `lang` in its front matter, from its most common short words."""
+    words = re.findall(r"[a-zàèéìòù]+", body.lower())
+    it = sum(w in IT_WORDS for w in words)
+    en = sum(w in EN_WORDS for w in words)
+    return 'en' if en > it else 'it'
+
+
 def prose_markdown(body):
     """The text as the meter reads it: the `::: block attrs` and `:::` fences of sf-docs become blank lines, so a
     callout or a quote keeps its prose but its attributes are not read as a sentence."""
     out = []
     for line in body.splitlines():
         s = line.strip()
-        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{'):
+        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{') or TRAILER.match(s):
             out.append('')
         else:
             out.append(line)
@@ -250,7 +270,8 @@ def brief_echo(md, brief):
 def check(text, genre=None, brief=None):
     meta, body = front_matter(text)
     genre = genre or guess_genre(meta, body)
-    lang = 'en' if (meta.get('lang') or 'it').lower().startswith('en') else 'it'
+    lang = (meta.get('lang') or guess_lang(body)).lower()[:2]
+    lang = 'en' if lang == 'en' else 'it'
     md = prose_markdown(body)
     advice = {'rhythm': [], 'brief_echo': brief_echo(md, brief) if brief else []}
     if lang == 'en':

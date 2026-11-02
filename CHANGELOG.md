@@ -14,6 +14,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason from the issue, the conversation or the author and never inferred from the diff, and medium or complex changes say where a reviewer should look first. The style check guesses the language of a text without front matter and ignores trailers such as `Refs:`.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
 - Upstream skill sync: refresh `angular/angular-developer`, `system/grilling`, and `system/playwright-cli` from the declared source repositories.
 
