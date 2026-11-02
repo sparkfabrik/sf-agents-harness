@@ -1,6 +1,6 @@
 ---
 name: sf-writing-style
-description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, and onboarding guides. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
+description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, onboarding guides, and documents for clients (offers, studies, reports, decks, talks), in English or Italian, with SparkFabrik's voice and a check for the tells of machine-written text. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
 ---
 
 # SparkFabrik writing style
@@ -116,6 +116,27 @@ After:
 
 See [references/examples.md](references/examples.md) for issues, descriptions, comments, changelogs, and necessary exceptions.
 
+## SparkFabrik's voice
+
+Read [references/voice.md](references/voice.md) before writing anything longer than a short message, in Italian or in English, and always for a document SparkFabrik sends to a client (offer, study, report, handover, deck, talk). It defines:
+
+- **Who is talking.** The author in messages and MRs; SparkFabrik in the third person or impersonally in documents for clients, never "noi" or "we"; the speaker in the first person in a talk.
+- **Facts, not claims.** Facts only from a source the user gave, no marketing words, no announcements or slogans.
+- **The six tells** of machine-written text, with Italian and English examples: the closing one-liner, talking about the text, the rhetorical bridge, "non è X, è Y" / "it's not X, it's Y", the colon chain, the fixed triad. They come from SparkFabrik's editorial pipeline, measured on 266 Italian texts written by people.
+- **The banned openers and fillers**, headings that name their topic, the length of a document for a client, and formatting: bold carries the skim, `**Label:** text` for descriptive items, italics rarely.
+- **How to review a draft** without rewarding the tells.
+
+The vocabulary (preferred terms by area, positioning concepts and their guardrails, business terms with their concrete basis) is in [references/glossary.md](references/glossary.md).
+
+The check measures a Markdown file and prints each sentence to rewrite with its move:
+
+```bash
+python3 <skill-dir>/scripts/style_check.py <file>.md
+python3 <skill-dir>/scripts/style_check.py --compare before.md after.md
+```
+
+Rewrite only the sentences it prints. `--compare` lists the numbers, names, links, quotes and hedges ("circa", "about") that a rewrite lost: put each back. A message or a description without front matter gets the tells and the banned phrases only, because the first person is normal there.
+
 ## Self-check before returning any prose
 
 1. The opening sentence states the change, problem, answer, or required action.
@@ -129,6 +150,7 @@ See [references/examples.md](references/examples.md) for issues, descriptions, c
 9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
 10. For a PR/MR description, confirm that you read and applied the required PR/MR reference.
 11. For text that GitHub, GitLab, or Slack will render, confirm that you applied the platform reference.
+12. For a long text and for any document for a client, confirm that you applied `references/voice.md` and that `scripts/style_check.py` reports nothing left to rewrite.
 
 ## Interaction with other skills
 
@@ -138,6 +160,7 @@ Some examples of how the baseline composes with specific skills:
 
 - **CLI writing rules.** `gh` and `glab` include the short-artifact rules directly so they do not depend on a second skill load. Keep those rules aligned with this skill.
 - **PR/MR descriptions.** This skill owns the task-specific reference for PR/MR descriptions. Tools and guards should load this parent skill, then follow its reference routing instead of treating the reference as another skill.
+- **Client documents.** The `sf-docs` plugin (offers, documents, decks, talks) copies `references/voice.md`, `references/glossary.md` and the check from this skill and runs the check before rendering. Change them here, then sync the plugin.
 - **Mechanical layout.** The `auto-format-doc` skill handles mechanical markdown layout (prettier): this skill decides what the prose says and how it is structured, the formatter normalizes whitespace and syntax afterwards.
 - **Domain overlays.** Skills that own a document type (issue writing, ADRs, postmortems, changelogs) add their structure and domain rules on top; this skill keeps governing the sentences inside that structure.
 
