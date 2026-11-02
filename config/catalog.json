@@ -68,7 +68,7 @@
       "description": "Enforce SparkFabrik commit conventions and trailers"
     },
     "sf-writing-style": {
-      "description": "Short, plain writing focused on what changes"
+      "description": "Plain writing and SparkFabrik's voice in Italian and English"
     },
     "skill-creator": {
       "description": "Create, iterate, and benchmark agent skills"

@@ -8,6 +8,10 @@ Changes are grouped by date.
 
 ## [2026-11-02]
 
+### Added
+
+- `sf-writing-style` skill: SparkFabrik's voice in Italian and English (core voice, who is talking, facts and evidence, the tells of machine-written text, banned openers, length and formatting of documents for clients) and a glossary of SparkFabrik's vocabulary, with a check script that prints each sentence to rewrite and verifies that a rewrite keeps every fact.
+
 ### Changed
 
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
