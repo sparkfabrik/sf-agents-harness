@@ -15,6 +15,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- `skill-creator` skill: vendored instead of synced from upstream, and cheap by default. Test prompts run inline without baselines, full eval runs and description optimization need explicit approval of the run count, subagents are capped at 3 on `sonnet`, and the description optimizer defaults to 2 workers, 1 run per query, 2 iterations, and `sonnet`.
 - `domain-modeling`, `mermaid-diagrams`, and `grill-with-docs` move from system skills to the optional `architecture` category; enable it with `ajust sf-harness-category enable architecture`.
 - `postmortem-writing` moves from system skills to the optional `operations` category; enable it with `ajust sf-harness-category enable operations`.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.

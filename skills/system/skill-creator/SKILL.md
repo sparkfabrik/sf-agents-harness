@@ -30,6 +30,16 @@ Then after the skill is done (but again, the order is flexible), you can also ru
 
 Cool? Cool.
 
+## Cost limits
+
+This skill is vendored from `anthropics/skills` with cost limits added (see `UPSTREAM.md`). Evals can spend a lot of tokens: every subagent and every `claude -p` call is a full agent session that loads the user's whole configuration. A single unbounded run has used a 5-hour subscription window in minutes. These limits override anything later in this file.
+
+- **Lite mode is the default.** Run each test prompt yourself, inline and one at a time, with the skill loaded. Skip baseline runs, grader subagents, blind comparison, and the description optimizer. Show the outputs in the conversation and ask for feedback. One iteration per user request.
+- **Full eval mode needs an explicit yes.** Before spawning any subagent or `claude -p` run, tell the user the number of subagents, iterations, and `claude -p` calls you plan, then wait for them to agree. Only switch when the user asks for benchmarks, baselines, or parallel runs.
+- **Bound the fan-out.** Never use the Workflow tool or any multi-agent orchestration from this skill. Run at most 3 subagents at the same time. Pass `model: "sonnet"` (or a cheaper model) to eval, grader, comparator, and analyzer subagents instead of inheriting the session model.
+- **Description optimization is opt-in.** Run `run_loop.py` only when the user asks for it, with its default limits (2 workers, 1 run per query, 2 iterations, `sonnet`). Raise a limit only when the user asks, and state the new `claude -p` call count first.
+- **Research inline.** Do not spawn subagents for research during the interview.
+
 ## Communicating with the user
 
 The skill creator is liable to be used by people across a wide range of familiarity with coding jargon. If you haven't heard (and how could you, it's only very recently that it started), there's a trend now where the power of Claude is inspiring plumbers to open up their terminals, parents and grandparents to google "how to install npm". On the other hand, the bulk of users are probably fairly computer-literate.
@@ -58,7 +68,7 @@ Start by understanding the user's intent. The current conversation might already
 
 Proactively ask questions about edge cases, input/output formats, example files, success criteria, and dependencies. Wait to write test prompts until you've got this part ironed out.
 
-Check available MCPs - if useful for research (searching docs, finding similar skills, looking up best practices), research in parallel via subagents if available, otherwise inline. Come prepared with context to reduce burden on the user.
+Check available MCPs - if useful for research (searching docs, finding similar skills, looking up best practices), research inline. Come prepared with context to reduce burden on the user.
 
 ### Write the SKILL.md
 
@@ -163,13 +173,13 @@ See `references/schemas.md` for the full schema (including the `assertions` fiel
 
 ## Running and evaluating test cases
 
-This section is one continuous sequence — don't stop partway through. Do NOT use `/skill-test` or any other testing skill.
+This section describes full eval mode. Use it only after the user agreed to the run count (see "Cost limits"); in lite mode, run the test prompts inline instead. Once agreed, it is one continuous sequence — don't stop partway through. Do NOT use `/skill-test` or any other testing skill.
 
 Put results in `<skill-name>-workspace/` as a sibling to the skill directory. Within the workspace, organize results by iteration (`iteration-1/`, `iteration-2/`, etc.) and within that, each test case gets a directory (`eval-0/`, `eval-1/`, etc.). Don't create all of this upfront — just create directories as you go.
 
-### Step 1: Spawn all runs (with-skill AND baseline) in the same turn
+### Step 1: Spawn the runs (with-skill AND baseline) in small batches
 
-For each test case, spawn two subagents in the same turn — one with the skill, one without. This is important: don't spawn the with-skill runs first and then come back for baselines later. Launch everything at once so it all finishes around the same time.
+For each test case, spawn two subagents — one with the skill, one without — with `model: "sonnet"`. Run at most 3 subagents at the same time; start the next batch when one finishes. Keep each with-skill run and its baseline in the same batch so they are comparable.
 
 **With-skill run:**
 
@@ -304,7 +314,7 @@ This is the heart of the loop. You've run the test cases, the user has reviewed 
 
 4. **Look for repeated work across test cases.** Read the transcripts from the test runs and notice if the subagents all independently wrote similar helper scripts or took the same multi-step approach to something. If all 3 test cases resulted in the subagent writing a `create_docx.py` or a `build_chart.py`, that's a strong signal the skill should bundle that script. Write it once, put it in `scripts/`, and tell the skill to use it. This saves every future invocation from reinventing the wheel.
 
-This task is pretty important (we are trying to create billions a year in economic value here!) and your thinking time is not the blocker; take your time and really mull things over. I'd suggest writing a draft revision and then looking at it anew and making improvements. Really do your best to get into the head of the user and understand what they want and need.
+Think the revision through before rerunning anything: a careful edit is cheaper than another eval iteration. I'd suggest writing a draft revision and then looking at it anew and making improvements. Really do your best to get into the head of the user and understand what they want and need.
 
 ### The iteration loop
 
@@ -375,7 +385,7 @@ This step matters — bad eval queries lead to bad descriptions.
 
 ### Step 3: Run the optimization loop
 
-Tell the user: "This will take some time — I'll run the optimization loop in the background and check on it periodically."
+Each `claude -p` call is a full agent session. With the defaults (1 run per query, 2 iterations), a 20-query eval set costs about 40 trigger calls plus 2 improvement calls. Tell the user this count and wait for them to agree before starting.
 
 Save the eval set to the workspace, then run in the background:
 
@@ -383,16 +393,14 @@ Save the eval set to the workspace, then run in the background:
 python -m scripts.run_loop \
   --eval-set <path-to-trigger-eval.json> \
   --skill-path <path-to-skill> \
-  --model <model-id-powering-this-session> \
-  --max-iterations 5 \
   --verbose
 ```
 
-Use the model ID from your system prompt (the one powering the current session) so the triggering test matches what the user actually experiences.
+The defaults are `--num-workers 2 --runs-per-query 1 --max-iterations 2 --model sonnet`. Raise them only when the user asks, and recompute the call count first. Testing with `sonnet` instead of the session model makes trigger rates slightly less representative, which is an accepted trade-off for cost.
 
 While it runs, periodically tail the output to give the user updates on which iteration it's on and what the scores look like.
 
-This handles the full optimization loop automatically. It splits the eval set into 60% train and 40% held-out test, evaluates the current description (running each query 3 times to get a reliable trigger rate), then calls Claude to propose improvements based on what failed. It re-evaluates each new description on both train and test, iterating up to 5 times. When it's done, it opens an HTML report in the browser showing the results per iteration and returns JSON with `best_description` — selected by test score rather than train score to avoid overfitting.
+This handles the full optimization loop automatically. It splits the eval set into 60% train and 40% held-out test, evaluates the current description, then calls Claude to propose improvements based on what failed. It re-evaluates each new description on both train and test, up to the iteration limit. When it's done, it opens an HTML report in the browser showing the results per iteration and returns JSON with `best_description` — selected by test score rather than train score to avoid overfitting.
 
 ### How skill triggering works
 

@@ -11,12 +11,6 @@
       }
     },
     {
-      "name": "skill-creator",
-      "repo": "anthropics/skills",
-      "ref": "main",
-      "path": "skills/skill-creator"
-    },
-    {
       "name": "doc-coauthoring",
       "repo": "anthropics/skills",
       "ref": "main",
