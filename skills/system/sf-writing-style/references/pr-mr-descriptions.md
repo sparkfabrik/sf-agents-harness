@@ -13,19 +13,20 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome and why it matters in the opening sentence or short paragraph.
+1. State the outcome and its reason in the opening sentence or short paragraph. Take the reason from the linked issue, the conversation or the user. When none of them gives it, ask the author one question or leave the reason out; never infer a motivation from the diff, because it is the one thing a reviewer cannot check.
 2. Group the change into reviewer-relevant themes, not files or commits.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
 4. State useful validation without command transcripts, logs, or test inventories.
-5. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
+5. For a medium or complex change, add one sentence on where a reviewer should look first: the risky part, the choice to check, or what the author is unsure about.
+6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
 
 ## Match the shape to the change
 
 - **Small change.** Use one sentence. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately.
-- **Complex or breaking change.** Use a lead paragraph, then `What changes`. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately, and end with the sentence on where to look.
+- **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
 
@@ -56,15 +57,17 @@ Rejects empty passwords with a validation message instead of returning a 500 err
 
 ### Medium feature
 
-Adds **export controls** for report data:
+Adds **export controls** for report data, so the finance team stops copying tables by hand:
 
 - Date-range selection.
 - CSV download.
 - Remembered export preferences.
 
+Review the date filter first, because it uses the account's time zone instead of the browser's.
+
 ### Complex configuration change
 
-Moves environment routing into a single deployment configuration so each environment has one explicit target and validation contract.
+Moves environment routing into a single deployment configuration so each environment has one explicit target and validation contract, after a manual deployment reached the wrong environment.
 
 #### What changes
 
@@ -72,6 +75,8 @@ Moves environment routing into a single deployment configuration so each environ
 - Applies the same target selection to scheduled and manual deployments.
 - Limits credentials and generated configuration to the selected environment.
 - Exposes the resolved target through the deployment command.
+
+Review the target resolution of scheduled deployments first, because it changed the most.
 
 #### Breaking changes
 
@@ -84,7 +89,8 @@ Verified configuration parsing and deployment selection for the supported enviro
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- Does the opening explain why the change exists?
+- Does the opening explain why the change exists, with a reason the issue, the conversation or the user gave?
+- Does a medium or complex change say where a reviewer should look first?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?

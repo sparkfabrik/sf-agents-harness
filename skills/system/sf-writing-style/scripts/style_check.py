@@ -28,6 +28,7 @@ an `evento` only, else plain text (a message, a description, a README, a spec, a
 Plain text gets the tells and the banned phrases only: the first person is normal there.
 
 The language is the front matter's `lang` when there is one, else the one whose common words the prose uses most.
+Issue and commit trailers (`Refs:`, `Closes:`, `Assisted-by:` …) and the AI attribution header are never read as prose.
 """
 import argparse
 import json
@@ -151,13 +152,17 @@ def front_matter(text):
     return meta, text[m.end():]
 
 
+# Lines that are references or signatures, never prose: issue and MR trailers, commit trailers, the AI attribution
+# header of the gh and glab skills.
+TRAILER = re.compile(r"^(?:>\s*:robot:|(?:refs|closes|fixes|resolves|related|part of|see also|assisted-by|co-authored-by|"
+                     r"signed-off-by|reviewed-by)\s*:)", re.I)
 def prose_markdown(body):
     """The text as the meter reads it: the `::: block attrs` and `:::` fences of sf-docs become blank lines, so a
     callout or a quote keeps its prose but its attributes are not read as a sentence."""
     out = []
     for line in body.splitlines():
         s = line.strip()
-        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{'):
+        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{') or TRAILER.match(s):
             out.append('')
         else:
             out.append(line)
