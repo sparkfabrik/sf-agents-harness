@@ -46,8 +46,25 @@ under constraints, never someone to persuade or to correct.
   - Headings too: `Cosa proponiamo` becomes `La proposta`, `Cosa abbiamo realizzato` becomes `Attività svolte`.
   - The client by name, never "voi" or "il Cliente" in running prose (the terms and
     conditions keep their legal form).
-  - The subject is what acts: the file, the pipeline, the team, the proposal. Name
-    SparkFabrik where its responsibility matters, not as the subject of every sentence.
+  - **Name SparkFabrik only where it distinguishes roles or carries credibility**: the
+    roles, the scope, the opening of a phase, experience and memberships. Once the roles
+    are set, the subject is the activity (`la baseline`, `l'audit`), the client's team,
+    or an impersonal form. Repeating the name in every paragraph adds no information.
+    - `SparkFabrik verifica i backup ogni mese.` becomes `I backup sono verificati ogni mese.`
+    - `SparkFabrik aiuta il team a migrare i database.` becomes `La migrazione dei database avviene in affiancamento al team.`
+  - **In Italian, keep the actor with an implied subject.** Once a paragraph names
+    SparkFabrik, the next sentences can leave the subject implied: `SparkFabrik conduce
+l'audit degli strumenti. Affianca poi il team nella configurazione della telemetria.`
+    Prefer it to a passive or "si" when SparkFabrik does the work, because a passive
+    hides who acts. Use the passive or "si" when the doer does not matter.
+  - **Never move work from one party to another** to drop the name. When SparkFabrik
+    does or shares the work, make the activity the subject ("la migrazione avviene in
+    affiancamento"), not the client's team ("il team migra"), which would change who
+    does it.
+  - **Never swap the name for a vague stand-in** such as "l'azienda" or "il fornitore": a
+    reader can take it for the client. Use the name, or rephrase without a subject.
+  - **A decision keeps its owner.** Approvals, the choice of a vendor or a tool, and
+    budget name who decides, because an impersonal form ("si valuta") hides it.
 - **Talks.** The speaker in the first person singular, as a practitioner ("ho
   costruito", "I changed my mind"). The slides themselves stay impersonal.
 - **Words a client or a source said** stay as they were said, in a quote block.
@@ -84,9 +101,11 @@ under constraints, never someone to persuade or to correct.
   - No: `Il codice smette di essere una scatola nera.` Yes: `I log e le metriche dei servizi sono raccolti in Grafana, con un cruscotto per ogni ambiente.`
 - **Business terms get their concrete basis.** Scalability, resilience, time-to-market,
   cost, productivity: name the observable consequence (see [glossary.md](glossary.md)).
-- **Name the actor** of every action (the provider, the platform team, the maintainer,
-  the client) and make causes explicit. A useful order is the mechanism, then its
-  operational effect, then the business consequence.
+- **Make responsibilities clear once.** Say who does what where the roles are set (the
+  provider, the platform team, the maintainer, the client); after that, name an actor
+  again only where it changes or two actors could be confused. Make causes explicit. A
+  useful order is the mechanism, then its operational effect, then the business
+  consequence.
 - **Trust comes from** named components and responsibilities, clear mechanisms,
   documented contributions and outcomes, explicit prerequisites and limits, and realistic
   trade-offs. For AI, include permissions, data handling, evaluation and human oversight
