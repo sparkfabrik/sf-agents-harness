@@ -41,7 +41,7 @@ Load `sf-writing-style` for additional writing guidance. Before drafting or publ
 
 1. **Detect GitLab URLs**: If the user provided a URL containing "gitlab" in the hostname, this is a GitLab resource. Do NOT use WebFetch, curl, or browser-based tools -- GitLab instances require authentication that only `glab` can provide. Extract the hostname and project path from the URL and proceed with `glab` commands. This applies to **all** GitLab URL types, including file URLs (`/-/raw/`, `/-/blob/`, `/-/tree/`) -- see the "Repository files" section for how to fetch file contents via `glab api`.
 2. **Confirm it's a GitLab project**: check `git remote -v` for "gitlab" in the URL. If so, use `glab` (not `gh`).
-3. **Verify authentication**: run `glab auth status`. If not authenticated for the relevant hostname, **stop and ask the user** -- do not proceed.
+3. **Verify authentication**: run `glab auth status`. In Codex, inspect the entry for the relevant hostname; another configured host can make the command fail. If the result is unclear, check only the target host with `glab api --hostname <hostname> user >/dev/null`. Follow [Handling auth errors](#handling-auth-errors) before deciding that the user needs to log in. In other agents, if not authenticated for the relevant hostname, stop and ask the user.
 
 ## CLI-first principle
 
@@ -102,9 +102,14 @@ Telltale sign you hit the wrong host: a `404 Project Not Found` for a project yo
 
 ## Handling auth errors
 
-If any `glab` command fails with "Unauthenticated", "401", "403", or "connection refused", **stop immediately**. Do NOT work around auth failures with WebFetch, curl, or `gh`. Self-hosted GitLab instances are private -- those fallbacks will also fail.
+In Codex, an auth check that fails inside its sandbox does not establish that the user's login is invalid. Classify the failure for the relevant GitLab hostname. In other agents, stop on auth errors and offer the login options below.
 
-Present the user with these options:
+1. **Check for sandbox or connectivity errors.** Examples include `could not read the token`, denied access to the operating system keyring or `/run/user/.../bus`, `operation not permitted`, connection failures, DNS or proxy failures, and timeouts. A nonzero `glab auth status` exit code can also come from a different configured host. If the cause is unclear, use the read-only target-host check above without printing credentials.
+2. **Retry with the access the CLI needs.** If the Codex sandbox may have blocked the keyring or network, request Codex sandbox escalation for that read-only check. The execution tool's normal approval policy still applies. If the check succeeds, the user is authenticated for that host. Run each subsequent `glab` command in the normal sandbox first; request separate escalation only if that command needs it. A successful auth check does not authorize later writes. During auth diagnosis, do not extract tokens, print them, pass them in command arguments, or change credential storage.
+3. **Report access limits accurately.** If Codex sandbox escalation is unavailable or denied, explain that Codex could not reach the keyring or API. Do not call the user logged out or recommend another login based on that result. Do not switch to WebFetch, curl, or `gh`.
+4. **Handle confirmed failures.** If a check with working keyring and network access returns `401` or reports an invalid credential for the target host, stop and offer the login options below. A `403` may mean insufficient permission for the requested operation; report that permission problem rather than requesting a new login.
+
+When authentication is confirmed to be invalid, present the user with these options:
 
 ### Option 1: OAuth login (preferred -- more secure, tokens auto-refresh)
 

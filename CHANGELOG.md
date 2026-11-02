@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-02]
+
+### Added
+
+- `sf-writing-style` skill: SparkFabrik's voice in Italian and English (core voice, who is talking, facts and evidence, the tells of machine-written text, banned openers, length and formatting of documents for clients) and a glossary of SparkFabrik's vocabulary, with a check script that prints each sentence to rewrite and verifies that a rewrite keeps every fact.
+- `sf-writing-style` skill: eval cases for voice and register, including two rejected sections of a client document.
+
+### Changed
+
+- `domain-modeling`, `mermaid-diagrams`, and `grill-with-docs` move from system skills to the optional `architecture` category; enable it with `ajust sf-harness-category enable architecture`.
+- `postmortem-writing` moves from system skills to the optional `operations` category; enable it with `ajust sf-harness-category enable operations`.
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
+- Upstream skill sync: refresh `angular/angular-developer`, `system/grilling`, and `system/playwright-cli` from the declared source repositories.
+- `sf-writing-style` skill: describes how SparkFabrik sounds for each kind of reader, in English and Italian, and lists the patterns of machine-written text (including slogans in place of a mechanism) as writing guidance for every text; the voice and glossary references apply to documents for clients only, and the style check is no longer required outside the `sf-docs` plugin.
+
+### Fixed
+
+- `sf-writing-style` skill: documents for clients name SparkFabrik only where it distinguishes roles or carries credibility, keep the owner of each decision, and no longer replace the name with stand-ins such as "l'azienda".
+- `sf-writing-style` style check: detect English text without a `lang` key, treat front matter without `tipo`, `cliente` or `evento` as plain text, stop reading `us-east-1` and `US` as the first person, and print English suggestions for English documents.
+
+## [2026-10-29]
+
+### Fixed
+
+- Scheduled OpenSpec update pull requests merge automatically again: the required `validate-and-check` check now runs on every pull request.
+- `gh` and `glab` skills: in Codex, distinguish sandbox access failures from invalid credentials before asking users to log in, and verify authentication for the relevant host.
+- `auto-format-doc` skill: in Codex, retry Markdown formatting with sandbox access when npm cannot reach the registry or write its cache.
+
+## [2026-10-28]
+
+### Fixed
+
+- `terraform-gcp-dashboards` skill: the normalizer keeps empty `collapsibleGroup` and `text` widgets instead of removing them, so dashboards using them are no longer rejected by the API. `collapsed: false` is still removed.
+
+## [2026-10-26]
+
+### Changed
+
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.15.0.
+- Upstream skill sync: refresh `angular/angular-developer` and `system/githuman` from the declared source repositories.
+
 ## [2026-10-22]
 
 ### Added
