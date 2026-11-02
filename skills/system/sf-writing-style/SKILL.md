@@ -1,6 +1,6 @@
 ---
 name: sf-writing-style
-description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, onboarding guides, and documents for clients (offers, studies, reports, decks, talks), in English or Italian, with SparkFabrik's voice and a check for the tells of machine-written text. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
+description: 'Canonical SparkFabrik writing style. MUST be loaded before composing, rewriting, or sending human-facing prose, including GitHub/GitLab issue and PR/MR titles or descriptions, comments, reviews, Slack messages and progress updates, changelogs, release notes, incident updates, docs, READMEs, ADRs, onboarding guides, and documents for clients (offers, studies, reports, decks, talks), in English or Italian. Trigger for operational requests such as "create an issue", "open or update a PR or MR", "post a Slack message", "write a comment", or "send an update", even when writing is only part of a larger CLI, API, MCP, connector, or webhook action. Do not trigger for code, logs, command output, quoted source text, or ordinary chat replies. Requires short, plain text focused on what changes; no implementation stories, padding, or AI slop.'
 ---
 
 # SparkFabrik writing style
@@ -55,16 +55,22 @@ Apply this style before sending text through `gh`, `glab`, Slack, an API, an MCP
 
 Words to replace with plainer ones: delve, leverage (as a verb), utilize, robust, seamless, seamlessly, comprehensive, crucial, pivotal, foster, streamline, empower, elevate, unlock, supercharge, game-changer, cutting-edge, holistic, synergy.
 
-Patterns to cut:
+Patterns that make a text read as machine-written, in English and Italian. Each one is fine once in a long text; a draft that leans on them reads generated. Write the alternative instead:
 
-- **Throat-clearing openers.** "This document aims to", "In this section we will", "It's worth noting that", "In today's fast-paced world". Start with the point instead.
-- **Summary outros.** "In conclusion", "Overall", "To summarize". Just stop.
-- **Hype symmetry.** "not only X but also Y", "whether you're X or Y", decorative triads ("fast, reliable, and scalable") unless each item is a load-bearing fact.
+- **Throat-clearing openers and talk about the text.** "This document aims to", "Let's dive in", "As we have seen", "In questo documento", "Come abbiamo visto", "In today's fast-paced world". Start with the point instead.
+- **Summary outros.** "In conclusion", "Overall", "To summarize", "In sintesi". End on the last fact or the next step.
+- **Closing one-liners.** A short aphorism that ends a paragraph ("Speed is a feature."). Fold it into the previous sentence as a consequence with its fact, or drop it.
+- **Rhetorical bridges.** "Here's the thing", "That's where X comes in", "Ed è proprio qui che", a paragraph that ends on a question. Let the next paragraph open on its own fact.
+- **Antithesis.** "It's not X, it's Y", "not only X but also Y", "Non è X, è Y". Say what Y is, directly. Keep the correction of X only when someone actually holds X.
+- **Colon setups.** "The result: …", "One rule: …". Write a full sentence. Keep colons before lists, quotes, code, and precise figures.
+- **Decorative triads.** "fast, reliable, and scalable". Keep only the items that carry a fact.
 - **Enthusiasm markers.** Exclamation points, emoji decoration, "Great question".
+
+Never ask a draft for hooks, rhetorical questions, or punchy closings: they produce these patterns.
 
 ## Air: paragraphs and whitespace
 
-- One idea per paragraph. One to three sentences, then a blank line.
+- One idea per paragraph. One to three sentences, then a blank line. Documents for clients follow the paragraph rules of `references/voice.md`.
 - A paragraph over three sentences gets split, or restructured into a list.
 - Blank line before and after every heading, list, and code block.
 - Prefer a full stop over a subordinate-clause chain. Two short sentences beat one long one.
@@ -116,26 +122,21 @@ After:
 
 See [references/examples.md](references/examples.md) for issues, descriptions, comments, changelogs, and necessary exceptions.
 
-## SparkFabrik's voice
+## Documents for clients
 
-Read [references/voice.md](references/voice.md) before writing anything longer than a short message, in Italian or in English, and always for a document SparkFabrik sends to a client (offer, study, report, handover, deck, talk). It defines:
+Before writing a document SparkFabrik sends to a client (offer, study, report, handover, deck, talk), in Italian or in English, read [references/voice.md](references/voice.md) and [references/glossary.md](references/glossary.md). They add:
 
-- **Who is talking.** The author in messages and MRs; SparkFabrik in the third person or impersonally in documents for clients, never "noi" or "we"; the speaker in the first person in a talk.
+- **Who is talking.** SparkFabrik in the third person or impersonally, never "noi" or "we"; the speaker in the first person in a talk.
 - **Facts, not claims.** Facts only from a source the user gave, no marketing words, no announcements or slogans.
-- **The six tells** of machine-written text, with Italian and English examples: the closing one-liner, talking about the text, the rhetorical bridge, "non è X, è Y" / "it's not X, it's Y", the colon chain, the fixed triad. They come from SparkFabrik's editorial pipeline, measured on 266 Italian texts written by people.
-- **The banned openers and fillers**, headings that name their topic, the length of a document for a client, and formatting: bold carries the skim, `**Label:** text` for descriptive items, italics rarely.
-- **How to review a draft** without rewarding the tells.
+- **The patterns above with Italian examples**, the banned Italian openers, and how to review a draft without rewarding them.
+- **Length and formatting** of a document: paragraph length, headings that name their topic, bold that carries the skim, `**Label:** text` items.
+- **The vocabulary** of SparkFabrik's practice, with the concrete basis each business term needs.
 
-The vocabulary (preferred terms by area, positioning concepts and their guardrails, business terms with their concrete basis) is in [references/glossary.md](references/glossary.md).
+Messages, issues, PR/MR descriptions, comments, READMEs, and internal docs follow this file only.
 
-The check measures a Markdown file and prints each sentence to rewrite with its move:
+When you rewrite a sentence, keep what it says: numbers, dates, names, quotes, links, and hedges ("about", "may", "circa") stay identical.
 
-```bash
-python3 <skill-dir>/scripts/style_check.py <file>.md
-python3 <skill-dir>/scripts/style_check.py --compare before.md after.md
-```
-
-Rewrite only the sentences it prints. `--compare` lists the numbers, names, links, quotes and hedges ("circa", "about") that a rewrite lost: put each back. A message or a description without front matter gets the tells and the banned phrases only, because the first person is normal there.
+The `scripts/` directory holds the check that the `sf-docs` plugin runs on its documents. Outside `sf-docs`, do not run it: the patterns above guide the writing, and you judge each sentence in context.
 
 ## Self-check before returning any prose
 
@@ -150,7 +151,8 @@ Rewrite only the sentences it prints. `--compare` lists the numbers, names, link
 9. If the artifact is a `.md` file, run the formatter per `auto-format-doc`. Formatting does not replace the content check.
 10. For a PR/MR description, confirm that you read and applied the required PR/MR reference.
 11. For text that GitHub, GitLab, or Slack will render, confirm that you applied the platform reference.
-12. For a long text and for any document for a client, confirm that you applied `references/voice.md` and that `scripts/style_check.py` reports nothing left to rewrite.
+12. No paragraph leans on the machine-written patterns listed above.
+13. For a document for a client, confirm that you applied `references/voice.md` and `references/glossary.md`.
 
 ## Interaction with other skills
 

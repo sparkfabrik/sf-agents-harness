@@ -1,9 +1,10 @@
 # SparkFabrik's voice
 
-How every SparkFabrik text sounds, in Italian and in English: a Slack message, an MR,
-a README, an offer, a study, a deck, a talk. The rules of the skill say how a text is
-built; this file says who is talking, which patterns make a text read as
-machine-written, and how to check a draft before it goes out. The website has its own
+How a document SparkFabrik sends to a client sounds, in Italian and in English: an
+offer, a study, a report, a handover, a deck, a talk. The `sf-writing-style` skill says
+how every text is built and lists the patterns to avoid in any text; this file adds who
+is talking in a document for a client, the patterns with Italian examples, the evidence
+a claim needs, and the length and formatting of a document. The website has its own
 voice (the `sf-copy` skill of the site repository) and is not covered here.
 
 The tells and the banned openers come from SparkFabrik's editorial pipeline, measured on
@@ -232,9 +233,10 @@ and hedges ("circa", "spesso", "può", "forse", "indicativo", "about", "may",
 "likely") stay identical: rewrites drift towards false certainty, which turns an
 estimate into a promise.
 
-## The check
+## The check (sf-docs)
 
-Run it on the finished Markdown, before a document is rendered or a long text is sent:
+The sf-docs skills run it on the finished Markdown, before a document is rendered.
+Outside sf-docs the patterns above guide the writing and the check is not run:
 
 ```bash
 python3 <skill-dir>/scripts/style_check.py <file>.md
@@ -246,8 +248,8 @@ for documents the first person plural, marketing words and long sections without
 (exit code 1); or "Nothing to rewrite." (exit code 0). On long prose it also gives
 advice on rhythm, which never blocks. Then:
 
-1. Rewrite only the sentences it printed, following the move next to each, with the
-   strongest writing model available. Leave every other sentence as it is.
+1. Rewrite only the sentences it printed, following the move next to each. Leave every
+   other sentence as it is.
 2. Compare the draft before and after the rewrite. It lists every number, name, link,
    quote and hedge that is missing after; put the original sentence back for each and
    rewrite it again:
@@ -270,8 +272,8 @@ The check is a writing aid: never mention it, or this procedure, in the text its
 
 When a skill asks for a review pass (a second reader, a self-review):
 
-- **Counting the tells is the check's job.** The reviewer never reports them and never
-  rewards them: "engaging questions", "smooth transitions" and "punchy closings" are
+- **Where the check runs, counting the tells is its job.** The reviewer never reports
+  them there; elsewhere, report a tell only when the text leans on it. Never reward them: "engaging questions", "smooth transitions" and "punchy closings" are
   defects, not qualities.
 - **Look for what the check cannot see**: a passage that repeats without adding
   anything (relevance), an empty claim (density), a fact without a source, a section

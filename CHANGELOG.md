@@ -16,6 +16,11 @@ Changes are grouped by date.
 
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
 - Upstream skill sync: refresh `angular/angular-developer`, `system/grilling`, and `system/playwright-cli` from the declared source repositories.
+- `sf-writing-style` skill: the patterns of machine-written text are writing guidance for every text, the voice and glossary references apply to documents for clients only, and the style check is no longer required outside the `sf-docs` plugin.
+
+### Fixed
+
+- `sf-writing-style` style check: detect English text without a `lang` key, treat front matter without `tipo`, `cliente` or `evento` as plain text, stop reading `us-east-1` and `US` as the first person, and print English suggestions for English documents.
 
 ## [2026-10-29]
 
