@@ -117,6 +117,7 @@ Who you are writing for sets the person and the register:
 - Plain verbs: use, run, build, check (not utilize, orchestrate, facilitate).
 - Prefer sentences under 20 words. Do not pack several clauses into one sentence to meet a sentence limit.
 - State each fact once. Delete padding rather than redistributing it into headings or bullets.
+- **In Italian, keep the technical terms Italian engineers say in English.** Write "dashboard", "deploy", "repository", "branch", never "cruscotto", "dispiegamento", "archivio", "ramo". Words with an ordinary Italian use stay Italian: "rilascio", "specifica", "aggiornamento". The list is in [references/glossary.md](references/glossary.md).
 
 ## Structure rules
 
