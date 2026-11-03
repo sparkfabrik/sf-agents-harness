@@ -91,6 +91,32 @@ Keep a business term when it names an observable consequence, and give it that b
 infrastructure and source code". Each one names a condition, a responsibility or
 evidence; repeated as a slogan it becomes a tell.
 
+## Technical terms in Italian text
+
+In Italian, keep a technical term in English when Italian engineers say it in English. Never translate it into an
+Italian word nobody in the trade uses: the reader stops on it, and it reads as machine-translated.
+
+| Write          | Not                          |
+| -------------- | ---------------------------- |
+| dashboard      | cruscotto                    |
+| deploy         | dispiegamento, dispiegare    |
+| repository     | archivio                     |
+| branch         | ramo                         |
+| merge          | unione, fusione              |
+| pull request   | richiesta di pull, di unione |
+| pipeline       | condotta                     |
+| framework      | quadro                       |
+| container      | contenitore                  |
+| token          | gettone                      |
+
+Cluster, plugin, skill, prompt, workflow, backlog, sprint, baseline, rollback, policy, build, release notes and
+on-call stay in English too. Write them in lower case, without italics or quotes, with the Italian article that
+the trade uses ("la dashboard", "il deploy", "il repository").
+
+The opposite also holds: a word with an ordinary Italian use stays Italian. Write "rilascio", "specifica",
+"aggiornamento", "manutenzione", "test", "monitoraggio", "sicurezza", never an English word where Italian already
+has the common one.
+
 ## Terms to avoid
 
 Aggressive sales commands and artificial scarcity ("la migliore offerta", "buy now");

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-03]
+
+### Added
+
+- `sf-writing-style` skill: Italian text keeps the technical terms engineers say in English ("dashboard", not "cruscotto"), with the list in the glossary and the check reporting the common calques.
+
 ## [2026-11-02]
 
 ### Added

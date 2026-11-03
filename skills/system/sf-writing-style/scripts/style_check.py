@@ -10,7 +10,8 @@ What it reports, each with the sentence and the move to rewrite it (exit code 1)
   above the 90th percentile of human writing; in English they are matched by their wording ("It's not X, it's Y",
   "Here's the thing", "Let's dive in"). In offers, decks and talks colons and short series are normal (prices, terms,
   labels), so the colon chain and the triad are not counted there;
-- the banned openers and fillers, in both languages;
+- the banned openers and fillers, in both languages, and in Italian the calques of technical terms said in English
+  ("cruscotto" for dashboard, references/glossary.md);
 - for documents, decks and talks: the first person plural (SparkFabrik speaks in the third person or impersonally;
   quotes of other people and talks are left out), marketing words, and long sections of an offer or a document with
   no bold at all.
@@ -100,6 +101,15 @@ BANNED_EN = [
     "it's worth noting", "it is worth noting", "needless to say", "at the end of the day", "in the realm of",
     "game-changer", "game changer", "paradigm shift", "in conclusion", "to sum up", "delve into", "unlock the power",
     "take it to the next level", "a testament to", "plays a crucial role", "navigate the complexities",
+]
+
+# Italian calques of technical terms that Italian engineers say in English (references/glossary.md). Only words that
+# are unambiguous in a technical text: "archivio", "ramo" or "quadro" have ordinary Italian uses and are left to the writer.
+CALQUES = [
+    (re.compile(r"\bcruscott[oi]\b", re.I), 'dashboard'),
+    (re.compile(r"\bdispiega(?:ment[oi]|re|to|ta|ti|te|no)?\b", re.I), 'deploy'),
+    (re.compile(r"\brichiest[ae] di (?:pull|unione|fusione)\b", re.I), 'pull request'),
+    (re.compile(r"\bgetton[ei]\b", re.I), 'token'),
 ]
 
 # The voice of client documents: SparkFabrik in the third person or impersonal, no marketing words, bold on what a
@@ -282,10 +292,21 @@ def check(text, genre=None, brief=None):
             if h.kind in m.tells_above:
                 tells.append({'tell': h.kind, 'sentence': h.sentence.strip(), 'move': MOVES[h.kind]})
     banned = [{'phrases': list(h.phrases), 'sentence': h.excerpt.strip()} for h in sm.find_phrases(md, BANNED)]
+    banned += calques(md)
     advice['rhythm'] = rhythm_advice(m, genre)
     rates = {k: round(v.per_1000, 1) for k, v in m.measures.items() if v.enabled}
     return {'genre': genre, 'lang': 'it', 'words': m.word_count, 'rates': rates, 'above': list(m.tells_above),
             'tells': tells, 'banned': banned, 'voice': voice(body, genre), 'advice': advice}
+
+
+def calques(md):
+    """The Italian calques of technical terms, reported as banned phrases with the English term to use."""
+    found = []
+    for p in sm.extract_prose(md):
+        for pattern, term in CALQUES:
+            for hit in pattern.finditer(p.text):
+                found.append({'phrases': [hit.group(0)], 'sentence': p.text.strip(), 'use': term})
+    return found
 
 
 def guess_lang(meta, md):
@@ -369,6 +390,9 @@ def main():
         for t in r['tells']:
             print(f"\n[{t['tell']}] {t['sentence']}\n  {t['move']}")
         for b in r['banned']:
+            if b.get('use'):
+                print(f"\n[calque: {b['phrases'][0]}] {b['sentence']}\n  Use the English term the trade uses: {b['use']}.")
+                continue
             print(f"\n[banned: {', '.join(b['phrases'])}] {b['sentence']}\n  Delete it or replace it with the fact it "
                   f"was meant to introduce; if the sentence existed only for it, delete the sentence.")
         for v in r['voice']:
