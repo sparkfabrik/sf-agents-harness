@@ -98,7 +98,7 @@ l'audit degli strumenti. Affianca poi il team nella configurazione della telemet
   ogni, sempre, nothing, every, always) or on a metaphor promises instead of describing.
   Say who does what, with which tool, at which step.
   - No: `Nessun rilascio avviene senza controlli.` Yes: `Le merge request eseguono i test della pipeline e richiedono l'approvazione di una persona del team prima del rilascio.`
-  - No: `Il codice smette di essere una scatola nera.` Yes: `I log e le metriche dei servizi sono raccolti in Grafana, con un cruscotto per ogni ambiente.`
+  - No: `Il codice smette di essere una scatola nera.` Yes: `I log e le metriche dei servizi sono raccolti in Grafana, con una dashboard per ogni ambiente.`
 - **Business terms get their concrete basis.** Scalability, resilience, time-to-market,
   cost, productivity: name the observable consequence (see [glossary.md](glossary.md)).
 - **Make responsibilities clear once.** Say who does what where the roles are set (the
