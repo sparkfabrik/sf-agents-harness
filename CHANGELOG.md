@@ -12,6 +12,10 @@ Changes are grouped by date.
 
 - `sf-writing-style` skill: Italian text keeps the technical terms engineers say in English ("dashboard", not "cruscotto"), with the list in the glossary and the check reporting the common calques.
 
+### Fixed
+
+- `sf-writing-style` skill: the voice example of a concrete sentence says "dashboard" instead of "cruscotto".
+
 ## [2026-11-02]
 
 ### Added
