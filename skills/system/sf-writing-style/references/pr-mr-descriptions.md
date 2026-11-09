@@ -29,6 +29,17 @@ The description should help a reviewer decide where to focus. It should not narr
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
 
+## Show new commands
+
+When a PR/MR adds a CLI command, such as a `just`, `sjust`, or `ajust` recipe, a script, or a binary subcommand, add a short `### Example` section after the bullets and before the issue reference. Do the same for new flags that change what a command prints.
+
+- Show the invocation and its output in a fenced `console` block.
+- Capture the output from an actual run. Never invent output or write an illustrative one.
+- Replace temporary or machine-specific paths with `~`.
+- Trim long output to the part a reviewer needs.
+
+The example is an allowed expansion beyond the default word limits, like validation evidence.
+
 ## Choose useful detail
 
 Include details that define the public contract:
@@ -44,7 +55,7 @@ Leave out details that make the description read like a patch inventory:
 
 - File-by-file or commit-by-commit summaries.
 - Internal function names, variables, source lines, or helper structure.
-- Test counts, full command lists, logs, and generated reports.
+- Test counts, full command lists, logs, and generated reports, except the example output of a new command.
 - Investigation history, rejected approaches, and workflow narration.
 - Generic tables or diagrams that do not make a complex relationship clearer.
 
@@ -61,6 +72,31 @@ Adds **export controls** for report data:
 - Date-range selection.
 - CSV download.
 - Remembered export preferences.
+
+### New command
+
+Adds **`sjust battery-health`** (`ajust battery-health` on Linux), which shows battery health in a table with a one-line verdict.
+
+- **macOS.** Cycle count, condition, and maximum capacity, compared against Apple's rating for the model.
+- **Linux.** Cycle count, health, and full versus design capacity.
+- **No battery.** Desktops print a message and exit 0.
+
+#### Example
+
+```console
+$ sjust battery-health
+Battery is healthy. Condition is Normal, with 92% maximum capacity after 126 cycles.
+
+╭──────────────────┬─────────────────╮
+│ Field            │ Value           │
+├──────────────────┼─────────────────┤
+│ Cycle Count      │ 126             │
+│ Condition        │ Normal          │
+│ Maximum Capacity │ 92%             │
+╰──────────────────┴─────────────────╯
+```
+
+Closes #690
 
 ### Complex configuration change
 

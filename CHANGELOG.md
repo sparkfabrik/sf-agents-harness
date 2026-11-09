@@ -8,6 +8,10 @@ Changes are grouped by date.
 
 ## [2026-11-09]
 
+### Added
+
+- `sf-writing-style`, `gh`, and `glab` skills: PR/MR descriptions for a new CLI command, or for flags that change its output, end with a short `### Example` section showing the invocation and its real captured output.
+
 ### Changed
 
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.1.
