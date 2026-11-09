@@ -1,6 +1,6 @@
 ---
 name: glab
-description: 'MUST be loaded before any GitLab-related action, including `glab auth status`, any other `glab` command, or composing and sending GitLab issue or merge request content. If repository inspection reveals a GitLab remote, load this skill before the next GitLab action. Trigger on the words "GitLab" or "glab", GitLab URLs or remotes, issues, merge requests, MRs, !N references, pipelines, releases, and repository files. This skill carries mandatory, non-derivable policy: issue template discovery before creation, AI attribution on every write, fully-qualified references, self-hosted host targeting, safe mutation rules, and CLI/API traps. Use `glab`, not `gh`, WebFetch, or curl, except where the skill explicitly requires curl for uploads. Do not invoke for GitHub tasks.'
+description: 'MUST be loaded before any GitLab-related action, including `glab auth status`, any other `glab` command, or composing and sending GitLab issue or merge request content. If repository inspection reveals a GitLab remote, load this skill before the next GitLab action. Trigger on the words "GitLab" or "glab", GitLab URLs or remotes, issues, merge requests, MRs, !N references, pipelines, releases, and repository files. This skill carries mandatory, non-derivable policy: issue template discovery before creation, AI attribution on every write, fully-qualified references, self-hosted host targeting, safe mutation rules, and CLI/API traps. Use `glab`, not `gh`, WebFetch, or curl. Do not invoke for GitHub tasks.'
 ---
 
 # glab CLI Skill
@@ -19,8 +19,8 @@ Apply these rules whenever you draft or send a title, description, comment, revi
 - **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
 - **Layout.** Open with the main change. Bold a short key phrase, not a whole sentence. Put distinct features or changes in bullets instead of a comma-packed paragraph. Use headings only to separate useful sections, not generic labels like "MR description". One uncomplicated behavior change needs no list; a feature with several visible parts should list those parts. No empty sections, mandatory headings, bullet counts, or minimum length. State each fact once; do not restate the fix as its opposite in the old behavior unless the comparison is needed.
 - **Emphasis and identifiers.** Readers scan issues and comments as much as descriptions. Bold the two to five words a scanning reader must not miss, such as the problem, the wanted result, a required action, or a deadline, and leave the rest of the sentence plain. A label such as `**Wanted:**` also works. Show every identifier you keep as code, such as hostnames and domains, ports, branch names, versions, labels, and cloud resource names, but keep links, issue and PR/MR references, and mentions bare so they still link. Formatting never justifies keeping an identifier the reader does not need.
-- **Supporting evidence.** Include supplied screenshots when they clarify a visible change; label before/after only when both are supplied. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results. When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section with the invocation and its real captured output in a `console` block.
-- **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, essential context, necessary validation, a new command's example output, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
+- **Supporting evidence.** Add a preview only when it shows a reviewer the result faster than the diff; most changes need none. Prefer text, such as real command output or a rendered or generated result, and add a screenshot only when layout or rendering is the point and text cannot show it. Use only supplied material or output captured from the changed code, label before/after only when both exist, and remove secrets and personal or customer data first. When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section with the invocation and its real captured output in a `console` block. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results.
+- **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, essential context, necessary validation, a short preview, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
 
 Before posting, read the actual outgoing text. Cut every sentence that does not state the change, problem, answer, essential context, required action, or useful verified evidence. Remove code locations and test inventories unless explicitly requested. Check each factual claim against the final diff and current evidence; remove stale claims when scope changes. Describe this diff; omit already-merged changes and workflow history unless explicitly requested. Can a reader outside the conversation identify what changes, any required action, and what was actually verified? Then check the length and remove repetition. Reading the diff is required; narrating it is not. Rewrite commit-generated descriptions before posting. Return the description itself, without code fences, block quotes, or commentary about omitted details unless requested.
 
@@ -636,55 +636,31 @@ If you must use a numeric ID, use the global `id` field (not `iid`) from the API
 
 ## File uploads (images, attachments)
 
-`glab api` **cannot** do multipart file uploads. It only sends JSON request bodies -- the `-F file=@path` flag reads the file as a string value into a JSON field, not as `multipart/form-data`. For binary files (images, PDFs, etc.) this produces a 400 Bad Request.
-
-There is no `glab upload` subcommand for project uploads either (`glab release upload` only handles release assets).
-
-**Use `curl` with the GitLab project uploads API instead.** Extract the auth token from `glab` for the `curl` request:
-
-### Step 1: Get the token and project ID
+No `glab` subcommand uploads a file for a description or comment, and `glab release upload` only handles release assets. Use `glab api --form` with the project uploads API. It needs `glab` 1.91 or later and uses the stored login, so no token is read or printed.
 
 ```bash
-# Get the token (look for the "Token found:" line)
-GITLAB_HOST=<hostname> glab auth status -t
+# Inside a clone of the project
+GITLAB_HOST=<hostname> glab api projects/:id/uploads --form "file=@path/to/image.png" | jq -r '.markdown'
+# ![image](/uploads/<hash>/image.png)
 
-# Get the numeric project ID (inside a git repo)
-GITLAB_HOST=<hostname> glab api projects/:id | jq '.id'
+# Outside a clone: URL-encode the project path
+GITLAB_HOST=<hostname> glab api "projects/group%2Fproject/uploads" --form "file=@path/to/image.png" | jq -r '.markdown'
 ```
 
-### Step 2: Upload the file
+- **`--form`, not `-F`.** `--form` sends `multipart/form-data` and switches the method to POST. `-F file=@path` reads the file into a JSON string field and does not upload it.
+- **No `curl` and no token.** Never extract the token to upload with another tool, and never run `glab auth status -t`: it prints the token.
+- **Response.** The JSON holds `markdown`, ready to paste, and `url`, a path that resolves only inside this project. Replace the default alt text with a description of what the image shows.
+- **Visibility.** In a private or internal project the file is visible to people who can view the project, unless the project turned off "Require authentication to view media files". In a public project anyone with the link can open it, even when it is attached to a confidential issue.
+- **Before uploading.** Open the file and remove secrets, personal data, and customer data. An uploaded file is hard to delete.
+- **No other host.** Never use an external image host, a snippet, a release asset, or a commit on the branch to show an image.
 
-**Detecting token type:** if `glab auth status` shows `Logged in ... (keyring)` without mentioning a PAT (browser login), it's an OAuth token -- use `Authorization: Bearer`. If you provided a PAT directly, use `PRIVATE-TOKEN`. When in doubt, try Bearer first -- if you get a 401, retry with `PRIVATE-TOKEN`.
+Use the returned Markdown in an MR or issue description or comment:
 
-```bash
-curl --silent --show-error --request POST \
-  --header "Authorization: Bearer <token>" \
-  --form "file=@path/to/image.png" \
-  "https://<hostname>/api/v4/projects/<project-id>/uploads"
+```markdown
+![Login form with the validation message](/uploads/<hash>/image.png)
 ```
 
-### Step 3: Use the returned markdown URL
-
-The upload returns JSON with a `markdown` field ready to paste into descriptions:
-
-```json
-{
-  "id": 12345,
-  "alt": "image",
-  "url": "/uploads/<hash>/image.png",
-  "markdown": "![image](/uploads/<hash>/image.png)"
-}
-```
-
-Use this in MR/issue descriptions or comments:
-
-```bash
-GITLAB_HOST=<hostname> glab mr update 4 --description "## Screenshot
-
-![image](/uploads/<hash>/image.png)"
-```
-
-When adding the screenshot to an existing description, follow the re-fetch rule from "Reviewing and managing MRs": fetch the current raw description first and append to it — `--description` replaces the whole body.
+When adding the image to an existing description, follow the re-fetch rule from "Reviewing and managing MRs": fetch the current raw description first and append to it, because `--description` replaces the whole body.
 
 ---
 

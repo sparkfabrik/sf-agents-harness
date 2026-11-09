@@ -12,6 +12,9 @@ Both render GitHub-flavored Markdown with headings, tables, task lists, and fenc
 - **Templates come first.** When a project has issue or PR/MR templates, keep their required headings and fill them. Remove hint text and placeholders that do not apply.
 - **Parent and child work.** When the tracker has no native parent-child feature, use one parent issue whose task list holds fully-qualified references to the child issues, write dependencies as text such as "blocks #43", and link each child back to the parent.
 - **Long detail can collapse.** Use `<details><summary>Logs</summary> ... </details>` for supplied material a reader may need but should not scroll past.
+- **Images use platform storage.** Upload through the platform's attachment feature and paste the Markdown it returns. The `gh` and `glab` skills show the commands. In a private repository the image is visible only to people who can see the repository. In a public one, anyone with the link can open it.
+- **Before and after sit side by side.** Use a two-column table with one image per cell when both exist.
+- **Diagrams stay text.** Both platforms render a fenced `mermaid` block.
 
 ## Slack
 
