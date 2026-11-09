@@ -638,7 +638,12 @@ If you must use a numeric ID, use the global `id` field (not `iid`) from the API
 
 No `glab` subcommand uploads a file for a description or comment, and `glab release upload` only handles release assets. Use `glab api --form` with the project uploads API. It needs `glab` 1.91 or later and uses the stored login, so no token is read or printed.
 
+Before uploading to a private or internal project, check that it requires authentication to view media files. Upload only when the result is `true`. When it is `false`, `null`, or missing (the field can be hidden from your role), do not upload: use a text preview, or give the user the image path to attach.
+
 ```bash
+# Must print true before you upload to a private or internal project
+GITLAB_HOST=<hostname> glab api projects/:id | jq '.enforce_auth_checks_on_uploads'
+
 # Inside a clone of the project
 GITLAB_HOST=<hostname> glab api projects/:id/uploads --form "file=@path/to/image.png" | jq -r '.markdown'
 # ![image](/uploads/<hash>/image.png)
@@ -650,7 +655,7 @@ GITLAB_HOST=<hostname> glab api "projects/group%2Fproject/uploads" --form "file=
 - **`--form`, not `-F`.** `--form` sends `multipart/form-data` and switches the method to POST. `-F file=@path` reads the file into a JSON string field and does not upload it.
 - **No `curl` and no token.** Never extract the token to upload with another tool, and never run `glab auth status -t`: it prints the token.
 - **Response.** The JSON holds `markdown`, ready to paste, and `url`, a path that resolves only inside this project. Replace the default alt text with a description of what the image shows.
-- **Visibility.** In a private or internal project the file is visible to people who can view the project, unless the project turned off "Require authentication to view media files". In a public project anyone with the link can open it, even when it is attached to a confidential issue.
+- **Visibility.** In a private or internal project the file is visible only to people who can view the project when "Require authentication to view media files" (`enforce_auth_checks_on_uploads`) is on. When it is off, anyone with the link can open the file. In a public project anyone with the link can always open it, even when it is attached to a confidential issue.
 - **Before uploading.** Open the file and remove secrets, personal data, and customer data. An uploaded file is hard to delete.
 - **No other host.** Never use an external image host, a snippet, a release asset, or a commit on the branch to show an image.
 
