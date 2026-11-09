@@ -638,11 +638,13 @@ If you must use a numeric ID, use the global `id` field (not `iid`) from the API
 
 No `glab` subcommand uploads a file for a description or comment, and `glab release upload` only handles release assets. Use `glab api --form` with the project uploads API. It needs `glab` 1.91 or later and uses the stored login, so no token is read or printed.
 
-Before uploading to a private or internal project, check that it requires authentication to view media files. Upload only when the result is `true`. When it is `false`, `null`, or missing (the field can be hidden from your role), do not upload: use a text preview, or give the user the image path to attach.
+Before the first upload to a project, read its visibility and media setting with one call. Do it once per project per session and reuse the result for every later upload there, never once per image. If you already fetched `projects/:id` in this session, for example to resolve `path_with_namespace`, read the fields from that response instead of calling again.
+
+For a `private` or `internal` project, upload only when `enforce_auth_checks_on_uploads` is `true`. When it is `false`, `null`, or missing (the field can be hidden from your role), do not upload: use a text preview, or give the user the image path to attach.
 
 ```bash
-# Must print true before you upload to a private or internal project
-GITLAB_HOST=<hostname> glab api projects/:id | jq '.enforce_auth_checks_on_uploads'
+# One call per project per session: path, visibility and media setting together
+GITLAB_HOST=<hostname> glab api projects/:id | jq '{path_with_namespace, visibility, enforce_auth_checks_on_uploads}'
 
 # Inside a clone of the project
 GITLAB_HOST=<hostname> glab api projects/:id/uploads --form "file=@path/to/image.png" | jq -r '.markdown'

@@ -562,7 +562,7 @@
       "files": [],
       "assertions": [
         "Does NOT upload the image to an external image host, paste service, snippet, or another repository",
-        "Checks the project's `enforce_auth_checks_on_uploads` setting before uploading",
+        "Checks the project's `enforce_auth_checks_on_uploads` setting with a single project API call before uploading, without repeating it",
         "Uploads with `glab api` and `--form \"file=@tmp/invoice.png\"` only when that setting is `true`",
         "Does NOT upload when the setting is `false`, `null`, or missing, and offers a text preview or the image path instead",
         "Does NOT claim the uploaded image is private without that check",
