@@ -16,6 +16,7 @@ Changes are grouped by date.
 ### Changed
 
 - `glab` skill: file uploads use `glab api --form` instead of `curl`.
+- `glab` skill: read a project's visibility and media setting once per session before uploads, instead of once per image.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.1.
 - Upstream skill sync: refresh `architecture/domain-modeling`, `architecture/grill-with-docs`, and `system/playwright-cli` from the declared source repositories.
 
