@@ -31,7 +31,7 @@ There is no hard word limit for complex descriptions. Use the shortest descripti
 
 ## Show new commands
 
-When a PR/MR adds a CLI command, such as a `just`, `sjust`, or `ajust` recipe, a script, or a binary subcommand, add a short `### Example` section after the bullets and before the issue reference. Do the same for new flags that change what a command prints.
+When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section after the bullets and before the issue reference.
 
 - Show the invocation and its output in a fenced `console` block.
 - Capture the output from an actual run. Never invent output or write an illustrative one.
@@ -75,27 +75,19 @@ Adds **export controls** for report data:
 
 ### New command
 
-Adds **`sjust macos-battery-health`**, which shows battery health on macOS in a table with a one-line verdict.
+Adds a **`report export`** subcommand that writes report data to a file.
 
-- **Health.** Cycle count, condition, and maximum capacity, compared against Apple's rating for the model.
-- **Controller data.** Raw capacities as a percentage of design, temperatures, and the daily max charge.
+- **`--format`** accepts `csv` or `json`.
+- **`--since`** limits the export to rows after a date.
 
 #### Example
 
 ```console
-$ sjust macos-battery-health
-Battery is healthy. Condition is Normal, with 92% maximum capacity after 126 cycles.
-
-╭──────────────────┬─────────────────╮
-│ Field            │ Value           │
-├──────────────────┼─────────────────┤
-│ Cycle Count      │ 126             │
-│ Condition        │ Normal          │
-│ Maximum Capacity │ 92%             │
-╰──────────────────┴─────────────────╯
+$ app report export --format csv --since 2026-01-01
+Exported 128 rows to ~/reports/report-2026-01-01.csv
 ```
 
-Closes #690
+Closes #42
 
 ### Complex configuration change
 

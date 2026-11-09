@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Added
 
-- `sf-writing-style`, `gh`, and `glab` skills: PR/MR descriptions for a new CLI command, or for flags that change its output, end with a short `### Example` section showing the invocation and its real captured output.
+- `sf-writing-style`, `gh`, and `glab` skills: PR/MR descriptions for a new command-line command, subcommand, or task-runner target, or for a flag that changes what a command prints, end with a short `### Example` section showing the invocation and its real captured output.
 
 ### Changed
 
