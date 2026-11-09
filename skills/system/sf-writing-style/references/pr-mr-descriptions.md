@@ -75,16 +75,15 @@ Adds **export controls** for report data:
 
 ### New command
 
-Adds **`sjust battery-health`** (`ajust battery-health` on Linux), which shows battery health in a table with a one-line verdict.
+Adds **`sjust macos-battery-health`**, which shows battery health on macOS in a table with a one-line verdict.
 
-- **macOS.** Cycle count, condition, and maximum capacity, compared against Apple's rating for the model.
-- **Linux.** Cycle count, health, and full versus design capacity.
-- **No battery.** Desktops print a message and exit 0.
+- **Health.** Cycle count, condition, and maximum capacity, compared against Apple's rating for the model.
+- **Controller data.** Raw capacities as a percentage of design, temperatures, and the daily max charge.
 
 #### Example
 
 ```console
-$ sjust battery-health
+$ sjust macos-battery-health
 Battery is healthy. Condition is Normal, with 92% maximum capacity after 126 cycles.
 
 ╭──────────────────┬─────────────────╮
