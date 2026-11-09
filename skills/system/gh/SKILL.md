@@ -19,8 +19,8 @@ Apply these rules whenever you draft or send a title, description, comment, revi
 - **Plain English.** Use familiar words and concrete verbs. Keep necessary technical names exact. No invented jargon or padding. Use complete sentences in prose; parallel bullet items may be short phrases.
 - **Layout.** Open with the main change. Bold a short key phrase, not a whole sentence. Put distinct features or changes in bullets instead of a comma-packed paragraph. Use headings only to separate useful sections, not generic labels like "MR description". One uncomplicated behavior change needs no list; a feature with several visible parts should list those parts. No empty sections, mandatory headings, bullet counts, or minimum length. State each fact once; do not restate the fix as its opposite in the old behavior unless the comparison is needed.
 - **Emphasis and identifiers.** Readers scan issues and comments as much as descriptions. Bold the two to five words a scanning reader must not miss, such as the problem, the wanted result, a required action, or a deadline, and leave the rest of the sentence plain. A label such as `**Wanted:**` also works. Show every identifier you keep as code, such as hostnames and domains, ports, branch names, versions, labels, and cloud resource names, but keep links, issue and PR/MR references, and mentions bare so they still link. Formatting never justifies keeping an identifier the reader does not need.
-- **Supporting evidence.** Include supplied screenshots when they clarify a visible change; label before/after only when both are supplied. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results.
-- **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, essential context, necessary validation, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
+- **Supporting evidence.** Add a preview only when it shows a reviewer the result faster than the diff; most changes need none. Prefer text, such as real command output or a rendered or generated result, and add a screenshot only when layout or rendering is the point and text cannot show it. Use only supplied material or output captured from the changed code, label before/after only when both exist, and remove secrets and personal or customer data first. When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section with the invocation and its real captured output in a `console` block. Include a short, verified validation result when it helps assess the change. Do not dump commands, logs, or test counts, or invent screenshots or results.
+- **Exceptions.** Include essential breaking changes and required user actions. Expand only for these essentials, essential context, necessary validation, a short preview, explicitly requested detail, or required template fields, using the fewest words needed. A direct question about how or why deserves a direct answer.
 
 Before posting, read the actual outgoing text. Cut every sentence that does not state the change, problem, answer, essential context, required action, or useful verified evidence. Remove code locations and test inventories unless explicitly requested. Check each factual claim against the final diff and current evidence; remove stale claims when scope changes. Describe this diff; omit already-merged changes and workflow history unless explicitly requested. Can a reader outside the conversation identify what changes, any required action, and what was actually verified? Then check the length and remove repetition. Reading the diff is required; narrating it is not. Rewrite commit-generated descriptions before posting. Return the description itself, without code fences, block quotes, or commentary about omitted details unless requested.
 
@@ -419,6 +419,29 @@ gh api -X PATCH repos/{owner}/{repo}/pulls/comments/<comment_id> -f body="Update
 # Delete a review comment
 gh api -X DELETE repos/{owner}/{repo}/pulls/comments/<comment_id>
 ```
+
+---
+
+## Attaching images
+
+`gh` 2.99 and later uploads local images with the repeatable `--attach` flag on `gh pr create`, `gh pr edit`, `gh pr comment`, `gh issue create`, `gh issue edit`, and `gh issue comment`. `gh pr review` has no `--attach` flag.
+
+```bash
+# Alt text follows "#" after the path
+gh pr create --title "feat(reports): add date filter" --body-file body.md \
+  --attach './date-filter.png#Customer list with the date filter open'
+
+# Append to an existing description
+gh pr edit 15 --attach ./before.png --attach ./after.png
+```
+
+- **Placement.** Reference the file in the body as `![alt](./date-filter.png)` and `gh` rewrites the path to the uploaded URL. An attachment the body does not reference is appended at the end.
+- **Existing body.** `gh pr edit --attach` and `gh issue edit --attach` without a body flag keep the current body and append the attachment.
+- **Limits.** PNG, JPEG, GIF, WebP, and SVG, up to 10 MB per image and 50 files per command.
+- **Access.** The upload needs write access to the repository. It is not available on GitHub Enterprise Server.
+- **Visibility.** An image uploaded to a private or internal repository is visible only to people who can see that repository. In a public repository anyone with the link can open it.
+- **Before uploading.** Open the image and remove secrets, personal data, and customer data. An uploaded file is hard to delete.
+- **Fallback.** When `--attach` is unavailable, use a text preview or give the user the image path so they can attach it. Never use an external image host, a gist, a release asset, or a commit on the branch to show an image.
 
 ---
 

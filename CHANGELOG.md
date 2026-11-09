@@ -8,10 +8,20 @@ Changes are grouped by date.
 
 ## [2026-11-09]
 
+### Added
+
+- `sf-writing-style`, `gh`, and `glab` skills: PR/MR descriptions get a preview (real output, a rendered result, or a screenshot when text cannot show the change) only when it helps the reviewer, and a new command-line command, subcommand, task-runner target, or output-changing flag always gets a `### Example` section with its real captured output.
+- `gh` skill: attach images to issues, pull requests, and comments with `--attach`.
+
 ### Changed
 
+- `glab` skill: file uploads use `glab api --form` instead of `curl`.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.1.
 - Upstream skill sync: refresh `architecture/domain-modeling`, `architecture/grill-with-docs`, and `system/playwright-cli` from the declared source repositories.
+
+### Security
+
+- `glab` skill: the file upload steps no longer print the access token.
 
 ## [2026-11-03]
 
