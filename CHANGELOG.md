@@ -10,6 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.1.
 - Upstream skill sync: refresh `architecture/domain-modeling`, `architecture/grill-with-docs`, and `system/playwright-cli` from the declared source repositories.
 
 ## [2026-11-03]
