@@ -64,7 +64,37 @@ Only use suppressions in these specific cases:
 2. **Drupal core API limitations** - Framework constraints
 3. **False positives** - After confirming with user that it's truly a false positive
 
-**ALWAYS ask the user first** before adding any suppression.
+**ALWAYS ask the user first** before adding any suppression. When you have tried every fix pattern in this skill and still cannot resolve an error cleanly, stop and give the user this report:
+
+> **QA error I could not fix cleanly**
+>
+> **Tool:** [PHPCS | PHPMD | PHPStan | CSpell]
+> **Error:** [exact error message]
+> **File:** [path:line]
+>
+> **What I tried:** [each fix attempt]
+>
+> **Why it did not work:** [third-party code, Drupal core API contract, or suspected false positive, with the reasoning]
+>
+> **Proposed suppression:** [exact annotation and where it goes]
+
+Add the proposed suppression only after the user's explicit OK. A suspected false positive goes through the same report: present your reasoning and let the user decide.
+
+`@phpstan-param` / `@phpstan-return` are type annotations, not suppressions, so they need no report (see Core Principle 2).
+
+### 6. Commit Through the Hooks
+Every commit runs the project's hooks (GrumPHP and any pre-commit checks): fix the failures until the hooks pass. Getting a commit through any other way needs the user's explicit OK first, exactly like a suppression. That covers:
+
+- `git commit --no-verify`
+- disabling GrumPHP or one of its tasks
+- lowering a tool's threshold or level
+- adding or regenerating a baseline
+
+### 7. Projects With a Lowered QA Bar
+Some projects run QA below the platform standard (a lower PHPStan level, tools turned off, a baseline) because their legacy code would not pass. In those projects:
+
+- **Code you write or change** meets the platform standard described in the `drupal-php-standards` skill, even where the project's QA would accept less.
+- **Code you don't touch** stays as it is, even in the same file, as long as the project's QA accepts it, so the diff stays focused on the task. Clean it up only when the user asks, and list the violations you noticed as a follow-up. A failure the project's own QA reports still has to be fixed for the commit to pass the hooks.
 
 ## Workflow
 
@@ -307,7 +337,9 @@ QA is complete when:
 
 1. ✅ `make drupal-qa` passes with 0 errors
 2. ✅ No suppressions added (or user explicitly approved them)
-3. ✅ Code is more maintainable than before
-4. ✅ All legitimate technical terms in dictionary
-5. ✅ Type safety improved with assertions
-6. ✅ Complex methods refactored into smaller pieces
+3. ✅ The commit ran through the hooks
+4. ✅ New and changed code meets the platform standard, even on projects with a lowered QA bar
+5. ✅ Code is more maintainable than before
+6. ✅ All legitimate technical terms in dictionary
+7. ✅ Type safety improved with assertions
+8. ✅ Complex methods refactored into smaller pieces

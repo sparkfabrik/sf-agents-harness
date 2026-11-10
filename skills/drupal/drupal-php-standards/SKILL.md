@@ -25,6 +25,37 @@ The four tools and what they care about:
 | **PHPMD**   | Code complexity and design           | All rulesets except cleancode                                |
 | **CSpell**  | Spelling in identifiers and comments | en-US + Italian dictionary                                   |
 
+## Suppressions Need the User's OK
+
+**Write code that passes QA without suppressions.** Add one of the following
+only after the user's explicit OK:
+
+| Form                    | Example                                           | Why it needs an OK                         |
+|-------------------------|---------------------------------------------------|--------------------------------------------|
+| PHPStan inline ignore   | `// @phpstan-ignore-next-line`                    | Masks a type or logic error                |
+| PHPStan scoped ignore   | `// @phpstan-ignore method.notFound`              | Same                                       |
+| PHPMD docblock suppress | `@SuppressWarnings("PHPMD.CyclomaticComplexity")` | Hides design problems                      |
+| PHPCS inline disable    | `// phpcs:ignore` / `// phpcs:disable`            | Hides style violations                     |
+| Global PHPStan baseline | `ignoreErrors:` entry in `phpstan.neon`           | Silently accepts broken types project-wide |
+
+> **Design principle:** if the code you are about to write would need a
+> suppression annotation to pass QA, the code is wrong. Write it differently.
+
+Think through QA compliance before writing, not after. The sections below give
+you the patterns to do this.
+The `references/phpstan-common-errors.md` reference lists every frequent error
+class with a clean fix.
+
+**`@phpstan-param` / `@phpstan-return` are type annotations, not suppressions.**
+Use them wherever PHPStan needs a more precise type than the native one: array
+shapes, and inherited Drupal core / contrib methods where a plain `@param` would
+conflict with the parent docblock. See `references/phpstan-common-errors.md`
+sections 1, 6 and 12.
+
+If you cannot write clean code that passes QA, **stop and tell the user**, and
+add a suppression only if they approve it. See the `drupal-qa` skill for the
+report to give them.
+
 ## File Boilerplate
 
 Every PHP file must start with:
@@ -460,8 +491,9 @@ final class MyAttribute extends AttributeBase {
 
 ### @SuppressWarnings Syntax
 
-When you need `@SuppressWarnings(PHPMD.UnusedFormalParameter)` in a docblock,
-always use double quotes around the value. Without quotes, PHPStan parses the
+When the user has approved a PHPMD suppression such as
+`@SuppressWarnings(PHPMD.UnusedFormalParameter)`, always use double quotes around
+the value. Without quotes, PHPStan parses the
 dot as unexpected syntax and reports `phpDoc.parseError`:
 
 ```php
@@ -528,16 +560,78 @@ private function buildResult(array $data): mixed {
 | Short method name        | Minimum 2 characters                                                              |
 | Long class name          | Maximum 60 characters (subtracting Controller/Service/Interface/Manager suffixes) |
 | Short/Long variable name | **Not enforced** (excluded)                                                       |
-| CamelCase parameters     | **Not enforced** (excluded — Drupal uses snake_case parameters)                   |
-| CamelCase variables      | **Not enforced** (excluded)                                                       |
+| CamelCase parameters     | **Not enforced by PHPMD** (excluded), but snake_case is required (see below)      |
+| CamelCase variables      | **Not enforced by PHPMD** (excluded), but snake_case is required (see below)      |
+
+### Variable and Parameter Naming: snake_case Required
+
+PHPMD does not enforce a naming convention for variables and parameters (the
+CamelCase rules are excluded). **This project requires snake_case** for:
+
+- **Local variables**: `$my_variable`, `$node_ids`, `$field_value`
+- **Function and method parameters**: `$entity_type`, `$destination_property`
+
+**Class properties stay camelCase**, including constructor-promoted
+properties injected via dependency injection:
+
+```php
+// ✅ Correct: properties are camelCase, local vars and params are snake_case
+final class NodeProcessor {
+
+    public function __construct(
+        private readonly EntityTypeManagerInterface $entityTypeManager,
+        private readonly LoggerInterface $logger,
+    ) {}
+
+    public function process(string $bundle_name, int $batch_size): void {
+        $node_storage = $this->entityTypeManager->getStorage('node');
+        $node_ids = $node_storage->getQuery()
+            ->accessCheck(FALSE)
+            ->condition('type', $bundle_name)
+            ->range(0, $batch_size)
+            ->execute();
+
+        foreach ($node_ids as $node_id) {
+            $this->logger->info('Processing node @id', ['@id' => $node_id]);
+        }
+    }
+
+}
+
+// ❌ Wrong: camelCase local variables and parameters
+final class NodeProcessor {
+
+    public function process(string $bundleName, int $batchSize): void {
+        $nodeStorage = $this->entityTypeManager->getStorage('node');
+        $nodeIds = $nodeStorage->getQuery()
+            ->accessCheck(FALSE)
+            ->condition('type', $bundleName)
+            ->range(0, $batchSize)
+            ->execute();
+
+        foreach ($nodeIds as $nodeId) {
+            $this->logger->info('Processing node @id', ['@id' => $nodeId]);
+        }
+    }
+
+}
+```
+
+**Edge cases:**
+
+- Single-word variables need no underscore: `$node`, `$value`, `$result`
+- Loop counters are fine as single letters: `$i`, `$k`, `$v`
+- Variables matching Drupal core interface signatures keep whatever case
+  the interface uses (e.g., `$plugin_id`, `$plugin_definition`)
 
 ### Unused Code
 
 - Unused local variables are flagged, **except** in foreach loops
 - Unused private methods and properties are flagged
-- Unused formal parameters: use `@SuppressWarnings("PHPMD.UnusedFormalParameter")`
-  only when the parameter is required by a hook or interface signature you cannot
-  change. This is the one suppression that is routinely acceptable.
+- Unused formal parameters: when a hook or interface signature you cannot change
+  requires the parameter, propose `@SuppressWarnings("PHPMD.UnusedFormalParameter")`
+  to the user. It is the suppression users approve most often, but it still needs
+  their OK.
 
 ---
 
@@ -865,5 +959,8 @@ Before writing any PHP, mentally run through this list:
 18. `\in_array($v, $arr, true)` — always pass strict `true` as third param
 19. No short ternary `?:` — use `??` or full ternary with explicit condition
 20. Array params always typed — `array<array-key, mixed>` at minimum, not bare `array`
-21. `@SuppressWarnings("PHPMD.X")` with double quotes (not unquoted)
+21. No suppression without the user's OK; an approved PHPMD one uses
+    `@SuppressWarnings("PHPMD.X")` with double quotes (not unquoted)
 22. Don't promote constructor params that are forwarded to `parent::__construct()`
+23. Local variables and parameters use `snake_case`; class properties stay
+    `camelCase`
