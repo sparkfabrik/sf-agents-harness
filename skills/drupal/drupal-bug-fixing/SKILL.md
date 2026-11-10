@@ -64,10 +64,11 @@ patch), and is that fix already in a release.
 Most projects keep their issues on drupal.org. Some moved them to GitLab work items
 on `git.drupalcode.org`, and their drupal.org queue stops getting new issues. Check
 which case applies before searching: `drupalorg project:issues <project> --limit=1`
-prints "Project uses GitLab work items" for a moved project. Without the CLI, an
-empty or stale drupal.org queue, or an `api-d7` issue lookup that returns a
-`new_url`, means the same. Search the place where the issues live now; old issues
-from before the move stay on drupal.org.
+prints "Project uses GitLab work items" for a moved project. Without the CLI,
+confirm the current tracker from an explicit migration notice or an `api-d7`
+issue lookup returning a `new_url`; an empty or stale queue alone is not evidence
+of a move. Search the current tracker and the old drupal.org queue for issues
+from before the move.
 
 ### Search
 
