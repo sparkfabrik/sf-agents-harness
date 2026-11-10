@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-10]
+
+### Changed
+
+- `drupal-rebase-mr` skill: finds MRs, patches and fork branches with the `drupalorg` CLI when it is installed, with public drupal.org and GitLab URLs as the fallback, and supports projects whose issues moved to GitLab work items. Issue fork remotes are now named `<project>-<issue>`, matching the CLI, and the MR pipeline is checked after the push.
+
 ## [2026-11-09]
 
 ### Added
