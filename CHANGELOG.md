@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-10]
+
+### Added
+
+- `drupal-bug-fixing` skill (`skills/drupal/`): fix a Drupal bug by reproducing it with a failing check, confirming the root cause, searching drupal.org for a known fix before writing code, then making the smallest fix with a regression test. Uses the `drupalorg` CLI for issue, merge request and release lookups when installed, and public drupal.org and GitLab URLs otherwise.
+
 ## [2026-11-09]
 
 ### Added
