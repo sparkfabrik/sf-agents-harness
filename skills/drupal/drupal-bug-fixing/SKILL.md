@@ -26,7 +26,10 @@ the user's exact symptom. Pick the first that fits:
 
 Run it and watch it go red. Then **minimise**: remove data, configuration, modules
 and steps one at a time, rerunning after each cut, until every remaining part is
-needed for the failure.
+needed for the failure. Minimise on a disposable copy: a test fixture, or a clone
+of the site and its database. Uninstalling a module deletes its configuration and
+data, so keep the user's working site intact; Phase 4 reruns the original scenario
+there.
 
 Done when you can name one command, already run, that fails on the user's symptom
 every time (or at a stable rate for an intermittent bug), and the scenario cannot
@@ -56,40 +59,61 @@ When the cause is in a contrib module or core, search upstream before writing an
 code. Answer three questions: is the bug reported, does a fix exist (an MR or a
 patch), and is that fix already in a release.
 
-### Lookups
+### Where the issues live
+
+Most projects keep their issues on drupal.org. Some moved them to GitLab work items
+on `git.drupalcode.org`, and their drupal.org queue stops getting new issues. Check
+which case applies before searching: `drupalorg project:issues <project> --limit=1`
+prints "Project uses GitLab work items" for a moved project. Without the CLI, an
+empty or stale drupal.org queue, or an `api-d7` issue lookup that returns a
+`new_url`, means the same. Search the place where the issues live now; old issues
+from before the move stay on drupal.org.
+
+### Search
+
+Search the full history of the queue, across all statuses, by title and by the error
+message or function name:
+
+- **drupal.org queue:** the issue queue page
+  `https://www.drupal.org/project/issues/<project>?text=<terms>&status=All`, which
+  searches titles and bodies, and a web search such as
+  `"<message>" site:www.drupal.org/project/<project>/issues`. The page sometimes
+  answers with a bot challenge; when it does, rely on the web search.
+- **GitLab work items:**
+  `https://git.drupalcode.org/api/v4/projects/project%2F<project>/issues?search=<terms>`,
+  which searches titles and descriptions, and a web search such as
+  `"<message>" site:git.drupalcode.org/project/<project>`.
+
+The `drupalorg issue:search` command reads only the most recently changed issues on
+drupal.org and matches titles, so an empty result from it proves nothing. Use it as
+a quick extra check, never as the only search.
+
+### Read candidates and releases
 
 Check once whether the [`drupalorg` CLI](https://github.com/mglaman/drupalorg-cli) is
-available: `command -v drupalorg`, or its MCP tools (`issue_search`, `issue_show`,
-`mr_list` and the rest) loaded in the session. When it is, load its own skill
-(`drupalorg skill:get drupalorg-cli`) and pass `--format=llm` to every read command that accepts it
-(`project:release-notes` prints text only).
-When it is not, use the web column.
+available: `command -v drupalorg`, or its MCP tools (`issue_show`, `mr_list` and the
+rest) loaded in the session. When it is, load its own skill
+(`drupalorg skill:get drupalorg-cli`) and pass `--format=llm` to every read command
+that accepts it (`project:release-notes` prints text only). When it is not, use the
+right column. In the CLI, a work item takes `<project>#<IID>` instead of a node ID.
 
-Some projects moved their issues to GitLab work items, and their drupal.org queue
-is empty. The CLI handles them: `drupalorg project:issues <project> --limit=1` says
-"Project uses GitLab work items", and issue IDs take the form `<project>#<nid>`.
-Without the CLI, treat an empty drupal.org queue as a sign of that move and search
-`https://git.drupalcode.org/api/v4/projects/project%2F<project>/issues?search=<terms>`.
+| Lookup                        | With the CLI                                                          | Without the CLI                                                                                                 |
+| ----------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| drupal.org issue and comments | `drupalorg issue:show <nid> --with-comments`                          | `https://www.drupal.org/api-d7/node.json?nid=<nid>` and `https://www.drupal.org/api-d7/comment.json?node=<nid>` |
+| GitLab work item              | `drupalorg issue:show <project>#<IID> --with-comments`                | `https://git.drupalcode.org/api/v4/projects/project%2F<project>/issues/<IID>`; its comments need a GitLab token |
+| MRs for a drupal.org issue    | `drupalorg mr:list <nid> --state=all`, then `mr:diff` and `mr:status` | `https://git.drupalcode.org/api/v4/projects/project%2F<project>/merge_requests?state=all&search=<nid>`          |
+| MRs for a work item           | `drupalorg mr:list <project>#<IID> --state=all`                       | `https://git.drupalcode.org/api/v4/projects/project%2F<project>/issues/<IID>/related_merge_requests`            |
+| Releases                      | `drupalorg project:releases <project>` (latest per branch only)       | `https://updates.drupal.org/release-history/<project>/current` (every release)                                  |
+| Release notes                 | `drupalorg project:release-notes <project> <version>`                 | `https://www.drupal.org/project/<project>/releases/<version>`                                                   |
 
-| Lookup                                   | With the CLI                                                          | Without the CLI                                                                                                 |
-| ---------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Issues by title                          | `drupalorg issue:search <project> "<terms>" --status=all`             | `https://www.drupal.org/project/issues/<project>?text=<terms>&status=All`                                       |
-| Issues by body (error message, function) | Web search: `"<message>" site:drupal.org/project/issues/<project>`    | Same, plus the issue queue page above, which searches bodies too                                                |
-| One issue and its comments               | `drupalorg issue:show <nid> --with-comments`                          | `https://www.drupal.org/api-d7/node.json?nid=<nid>` and `https://www.drupal.org/api-d7/comment.json?node=<nid>` |
-| MRs for an issue                         | `drupalorg mr:list <nid> --state=all`, then `mr:diff` and `mr:status` | `https://git.drupalcode.org/api/v4/projects/project%2F<project>/merge_requests?state=all&search=<nid>`          |
-| Releases                                 | `drupalorg project:releases <project>` (latest per branch only)       | `https://updates.drupal.org/release-history/<project>/current` (every release)                                  |
-| Release notes                            | `drupalorg project:release-notes <project> <version>`                 | `https://www.drupal.org/project/<project>/releases/<version>`                                                   |
+To find every release between the installed version and the latest, use the release
+history feed: the CLI lists only the latest release of each branch. Release notes
+list the issue numbers they fix, so search them for the issue's number.
 
-The CLI issue search matches titles only, so search by error message through the
-web in both cases. The drupal.org issue queue page sometimes answers with a bot
-challenge; when it does, rely on the web search. To find every release between the
-installed version and the latest, use the release history feed: the CLI lists only
-the latest release of each branch. Release notes list the issue numbers they fix, so
-search them for the issue's node ID.
-
-Done when you have searched issues by title and by the error message across all
-statuses, read every candidate issue with its MRs, and checked the release notes of
-every release newer than the installed one.
+Done when you have searched the full queue by title and by the error message, read
+every candidate issue with its MRs, and checked the release notes of every release
+newer than the installed one. Report the verdict first (the path below and the
+issue, release or patch it rests on), then the evidence.
 
 ### Paths
 
@@ -98,19 +122,31 @@ Take the first path that applies:
 1. **Fixed in a newer release.** Propose updating the package, naming the release that
    carries the fix. The update follows the project's dependency update procedure, for
    example a `drupal-composer-update` skill where one is installed.
-2. **A patch or MR exists and applies.** Add it through `cweagans/composer-patches`
-   from a file committed to the project, with the issue link in the patch
-   description. For an MR, download
-   `https://git.drupalcode.org/project/<project>/-/merge_requests/<iid>.diff`; the
-   live MR URL changes with every push, so composer never points at it. A patch
-   attached to a drupal.org issue keeps a stable URL and can be used directly. Rerun
-   the red check.
+2. **A patch or MR exists and applies to the installed version.** Check the patch
+   against the installed version first; a patch made for another branch can fail or
+   apply in the wrong place. Then carry it through `cweagans/composer-patches`, as a
+   file saved in the project:
+   - **Save the file locally.** Composer never points at a remote URL: drupal.org
+     attachments can change, and an MR diff moves with every push. For an MR,
+     download `https://git.drupalcode.org/project/<project>/-/merge_requests/<iid>.diff`.
+     Check that the file starts with diff headers (`diff --git` or `---`/`+++`), not
+     HTML.
+   - **Name it after the issue.** Follow the project's patch naming convention. When
+     it has none, use `<NID>_CM<n>.patch` for a patch attached to comment `<n>`,
+     `<NID>_MR<iid>.patch` for an MR, and `<project>-<IID>_MR<iid>.patch` for an MR
+     on a GitLab work item. Store it next to the project's existing patches.
+   - **Describe the entry with the issue.** Key the patch entry with the issue
+     number and title, such as `#<NID>: <issue title>` or
+     `<project>#<IID>: <title>`.
+   - **Leave composer to the user.** Applying the patch needs `composer install` or
+     `composer update`. Hand that step to the user unless they already approved
+     it, then rerun the red check.
 3. **A patch exists but no longer applies.** Rebase it onto the installed version
    with the `drupal-rebase-mr` skill, then apply it as in path 2.
 4. **Nothing exists.** Write the fix in the module or core itself, to contrib MR
    quality: Drupal coding standards, a test in the module's own test suite, and a
    draft issue summary (problem, steps to reproduce, proposed resolution). Carry it
-   in the project as a local patch through composer patches. Drupal.org's
+   in the project as a local patch, as in path 2. Drupal.org's
    [policy on the use of AI when contributing](https://www.drupal.org/docs/develop/issues/issue-procedures-and-etiquette/policy-on-the-use-of-ai-when-contributing-to-drupal)
    applies to the issue and the MR. With the CLI, its `drupalorg-work-on-issue` skill
    covers the issue fork, branch and MR.
