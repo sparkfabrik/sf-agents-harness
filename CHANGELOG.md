@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-10]
+
+### Added
+
+- `drupal-patch-convention` skill: apply patches to Drupal core and contrib modules the SparkFabrik way, with each patch vendored locally through cweagans/composer-patches and named consistently for both drupal.org issues and GitLab work items.
+
 ## [2026-11-09]
 
 ### Added
