@@ -25,6 +25,9 @@
     "domain-modeling": {
       "description": "Build domain glossaries and qualifying ADRs"
     },
+    "drupal-patch-convention": {
+      "description": "Apply Drupal patches per SparkFabrik convention"
+    },
     "grilling": {
       "description": "Stress-test plans through structured interviews"
     },
