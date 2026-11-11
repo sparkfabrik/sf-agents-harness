@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-11]
+
+### Added
+
+- `sf-prompt-writing` skill: guidance for writing system prompts, CLAUDE.md and AGENTS.md files, skills, agent briefs and `/goal` prompts for recent Claude models, with a source link for each rule.
+
 ## [2026-11-09]
 
 ### Added
