@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-17]
+
+### Changed
+
+- `sf-writing-style` skill: PR and MR descriptions limit validation claims to what ran, link the projects and pipelines they name, write counts as code, and state what an overridable value requires.
+
 ## [2026-11-16]
 
 ### Changed

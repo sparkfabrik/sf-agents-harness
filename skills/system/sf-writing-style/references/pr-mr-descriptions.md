@@ -15,8 +15,8 @@ Before drafting, make a private coverage checklist from the explicit requirement
 
 1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
 2. Group the change into reviewer-relevant themes, not files or commits.
-3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
-4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 334906](url)`.
+3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must provide, such as a package manager, root access or preinstalled extensions.
+4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 334906](url)`. Claim only what the evidence covers: name the suite, database or platform that ran, and never write "every" or "all" when part of the matrix did not run. Link every project, pipeline, job or issue you name; a bare project path such as `group/project` does not link. Write counts and measured values in prose as code, such as `410` Kernel tests in `815 s`.
 5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
@@ -141,7 +141,7 @@ Runs the test jobs on a **prebuilt PHP image** instead of `php:8.4-cli`. Each jo
 
 #### What changes
 
-- **Image:** `registry.example.com/php:8.4-dev`, set by the new `CI_PHP_IMAGE` variable, which a project can override.
+- **Image:** `registry.example.com/php:8.4-dev`, set by the new `CI_PHP_IMAGE` variable. A replacement must be Alpine based, with the PHP extensions and Composer installed.
 - **PHP settings:** no memory limit, and opcache on for the CLI.
 - **Tools:** every job installs `bash` and GNU `find`.
 
@@ -149,12 +149,12 @@ Check the PHP settings first: CI skips the image's entrypoint, which normally wr
 
 #### Validation
 
-A project that uses this template passed, with every test job running:
+On [example/app](https://ci.example.com/example/app), the same `410` unit and `100` functional tests passed on SQLite, with none failing:
 
 | Jobs                     | Before ([pipeline 101](https://ci.example.com/pipelines/101)) | After ([pipeline 102](https://ci.example.com/pipelines/102)) |
 | ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
 | Static analysis and unit | 465 to 554 s                                                  | 118 to 138 s                                                 |
-| Functional               | 989 to 1126 s                                                 | 608 to 784 s                                                 |
+| Functional on SQLite     | 989 to 1126 s                                                 | 608 to 784 s                                                 |
 
 Closes #42
 
@@ -189,6 +189,8 @@ Verified configuration parsing and deployment selection for the supported enviro
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?
-- Is every validation claim factual and useful?
+- Is every validation claim factual and useful, and limited to the suites, databases or platforms that actually ran?
+- Is every project, pipeline, job and issue you name linked, and is every count or measured value in prose written as code?
+- When a value can be overridden, does the description say what a replacement must provide?
 - Is a preview present only when it helps, and is it real, trimmed, and free of secrets and personal data?
 - Did stale, out-of-scope, and file-level narration get removed?
