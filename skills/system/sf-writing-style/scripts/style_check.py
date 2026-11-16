@@ -29,6 +29,7 @@ an `evento` only, else plain text (a message, a description, a README, a spec, a
 Plain text gets the tells and the banned phrases only: the first person is normal there.
 
 The language is the front matter's `lang` when there is one, else the one whose common words the prose uses most.
+Issue and commit trailers (`Refs:`, `Closes:`, `Assisted-by:` …) and the AI attribution header are never read as prose.
 """
 import argparse
 import json
@@ -161,13 +162,26 @@ def front_matter(text):
     return meta, text[m.end():]
 
 
+# Lines that are only references or signatures: an issue or MR trailer whose rest is references, a commit trailer
+# such as Assisted-by, and the AI attribution header of the gh and glab skills. A line with prose after the keyword
+# is still checked.
+_REF = r"(?:[\w./-]*[#!]\d+|https?://\S+)"
+TRAILER = re.compile(
+    r"^(?:>\s*:robot:\s*_.*_$"
+    r"|(?:refs?|closes?|closed|fix(?:es|ed)?|resolves?|resolved|related(?: to)?|relates[- ]to|part[- ]of|see also)\s*:?\s*"
+    + _REF + r"(?:\s*(?:,|and)?\s*" + _REF + r")*\.?$"
+    r"|(?:assisted|co-authored|signed-off|reviewed|tested|acked)-by\s*:\s*\S.*$)",
+    re.I,
+)
+
+
 def prose_markdown(body):
     """The text as the meter reads it: the `::: block attrs` and `:::` fences of sf-docs become blank lines, so a
     callout or a quote keeps its prose but its attributes are not read as a sentence."""
     out = []
     for line in body.splitlines():
         s = line.strip()
-        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{'):
+        if s.startswith(':::') or s.startswith('<!--') or s.startswith('{{') or TRAILER.match(s):
             out.append('')
         else:
             out.append(line)
