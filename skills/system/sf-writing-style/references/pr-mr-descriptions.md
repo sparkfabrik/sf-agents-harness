@@ -6,18 +6,18 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 1. Treat the final diff as the source of truth for scope.
 2. Use the linked issue or task for purpose, constraints, and required outcomes.
-3. Include only validation that was observed or supplied.
+3. Look for validation evidence before writing: the pipelines of this branch, results reported in the linked issue or MR, and projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it.
 4. Use commit messages and old descriptions as hints. Remove stale or out-of-scope claims.
 
 ## Build a review map
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome.
+1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
 2. Group the change into reviewer-relevant themes, not files or commits.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
-4. State useful validation without command transcripts, logs, or test inventories.
-5. For a complex change, add one sentence on where a reviewer should look first when part of it needs a careful look: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
+4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 334906](url)`.
+5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
@@ -25,7 +25,7 @@ The description should help a reviewer decide where to focus. It should not narr
 ## Match the shape to the change
 
 - **Small change.** Use one sentence. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. When the change has several parts or evidence to show, use `What changes` with a bold label on each bullet, then the sentence on where to look and `Validation` when they apply.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
@@ -65,7 +65,7 @@ The preview is an allowed expansion beyond the default word limits, like validat
 Include details that define the public contract:
 
 - User-visible behavior and operational impact.
-- Public interfaces, commands, flags, configuration keys, and accepted values.
+- Public interfaces, commands, flags, configuration keys, accepted values, and the new default values.
 - Dependency or package changes that make the new contract available.
 - Compatibility, migration, rollout, and rollback requirements.
 - Security or data-handling consequences supported by the diff.
@@ -133,6 +133,29 @@ Adds a **date filter** to the customer list.
 
 Closes #42
 
+### Medium change with evidence
+
+Runs the test jobs on a **prebuilt PHP image** instead of `php:8.4-cli`. Each job spent about 5 minutes installing packages and compiling extensions before its first check.
+
+#### What changes
+
+- **Image:** `registry.example.com/php:8.4-dev`, set by the new `CI_PHP_IMAGE` variable, which a project can override.
+- **PHP settings:** no memory limit, and opcache on for the CLI.
+- **Tools:** every job installs `bash` and GNU `find`.
+
+Check the PHP settings first: CI skips the image's entrypoint, which normally writes them, so the jobs set them instead.
+
+#### Validation
+
+A project that uses this template passed, with every test job running:
+
+| Jobs                     | Before ([pipeline 101](https://ci.example.com/pipelines/101)) | After ([pipeline 102](https://ci.example.com/pipelines/102)) |
+| ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| Static analysis and unit | 465 to 554 s                                                  | 118 to 138 s                                                 |
+| Functional               | 989 to 1126 s                                                 | 608 to 784 s                                                 |
+
+Closes #42
+
 ### Complex configuration change
 
 Moves environment routing into a single deployment configuration, so each environment has one explicit target and validation contract. A manual deployment reached the wrong environment last month.
@@ -158,7 +181,9 @@ Verified configuration parsing and deployment selection for the supported enviro
 
 - Can a reader understand the outcome without the task conversation?
 - If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
-- If a complex change has a part that needs a careful look, does one specific sentence say where to look first?
+- When the issue or evidence gives the cost of the problem, does the opening state it with its number?
+- When part of the change needs a careful look, does one specific sentence say where to look first, and why?
+- Did you look for validation evidence, and does a before and after table link each run with link text?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?
