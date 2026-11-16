@@ -14,7 +14,7 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
 1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
-2. Group the change into reviewer-relevant themes, not files or commits.
+2. Group the change into reviewer-relevant themes, not files or commits. Name the group each change applies to, such as every PHP job or every API endpoint. Write "every" or "all" only when the diff touches every member of that group.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must provide, such as a package manager, root access or preinstalled extensions.
 4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 334906](url)`. Claim only what the evidence covers: name the suite, database or platform that ran, and never write "every" or "all" when part of the matrix did not run. Link every project, pipeline, job or issue you name; a bare project path such as `group/project` does not link. Write counts and measured values in prose as code, such as `410` Kernel tests in `815 s`. Link supporting issues and PRs or MRs in the validation text, and end the description with the issue reference only, without extra trailers such as `Evidence:`.
 5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
@@ -143,7 +143,7 @@ Runs the test jobs on a **prebuilt PHP image** instead of `php:8.4-cli`. Each jo
 
 - **Image:** `registry.example.com/php:8.4-dev`, set by the new `CI_PHP_IMAGE` variable. A replacement must be Alpine based, with the PHP extensions and Composer installed.
 - **PHP settings:** no memory limit, and opcache on for the CLI.
-- **Tools:** every job installs `bash` and GNU `find`.
+- **Tools:** every PHP job installs `bash` and GNU `find`.
 
 Check the PHP settings first: CI skips the image's entrypoint, which normally writes them, so the jobs set them instead.
 
@@ -186,7 +186,7 @@ Verified configuration parsing and deployment selection for the supported enviro
 - When the issue or evidence gives the cost of the problem, does the opening state it with its number?
 - When part of the change needs a careful look, does one specific sentence say where to look first, and why?
 - Did you look for validation evidence, including other MRs or PRs on the same issue, and does a before and after table link each run with link text? Without evidence, is validation left out rather than reported as missing? Does it leave out the PR or MR's own pipeline, and describe only the jobs that ran in each cited run?
-- Does every major change group appear once?
+- Does every major change group appear once, and does each one name the group it applies to rather than claiming every or all?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?
 - Is every validation claim factual and useful, and limited to the suites, databases or platforms that actually ran?
