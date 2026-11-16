@@ -6,7 +6,7 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 1. Treat the final diff as the source of truth for scope.
 2. Use the linked issue or task for purpose, constraints, and required outcomes.
-3. Look for validation evidence before writing: finished pipelines of this branch, the linked issue and its comments, other MRs or PRs that reference the same issue, and projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it. With no evidence, leave validation out: do not write that it is missing or not yet verified. A pipeline that is still pending or running is not evidence: the pipeline of a new PR or MR usually starts when it is opened, so do not mention it. Before citing a finished pipeline, read its job list and describe only the jobs that ran.
+3. Look for validation evidence before writing: the linked issue and its comments, other MRs or PRs that reference the same issue, and runs in projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it. With no evidence, leave validation out: do not write that it is missing or not yet verified. Do not mention the pipeline of the PR or MR itself: it usually starts when the PR or MR is opened, and the platform already shows it. Before citing a run from another project, read its job list and describe only the jobs that ran.
 4. Use commit messages and old descriptions as hints. Remove stale or out-of-scope claims.
 
 ## Build a review map
@@ -185,7 +185,7 @@ Verified configuration parsing and deployment selection for the supported enviro
 - If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
 - When the issue or evidence gives the cost of the problem, does the opening state it with its number?
 - When part of the change needs a careful look, does one specific sentence say where to look first, and why?
-- Did you look for validation evidence, including other MRs or PRs on the same issue, and does a before and after table link each run with link text? Without evidence, is validation left out rather than reported as missing? Does it cite only finished pipelines whose job list you read?
+- Did you look for validation evidence, including other MRs or PRs on the same issue, and does a before and after table link each run with link text? Without evidence, is validation left out rather than reported as missing? Does it leave out the PR or MR's own pipeline, and describe only the jobs that ran in each cited run?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?

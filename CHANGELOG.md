@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style` skill: PR and MR descriptions limit validation claims to what ran, link the projects and pipelines they name, write counts as code, state what an overridable value requires, and cite only finished pipelines.
+- `sf-writing-style` skill: PR and MR descriptions limit validation claims to what ran, link the projects and pipelines they name, write counts as code, state what an overridable value requires, and leave out the PR or MR's own pipeline.
 
 ## [2026-11-16]
 
