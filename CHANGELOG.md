@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason taken from the issue, the conversation or the author and never inferred from the diff, and say where a reviewer should look first when part of the change needs a careful look; the style check skips issue and commit trailers and the AI attribution header.
+- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason from the issue, the conversation or the author, or suggested by the diff and confirmed before it is written, and say where a reviewer should look first when part of the change needs a careful look; the style check skips issue and commit trailers and the AI attribution header.
 - Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
 
 ## [2026-11-09]

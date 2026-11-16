@@ -13,7 +13,7 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome and its reason in the opening sentence or short paragraph. Take the reason from the linked issue, the conversation or the user. When none of them gives it, leave the reason out, or ask the author one question when you are working with them; never infer a motivation from the diff, because it is the one thing a reviewer cannot check.
+1. State the outcome and its reason in the opening sentence or short paragraph. Take the reason from the linked issue, the conversation or the user. The diff can suggest a reason, but a reviewer cannot check a guessed motivation: treat it as a lead and confirm it in the issue, the commit messages, a linked discussion, or with one question to the author when you are working with them. If nothing confirms it, leave the reason out rather than improvise one.
 2. Group the change into reviewer-relevant themes, not files or commits.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
 4. State useful validation without command transcripts, logs, or test inventories.
@@ -159,7 +159,7 @@ Verified configuration parsing and deployment selection for the supported enviro
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- Does the opening explain why the change exists, with a reason the issue, the conversation or the user gave?
+- Does the opening explain why the change exists, with a reason confirmed by the issue, the commits, a discussion or the author, not guessed from the diff?
 - When part of the change needs a careful look, does one specific sentence say where to look first?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
