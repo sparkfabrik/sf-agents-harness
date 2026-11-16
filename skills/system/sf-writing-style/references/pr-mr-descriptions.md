@@ -6,7 +6,7 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 1. Treat the final diff as the source of truth for scope.
 2. Use the linked issue or task for purpose, constraints, and required outcomes.
-3. Look for validation evidence before writing: the pipelines of this branch, results reported in the linked issue or MR, and projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it.
+3. Look for validation evidence before writing: the pipelines of this branch, the linked issue and its comments, other MRs or PRs that reference the same issue, and projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it. With no evidence, leave validation out: do not write that it is missing or not yet verified.
 4. Use commit messages and old descriptions as hints. Remove stale or out-of-scope claims.
 
 ## Build a review map
@@ -80,6 +80,8 @@ Leave out details that make the description read like a patch inventory:
 - Generic tables or diagrams that do not make a complex relationship clearer.
 
 ## Examples
+
+The headings inside each example are one level lower so they nest under the example name. In a real description, use `###` for `What changes`, `Validation` and the other sections.
 
 ### Small fix
 
@@ -183,7 +185,7 @@ Verified configuration parsing and deployment selection for the supported enviro
 - If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
 - When the issue or evidence gives the cost of the problem, does the opening state it with its number?
 - When part of the change needs a careful look, does one specific sentence say where to look first, and why?
-- Did you look for validation evidence, and does a before and after table link each run with link text?
+- Did you look for validation evidence, including other MRs or PRs on the same issue, and does a before and after table link each run with link text? Without evidence, is validation left out rather than reported as missing?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?
