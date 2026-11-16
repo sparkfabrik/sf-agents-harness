@@ -10,7 +10,7 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state the confirmed reason for the change and, when part of it needs a careful look, where a reviewer should look first.
+- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions give the reason for a change only when it is confirmed, and a complex change can say where to look first.
 - `sf-writing-style` style check: skips issue and commit trailers and the AI attribution header.
 - Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
 

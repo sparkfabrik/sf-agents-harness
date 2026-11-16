@@ -13,19 +13,19 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome in the opening sentence or short paragraph, and its reason when it is confirmed. Take the reason from the linked issue, the conversation or the user. The diff can suggest a reason, but a reviewer cannot check a guessed motivation. Write it only when the issue, a linked discussion, a commit message a person wrote, or the user confirms it; a commit message you wrote does not count. With a person in the session, you can ask them one question. Otherwise state the outcome without a reason.
+1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome.
 2. Group the change into reviewer-relevant themes, not files or commits.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
 4. State useful validation without command transcripts, logs, or test inventories.
-5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, with the reason: a risk the diff shows, a choice the user asked to have checked, or a doubt someone stated. Name the behavior, not a file or a function. Leave it out when nothing stands out; a generic sentence such as "review the main changes" helps nobody.
+5. For a complex change, add one sentence on where a reviewer should look first when part of it needs a careful look: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
 
 ## Match the shape to the change
 
-- **Small change.** Use one sentence, plus the sentence on where to look when there is one. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately, and end with the sentence on where to look when there is one.
+- **Small change.** Use one sentence. Add no heading.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
@@ -44,7 +44,7 @@ A preview can help in cases like these:
 
 One case always gets a preview. When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section with the invocation and its output in a fenced `console` block.
 
-Put the preview after the bullets and the sentence on where to look, and before the issue reference. Use `### Example` for a command and `### Preview` for anything else.
+Put the preview after the bullets and before the issue reference. Use `### Example` for a command and `### Preview` for anything else.
 
 Every preview follows these rules:
 
@@ -92,8 +92,6 @@ Adds **export controls** for report data, so the finance team stops copying tabl
 - Date-range selection.
 - CSV download.
 - Remembered export preferences.
-
-Review the date filter first, because it uses the account's time zone instead of the browser's.
 
 ### New command
 
@@ -159,8 +157,8 @@ Verified configuration parsing and deployment selection for the supported enviro
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- If the opening gives a reason, did the issue, a discussion, a person's commit message or the user confirm it? If nothing confirmed one, does the opening state only the outcome?
-- When part of the change needs a careful look, does one specific sentence say where to look first?
+- If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
+- If a complex change has a part that needs a careful look, does one specific sentence say where to look first?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?
 - Are breaking changes and required actions easy to find?
