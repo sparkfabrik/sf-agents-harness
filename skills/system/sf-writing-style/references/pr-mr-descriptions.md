@@ -13,18 +13,18 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome and its reason in the opening sentence or short paragraph. Take the reason from the linked issue, the conversation or the user. The diff can suggest a reason, but a reviewer cannot check a guessed motivation: treat it as a lead and confirm it in the issue, the commit messages, a linked discussion, or with one question to the author when you are working with them. If nothing confirms it, leave the reason out rather than improvise one.
+1. State the outcome in the opening sentence or short paragraph, and its reason when it is confirmed. Take the reason from the linked issue, the conversation or the user. The diff can suggest a reason, but a reviewer cannot check a guessed motivation. Write it only when the issue, a linked discussion, a commit message a person wrote, or the user confirms it; a commit message you wrote does not count. With a person in the session, you can ask them one question. Otherwise state the outcome without a reason.
 2. Group the change into reviewer-relevant themes, not files or commits.
 3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
 4. State useful validation without command transcripts, logs, or test inventories.
-5. When part of the change needs a careful look, add one sentence on where a reviewer should look first: the risky part, the choice to check, or what the author is unsure about. Leave it out when nothing stands out; a generic sentence such as "review the main changes" helps nobody.
+5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, with the reason: a risk the diff shows, a choice the user asked to have checked, or a doubt someone stated. Name the behavior, not a file or a function. Leave it out when nothing stands out; a generic sentence such as "review the main changes" helps nobody.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
 
 ## Match the shape to the change
 
-- **Small change.** Use one sentence. Add no heading.
+- **Small change.** Use one sentence, plus the sentence on where to look when there is one. Add no heading.
 - **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately, and end with the sentence on where to look when there is one.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
@@ -44,7 +44,7 @@ A preview can help in cases like these:
 
 One case always gets a preview. When a PR/MR adds a command-line command, subcommand, or task-runner target, or a flag that changes what a command prints, add a short `### Example` section with the invocation and its output in a fenced `console` block.
 
-Put the preview after the bullets and before the issue reference. Use `### Example` for a command and `### Preview` for anything else.
+Put the preview after the bullets and the sentence on where to look, and before the issue reference. Use `### Example` for a command and `### Preview` for anything else.
 
 Every preview follows these rules:
 
@@ -137,7 +137,7 @@ Closes #42
 
 ### Complex configuration change
 
-Moves environment routing into a single deployment configuration so each environment has one explicit target and validation contract, after a manual deployment reached the wrong environment.
+Moves environment routing into a single deployment configuration, so each environment has one explicit target and validation contract. A manual deployment reached the wrong environment last month.
 
 #### What changes
 
@@ -146,7 +146,7 @@ Moves environment routing into a single deployment configuration so each environ
 - Limits credentials and generated configuration to the selected environment.
 - Exposes the resolved target through the deployment command.
 
-Review the target resolution of scheduled deployments first, because it changed the most.
+Check scheduled deployments first: they now use the same target selection as manual ones, so their target can change.
 
 #### Breaking changes
 
@@ -159,7 +159,7 @@ Verified configuration parsing and deployment selection for the supported enviro
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- Does the opening explain why the change exists, with a reason confirmed by the issue, the commits, a discussion or the author, not guessed from the diff?
+- If the opening gives a reason, did the issue, a discussion, a person's commit message or the user confirm it? If nothing confirmed one, does the opening state only the outcome?
 - When part of the change needs a careful look, does one specific sentence say where to look first?
 - Does every major change group appear once?
 - Does every explicit requirement and scope boundary remain visible?

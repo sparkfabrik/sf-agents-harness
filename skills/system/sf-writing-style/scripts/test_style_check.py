@@ -105,5 +105,32 @@ class CalqueTest(unittest.TestCase):
         self.assertEqual([b for b in r['banned'] if b.get('use')], [])
 
 
+class TrailerTest(unittest.TestCase):
+    def test_reference_and_signature_lines_are_skipped(self):
+        for line in (
+            "Refs: #12",
+            "Closes: group/project#42",
+            "Closes #42",
+            "Fixes #42, #43.",
+            "Part-of: owner/repo#7",
+            "See also: https://example.com/issue/1",
+            "Assisted-by: claude-code/claude-opus-5-5",
+            "Co-authored-by: Jane Doe <jane@example.com>",
+            "> :robot: _This was written by an AI agent on behalf of @someone (claude-code/claude-opus-5-5)._",
+        ):
+            with self.subTest(line=line):
+                self.assertTrue(sc.TRAILER.match(line))
+
+    def test_prose_after_a_keyword_is_still_read(self):
+        for line in (
+            "Fixes: here's the thing, this is a game-changer for everyone.",
+            "See also: the deployment guide explains the rollout.",
+            "Related to the login work we did last week.",
+            "> :robot: this note is prose, not the attribution header",
+        ):
+            with self.subTest(line=line):
+                self.assertFalse(sc.TRAILER.match(line))
+
+
 if __name__ == '__main__':
     unittest.main()

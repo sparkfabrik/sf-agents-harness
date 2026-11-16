@@ -162,10 +162,19 @@ def front_matter(text):
     return meta, text[m.end():]
 
 
-# Lines that are references or signatures, never prose: issue and MR trailers, commit trailers, the AI attribution
-# header of the gh and glab skills.
-TRAILER = re.compile(r"^(?:>\s*:robot:|(?:refs|closes|fixes|resolves|related|part of|see also|assisted-by|co-authored-by|"
-                     r"signed-off-by|reviewed-by)\s*:)", re.I)
+# Lines that are only references or signatures: an issue or MR trailer whose rest is references, a commit trailer
+# such as Assisted-by, and the AI attribution header of the gh and glab skills. A line with prose after the keyword
+# is still checked.
+_REF = r"(?:[\w./-]*[#!]\d+|https?://\S+)"
+TRAILER = re.compile(
+    r"^(?:>\s*:robot:\s*_.*_$"
+    r"|(?:refs?|closes?|closed|fix(?:es|ed)?|resolves?|resolved|related(?: to)?|relates[- ]to|part[- ]of|see also)\s*:?\s*"
+    + _REF + r"(?:\s*(?:,|and)?\s*" + _REF + r")*\.?$"
+    r"|(?:assisted|co-authored|signed-off|reviewed|tested|acked)-by\s*:\s*\S.*$)",
+    re.I,
+)
+
+
 def prose_markdown(body):
     """The text as the meter reads it: the `::: block attrs` and `:::` fences of sf-docs become blank lines, so a
     callout or a quote keeps its prose but its attributes are not read as a sentence."""
