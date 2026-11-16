@@ -93,5 +93,17 @@ class FirstPersonTest(unittest.TestCase):
         self.assertTrue(move.startswith('First person plural'), move)
 
 
+
+class CalqueTest(unittest.TestCase):
+    def test_italian_calques_name_the_english_term(self):
+        r = sc.check('---\ntipo: studio\nlang: it\n---\n\nIl team legge il cruscotto di uso e costi. Il dispiegamento avviene ogni sera.\n')
+        found = {b['phrases'][0].lower(): b['use'] for b in r['banned'] if b.get('use')}
+        self.assertEqual(found, {'cruscotto': 'dashboard', 'dispiegamento': 'deploy'})
+
+    def test_english_terms_and_ordinary_italian_pass(self):
+        r = sc.check('---\ntipo: studio\nlang: it\n---\n\nIl team legge la dashboard. Il rilascio segue la specifica.\n')
+        self.assertEqual([b for b in r['banned'] if b.get('use')], [])
+
+
 if __name__ == '__main__':
     unittest.main()

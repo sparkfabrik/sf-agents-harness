@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-16]
+
+### Changed
+
+- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason taken from the issue, the conversation or the author and never inferred from the diff, and say where a reviewer should look first when part of the change needs a careful look; the style check skips issue and commit trailers and the AI attribution header.
+- Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
+
+## [2026-11-09]
+
+### Added
+
+- `sf-writing-style`, `gh`, and `glab` skills: PR/MR descriptions get a preview (real output, a rendered result, or a screenshot when text cannot show the change) only when it helps the reviewer, and a new command-line command, subcommand, task-runner target, or output-changing flag always gets a `### Example` section with its real captured output.
+- `gh` skill: attach images to issues, pull requests, and comments with `--attach`.
+
+### Changed
+
+- `glab` skill: file uploads use `glab api --form` instead of `curl`.
+- `glab` skill: read a project's visibility and media setting once per session before uploads, instead of once per image.
+- OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.1.
+- Upstream skill sync: refresh `architecture/domain-modeling`, `architecture/grill-with-docs`, and `system/playwright-cli` from the declared source repositories.
+
+### Security
+
+- `glab` skill: the file upload steps no longer print the access token.
+
+## [2026-11-03]
+
+### Added
+
+- `sf-writing-style` skill: Italian text keeps the technical terms engineers say in English ("dashboard", not "cruscotto"), with the list in the glossary and the check reporting the common calques.
+
+### Fixed
+
+- `sf-writing-style` skill: the voice example of a concrete sentence says "dashboard" instead of "cruscotto".
+
 ## [2026-11-02]
 
 ### Added
@@ -15,7 +50,9 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions state why the change exists, with a reason from the issue, the conversation or the author and never inferred from the diff, and medium or complex changes say where a reviewer should look first. The style check guesses the language of a text without front matter and ignores trailers such as `Refs:`.
+- `skill-creator` skill: vendored instead of synced from upstream, and cheap by default. Test prompts run inline without baselines, full eval runs and description optimization need explicit approval of the run count, subagents are capped at 3 on `sonnet`, and the description optimizer defaults to 2 workers, 1 run per query, 2 iterations, and `sonnet`.
+- `domain-modeling`, `mermaid-diagrams`, and `grill-with-docs` move from system skills to the optional `architecture` category; enable it with `ajust sf-harness-category enable architecture`.
+- `postmortem-writing` moves from system skills to the optional `operations` category; enable it with `ajust sf-harness-category enable operations`.
 - OpenSpec commands and skills for Claude Code, GitHub Copilot, and OpenCode: regenerate with OpenSpec CLI 1.16.0.
 - Upstream skill sync: refresh `angular/angular-developer`, `system/grilling`, and `system/playwright-cli` from the declared source repositories.
 - `sf-writing-style` skill: describes how SparkFabrik sounds for each kind of reader, in English and Italian, and lists the patterns of machine-written text (including slogans in place of a mechanism) as writing guidance for every text; the voice and glossary references apply to documents for clients only, and the style check is no longer required outside the `sf-docs` plugin.
@@ -47,6 +84,11 @@ Changes are grouped by date.
 - Upstream skill sync: refresh `angular/angular-developer` and `system/githuman` from the declared source repositories.
 
 ## [2026-10-22]
+
+### Added
+
+- `drupal-migrate` Claude Code plugin (`plugins/drupal-migrate/`): source-agnostic toolkit for content migrations into Drupal from WordPress, Drupal 7/8+, another CMS, or a database dump. Bundles the `drupal-migration-analyst` agent, 21 atomic `drupal-migrate-*` skills covering source detection, as-is analysis, mapping triage, tech analysis, and post-migration content verification, plus reference templates. Installable from the new `sf-agents-harness` plugin marketplace (`.claude-plugin/marketplace.json`).
+- Plugin validation in CI: `scripts/validate-plugins.py` checks the marketplace manifest, each plugin's manifest and README, and the frontmatter of plugin skills and agents, and `claude plugin validate` checks the marketplace and every plugin. The `validate-and-check` job runs both whenever a pull request changes `plugins/` or the marketplace manifest.
 
 ### Changed
 

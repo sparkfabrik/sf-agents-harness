@@ -41,7 +41,8 @@ glab api -X DELETE PATH              # DELETE
 
 - `-f key=value` -- string field
 - `-F key=value` -- typed field (numbers, booleans without quotes)
-- `-F key=@file.json` -- read value from file as string (NOT multipart -- see "File uploads" in SKILL.md for binary files)
+- `-F key=@file.json` -- read value from file as string (NOT multipart)
+- `--form file=@image.png` -- upload a file as `multipart/form-data` (see "File uploads" in SKILL.md)
 - `--input file.json` -- send file as request body
 
 ### Pagination
@@ -175,9 +176,9 @@ glab api "projects/:id/repository/compare?from=main&to=develop"
 
 File paths with slashes must be URL-encoded (`/` → `%2F`). The project path in the URL must also be encoded when not using the `:id` placeholder:
 
-| What | Raw | Encoded |
-|------|-----|---------|
-| File path | `src/config/app.yml` | `src%2Fconfig%2Fapp.yml` |
+| What         | Raw                   | Encoded                   |
+| ------------ | --------------------- | ------------------------- |
+| File path    | `src/config/app.yml`  | `src%2Fconfig%2Fapp.yml`  |
 | Project path | `team/infra/platform` | `team%2Finfra%2Fplatform` |
 
 ---

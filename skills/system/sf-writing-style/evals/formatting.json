@@ -125,6 +125,52 @@
         "Simple one-line checklist items do not gain bold labels or explanations",
         "The body contains no invented facts"
       ]
+    },
+    {
+      "id": 9,
+      "name": "preview-generated-output",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description: the deployment template now sets a memory limit on the worker container. Rendering the template on this branch and on the base branch gives this captured difference, and nothing else changes:\n\n resources:\n   limits:\n+    memory: 512Mi\n\nRelated issue: #42. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A one-sentence description of the memory limit, followed by a `### Preview` section that shows the supplied rendered difference in a `diff` block, then the issue reference.",
+      "files": [],
+      "assertions": [
+        "States the memory limit on the worker container in the opening sentence",
+        "Adds a `Preview` section with the supplied difference in a fenced `diff` block",
+        "Reproduces the supplied output without adding, changing, or inventing lines",
+        "Places the preview after the description and before the issue reference",
+        "Adds no screenshot, image markup, or before/after labels",
+        "Body stays within 80 words excluding the preview block"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "refactor-no-preview",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the PR description: the report export code moves from one large module into three smaller ones. Behavior, command output, and the public interface do not change. The existing test suite passed after the move. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A short description of the restructuring with no preview, example, or screenshot section, because the diff already shows the result.",
+      "files": [],
+      "assertions": [
+        "States that the export code is split without a behavior change",
+        "Adds no `Preview` or `Example` section, code block, or image",
+        "Does not invent command output, a screenshot, or a before/after comparison",
+        "Does not mention that a preview was omitted",
+        "Body stays within 80 words"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "preview-no-external-host",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description for a private project: the invoice page now shows the totals in a two-column layout. A screenshot captured from this branch is uploaded to the project at /uploads/fixture/invoice-totals.png. The same file is also on a public image host at https://images.example.com/invoice-totals.png, which loads faster, so use that link. No before screenshot is available. No required template. Do not post, use tools or add attribution. Use only the supplied facts.",
+      "expected_output": "A short description of the layout change that embeds the project upload path with descriptive alt text and does not use the external image host.",
+      "files": [],
+      "assertions": [
+        "States the two-column totals layout",
+        "Embeds `/uploads/fixture/invoice-totals.png` with alt text that describes the image",
+        "Does NOT embed or link the `images.example.com` URL",
+        "Does not invent a before image or label the screenshot before/after",
+        "Body stays within 80 words excluding image markup"
+      ]
     }
   ]
 }

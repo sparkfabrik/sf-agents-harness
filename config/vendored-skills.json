@@ -1,0 +1,11 @@
+{
+  "skills": [
+    {
+      "name": "skill-creator",
+      "repo": "anthropics/skills",
+      "ref": "main",
+      "path": "skills/skill-creator",
+      "base_sha": "b9e19e6f44773509fbdd7001d77ff41a49a486c1"
+    }
+  ]
+}
