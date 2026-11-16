@@ -123,7 +123,7 @@ class TrailerTest(unittest.TestCase):
 
     def test_prose_after_a_keyword_is_still_read(self):
         for line in (
-            "Fixes: here's the thing, this is a game-changer for everyone.",
+            "Fixes: the login page no longer times out on slow networks.",
             "See also: the deployment guide explains the rollout.",
             "Related to the login work we did last week.",
             "> :robot: this note is prose, not the attribution header",
