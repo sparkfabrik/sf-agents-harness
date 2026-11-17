@@ -10,14 +10,14 @@ Changes are grouped by date.
 
 ### Changed
 
-- `sf-writing-style` skill: PR and MR descriptions limit validation claims to what ran, link the projects and pipelines they name, write counts as code, state what an overridable value requires, leave out the PR or MR's own pipeline, and name the group each change applies to.
+- `sf-writing-style` skill: PR and MR descriptions look for validation evidence in the linked issue, state the cost of the problem when it is known, claim only what the evidence covers, and say what an overridable value must satisfy.
+- `gh` and `glab` skills: a PR or MR description can say where a reviewer should look first in any change that needs a careful look.
 - `glab` skill: CI/CD, repository files, file uploads, groups, milestones, other hosts and login options moved to references, so the skill loads in one read.
 
 ## [2026-11-16]
 
 ### Changed
 
-- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions look for validation evidence, quantify the problem when a number is available, and point to the risky part of any change that needs a careful look.
 - `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions give the reason for a change only when it is confirmed, and a complex change can say where to look first.
 - `sf-writing-style` style check: skips issue and commit trailers and the AI attribution header.
 - Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.

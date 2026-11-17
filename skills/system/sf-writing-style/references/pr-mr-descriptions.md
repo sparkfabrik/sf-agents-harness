@@ -6,7 +6,7 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 1. Treat the final diff as the source of truth for scope.
 2. Use the linked issue or task for purpose, constraints, and required outcomes.
-3. Look for validation evidence before writing: the linked issue and its comments, other MRs or PRs that reference the same issue, and runs in projects that already use the change. Include only evidence you found or were given; never run something only to fill the section, and never invent it. With no evidence, leave validation out: do not write that it is missing or not yet verified. Do not mention the pipeline of the PR or MR itself: it usually starts when the PR or MR is opened, and the platform already shows it. Before citing a run from another project, read its job list and describe only the jobs that ran.
+3. For a medium or complex change, look for validation evidence in the linked issue, its comments, and the PRs or MRs linked from it. Look further only where they or the user point. Use only evidence you found or were given; never run something only to fill the section, and never invent it. Without evidence, leave validation out rather than saying it is missing.
 4. Use commit messages and old descriptions as hints. Remove stale or out-of-scope claims.
 
 ## Build a review map
@@ -14,10 +14,10 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
 1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
-2. Group the change into reviewer-relevant themes, not files or commits. Name the group each change applies to, such as every test job or every API endpoint. Write "every" or "all" only when the diff touches every member of that group.
-3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must provide, such as a package manager, a permission or a tool that must already be installed.
-4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 1234](url)`. Claim only what the evidence covers: name the suite, database or platform that ran, and never write "every" or "all" when part of the matrix did not run. Link every project, pipeline, job or issue you name; a bare project path such as `group/project` does not link. Write counts and measured values in prose as code, such as `120` tests in `45 s`. Link supporting issues and PRs or MRs in the validation text, and end the description with the issue reference only, without extra trailers such as `Evidence:`.
-5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
+2. Group the change into reviewer-relevant themes, not files or commits. When a change applies to a set of things, name the set, such as the test jobs or the public API endpoints. Write "every" or "all" only when it is true for the diff.
+3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must satisfy.
+4. State useful validation without command transcripts, logs, or test inventories, following [Validation evidence](#validation-evidence).
+5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody. When a risky part was not exercised, say so in this sentence.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
@@ -25,15 +25,19 @@ The description should help a reviewer decide where to focus. It should not narr
 ## Match the shape to the change
 
 - **Small change.** Use one sentence. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. When the change has several parts or evidence to show, use this order, leaving out any part that has no content:
-  1. A lead that states the outcome and, when the issue or evidence gives it, the cost of the problem with its number.
-  2. `### What changes`, with a short bold label on each bullet.
-  3. One sentence on where to look first.
-  4. `### Validation`: one sentence on what ran, where, and what it covers, then the before and after table.
-  5. The issue reference.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. Add a `What changes` heading only when another section follows, such as `Validation` or `Example`. Give a bullet a short bold label only when it is a full sentence that needs a name. Put the sentence on where to look after the bullets.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
+
+## Validation evidence
+
+- **Scope.** Claim only what the evidence covers, and say what ran.
+- **Comparison.** When before and after measurements both exist, compare them in a short table. State a single result in one sentence.
+- **Links.** Link a project or run when you have its URL, with link text such as `[pipeline 1234](url)`; never build a URL. Issue and PR/MR references link when written bare. On another platform, never link a private host: name the project and the result in text.
+- **Values.** Write measured values as code, such as `118 s`.
+- **Own checks.** Do not report that the PR or MR's own checks pass: the platform shows them. Cite them only for a finished measurement the checks do not show.
+- **Ending.** Link supporting issues and PRs or MRs in the validation text, and end with the issue reference.
 
 ## Show a preview
 
@@ -159,20 +163,16 @@ Remove the retired keys and define the new environment map before the next deplo
 
 #### Validation
 
-Verified configuration parsing and deployment selection for the supported environments.
+A dry run on staging resolved the expected target for all `4` environments, for both scheduled and manual deployments.
 
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
-- When the issue or evidence gives the cost of the problem, does the opening state it with its number?
-- When part of the change needs a careful look, does one specific sentence say where to look first, and why?
-- Did you look for validation evidence, including other MRs or PRs on the same issue, and does a before and after table link each run with link text? Without evidence, is validation left out rather than reported as missing? Does it leave out the PR or MR's own pipeline, and describe only the jobs that ran in each cited run?
-- Does every major change group appear once, and does each one name the group it applies to rather than claiming every or all?
-- Does every explicit requirement and scope boundary remain visible?
+- Is any reason in the opening confirmed by the issue, a discussion or the user?
+- When the issue or the evidence gives the cost of the problem, does the opening state it with its number?
+- Does every major change group, explicit requirement and scope boundary appear once?
+- Is every "every" or "all" true for the diff and the evidence?
+- Does each validation claim cover only what ran, with no invented baseline or result?
 - Are breaking changes and required actions easy to find?
-- Is every validation claim factual and useful, and limited to the suites, databases or platforms that actually ran?
-- Is every project, pipeline, job and issue you name linked, and is every count or measured value in prose written as code?
-- When a value can be overridden, does the description say what a replacement must provide?
 - Is a preview present only when it helps, and is it real, trimmed, and free of secrets and personal data?
 - Did stale, out-of-scope, and file-level narration get removed?
