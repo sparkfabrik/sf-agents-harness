@@ -84,21 +84,9 @@ GITLAB_HOST=gitlab.example.com glab mr list -R team/project
 glab milestone list -R gitlab.example.com/team/project --project team/project
 ```
 
-### Targeting a host different from the repo's git remote (use `--hostname` for `glab api`)
+### Targeting a host different from the repo's git remote
 
-Inside a git repo, `glab` resolves the host from the repo's git remote, and that resolution can **override `GITLAB_HOST`**. So when you are inside a repo on host A (for example a self-hosted instance) but need to query host B (for example `gitlab.com`), `GITLAB_HOST=B glab api ...` may silently still hit host A and return `404 Project Not Found` for a project that exists on B.
-
-For `glab api`, pass the **`--hostname` flag** instead. It is authoritative: it beats both the repo remote and `GITLAB_HOST`.
-
-```bash
-# Inside a self-hosted repo, querying a public gitlab.com project: CORRECT
-glab api --hostname gitlab.com "projects/gitlab-org%2Fterraform-provider-gitlab/issues/6841"
-
-# GITLAB_HOST can lose to the repo remote for a cross-host api call: do NOT rely on it
-GITLAB_HOST=gitlab.com glab api "projects/gitlab-org%2Fterraform-provider-gitlab/..."   # may 404
-```
-
-Telltale sign you hit the wrong host: a `404 Project Not Found` for a project you know exists. It is easy to miss when your username exists on both instances, because `glab api user` then succeeds on either host and masks which one answered. Confirm the host with `glab api --hostname <host> user` (compare the returned user id), not just the username.
+Inside a git repo, the remote's host can **override `GITLAB_HOST`**, so a `glab api` call meant for another host can silently hit the remote's host and return `404 Project Not Found`. Pass `--hostname <host>` to `glab api` instead. Read [references/hosts-and-login.md](references/hosts-and-login.md) for examples and how to confirm which host answered.
 
 ## Handling auth errors
 
@@ -109,33 +97,7 @@ In Codex, an auth check that fails inside its sandbox does not establish that th
 3. **Report access limits accurately.** If Codex sandbox escalation is unavailable or denied, explain that Codex could not reach the keyring or API. Do not call the user logged out or recommend another login based on that result. Do not switch to WebFetch, curl, or `gh`.
 4. **Handle confirmed failures.** If a check with working keyring and network access returns `401` or reports an invalid credential for the target host, stop and offer the login options below. A `403` may mean insufficient permission for the requested operation; report that permission problem rather than requesting a new login.
 
-When authentication is confirmed to be invalid, present the user with these options:
-
-### Option 1: OAuth login (preferred -- more secure, tokens auto-refresh)
-
-```bash
-glab auth login --hostname <hostname>
-# Select "Web" → browser opens → authorize → done
-```
-
-If OAuth fails (no OAuth app configured on the instance), fall back to a PAT.
-
-### Option 2: Personal Access Token
-
-Check git protocol to recommend minimal scopes:
-
-- **SSH users** (`git@...` remote): `api` scope is sufficient
-- **HTTPS users** (`https://...` remote): `api` + `write_repository`
-
-Tell the user to generate a token at: `https://<hostname>/-/user_settings/personal_access_tokens?scopes=api,write_repository` — recommend a short expiry (30-90 days).
-
-```bash
-glab auth login --hostname <hostname> --token <token>
-```
-
-### Option 3: Skip the operation
-
-glab stores credentials in the OS keyring by default. **Never pass `--insecure-storage`**: it stores the token in plaintext config.
+When authentication is confirmed to be invalid, offer the login options in [references/hosts-and-login.md](references/hosts-and-login.md): OAuth with `glab auth login --hostname <hostname>`, a personal access token, or skipping the operation. **Never pass `--insecure-storage`**: it stores the token in plaintext config.
 
 ## Core terminology
 
@@ -413,162 +375,11 @@ Approval and notes are separate commands -- `glab mr approve` handles GitLab's f
 
 ## CI/CD
 
-### TTY-only commands -- do NOT use
-
-`glab ci view` is a **full-screen terminal UI** (TUI) that requires an interactive TTY with keyboard input. It will **always fail** in non-interactive contexts (agent bash tools, scripts, piped commands). Never use it.
-
-| Command        | Why it fails             | Use instead                                                        |
-| -------------- | ------------------------ | ------------------------------------------------------------------ |
-| `glab ci view` | Requires interactive TTY | `glab ci get` (structured data) or `glab ci status` (text summary) |
-
-### Pipeline commands
-
-```bash
-glab ci status                       # pipeline status for current branch
-glab ci status --branch main         # pipeline status for a specific branch
-glab ci status --branch main --live  # stream status in real-time until pipeline completes
-glab ci get                          # pipeline details as JSON (current branch)
-glab ci get -b main                  # pipeline details for a specific branch
-glab ci get -p <pipeline-id>         # pipeline details for a specific pipeline ID
-glab ci get -p <pipeline-id> -d      # include extended job details
-glab ci get -p <pipeline-id> -F json # explicit JSON output format
-glab ci list                         # recent pipelines for current branch/project
-glab ci list --per-page 10           # show more pipelines
-glab ci trace                        # stream logs of the active job on current branch
-glab ci trace --branch main          # stream logs for a specific branch
-glab ci trace --branch main -p <id>  # stream logs for a specific pipeline ID
-glab ci trace <job-name>             # stream logs for a specific job by name
-glab ci run                          # trigger new pipeline
-glab ci retry <pipeline-id>          # retry failed pipeline
-glab ci cancel <pipeline-id>         # cancel running pipeline
-glab ci artifact <refName> <jobName> # download artifacts (deprecated: use `glab job artifact`)
-glab ci lint                         # validate .gitlab-ci.yml syntax
-```
-
-**Important:** `glab ci get` accepts **zero positional arguments**. The pipeline ID must be passed via the `-p` / `--pipeline-id` flag, not as a positional argument. Passing it as `glab ci get <id>` will fail with "Accepts 0 arg(s)".
-
-Run `glab ci lint` before committing CI config changes to catch syntax errors early.
-
-### Branch targeting
-
-`glab ci status` and `glab ci trace` default to the **current git branch**. When monitoring pipelines on other branches (e.g., `main` after a push), use `--branch`:
-
-```bash
-glab ci status --branch main              # one-shot status check
-glab ci status --branch main --live       # stream until pipeline finishes
-glab ci trace --branch main               # stream active job logs on main
-```
-
-Without `--branch`, these commands look for a pipeline on the current branch, and may fail if none exists.
-
-### Monitoring a specific pipeline
-
-**Preferred: `--live` flag** — streams pipeline status in real-time until the pipeline completes (success, failed, or canceled). No polling loop needed:
-
-```bash
-glab ci status --branch main --live
-```
-
-**For pipeline details** (non-interactive, structured data):
-
-```bash
-# Get pipeline details by ID (JSON output)
-glab ci get -p <pipeline-id>
-
-# With extended job details
-glab ci get -p <pipeline-id> -d
-```
-
-**For job-level detail** within a specific pipeline:
-
-```bash
-# 1. Find the pipeline ID
-glab ci list --per-page 5
-
-# 2. Stream logs of a specific pipeline
-glab ci trace --branch main --pipeline-id <pipeline-id>
-
-# 3. Check individual job statuses via API (when you need structured data beyond what `glab ci get -d` provides)
-glab api "projects/:id/pipelines/<pipeline-id>/jobs" | jq '.[] | {name: .name, status: .status, stage: .stage}'
-```
-
----
+Read [references/ci.md](references/ci.md) before running pipeline commands. Never run `glab ci view`: it is a full-screen interface that always fails here, so use `glab ci get` or `glab ci status`. `glab ci get` takes a pipeline ID only through `-p`.
 
 ## Repository files
 
-There is no `glab` subcommand for fetching file contents from a repository. Use `glab api` with the GitLab Repository Files API. This is the correct approach whenever a user shares a GitLab file URL or asks to read a file from a GitLab project -- **never** use WebFetch or curl, because GitLab instances (especially self-hosted ones) require authentication.
-
-### Recognizing file URLs
-
-GitLab file URLs follow these patterns:
-
-| URL pattern                            | Meaning                               |
-| -------------------------------------- | ------------------------------------- |
-| `.../<project>/-/raw/<branch>/<path>`  | Raw file content                      |
-| `.../<project>/-/blob/<branch>/<path>` | File viewer (same file, different UI) |
-| `.../<project>/-/tree/<branch>/<path>` | Directory listing                     |
-
-When you see any of these, extract the **hostname**, **project path**, **branch**, and **file path**, then use `glab api`.
-
-**Example** -- parsing a real URL:
-
-```
-URL: https://gitlab.example.com/team/infra/platform/-/raw/main/deploy/docker-compose.yml?ref_type=heads
-
-  hostname: gitlab.example.com
-  project:  team/infra/platform
-  branch:   main
-  file:     deploy/docker-compose.yml
-```
-
-Ignore query parameters like `?ref_type=heads` -- they are UI artifacts, not needed for the API.
-
-### Fetching a file
-
-File paths in the API endpoint must be **URL-encoded** (slashes become `%2F`):
-
-```bash
-# File at root (no slashes in path -- no encoding needed):
-GITLAB_HOST=gitlab.example.com glab api \
-  "projects/team%2Finfra%2Fplatform/repository/files/.gitlab-ci.yml/raw?ref=main"
-
-# File in a subdirectory (slashes must be encoded):
-# deploy/docker-compose.yml → deploy%2Fdocker-compose.yml
-GITLAB_HOST=gitlab.example.com glab api \
-  "projects/team%2Finfra%2Fplatform/repository/files/deploy%2Fdocker-compose.yml/raw?ref=main"
-```
-
-The `/raw` suffix returns the file content directly as plain text. Without `/raw`, the API returns JSON with base64-encoded content -- use `/raw` unless you need the metadata.
-
-When you're **inside the target repo's git clone**, the `:id` placeholder is resolved automatically:
-
-```bash
-glab api "projects/:id/repository/files/.gitlab-ci.yml/raw?ref=main"
-```
-
-### Browsing a directory
-
-```bash
-# List files in a directory
-GITLAB_HOST=gitlab.example.com glab api \
-  "projects/team%2Finfra%2Fplatform/repository/tree?ref=main&path=deploy" \
-  | jq '.[].name'
-
-# Recursive listing (use recursive=true)
-glab api "projects/:id/repository/tree?ref=main&recursive=true" | jq '.[].path'
-```
-
-### Cross-project file access
-
-When the user references a file from a **different project** than the one you're currently in, you must URL-encode the full project path (slashes as `%2F`) and set `GITLAB_HOST`:
-
-```bash
-# Reading a file from another project on the same instance:
-GITLAB_HOST=gitlab.example.com glab api \
-  "projects/other-team%2Fshared-configs/repository/files/templates%2F.gitlab-ci.yml/raw?ref=main"
-```
-
----
+No `glab` subcommand reads repository files: use `glab api` with the Repository Files API, never WebFetch or curl. Read [references/repository-files.md](references/repository-files.md) for file URLs, path encoding and cross-project reads.
 
 ## Safety Protocol
 
@@ -617,59 +428,9 @@ These operations can be proposed when relevant, but require a brief confirmation
 
 ---
 
-## Milestones -- `id` vs `iid`
-
-Always look up milestones **by title**, not by numeric ID — this avoids the `id`/`iid` confusion entirely:
-
-```bash
-# CORRECT -- lookup by title:
-GITLAB_HOST=gitlab.example.com glab api "projects/group%2Frepo/milestones?title=Sprint+49"
-
-# WRONG -- iid (project-scoped) used as path param → 404:
-GITLAB_HOST=gitlab.example.com glab api "projects/group%2Frepo/milestones/58"
-```
-
-If you must use a numeric ID, use the global `id` field (not `iid`) from the API response:
-`{ "id": 551, "iid": 58 }` → use `551` in the path, never `58`.
-
----
-
 ## File uploads (images, attachments)
 
-No `glab` subcommand uploads a file for a description or comment, and `glab release upload` only handles release assets. Use `glab api --form` with the project uploads API. It needs `glab` 1.91 or later and uses the stored login, so no token is read or printed.
-
-Before the first upload to a project, read its visibility and media setting with one call. Do it once per project per session and reuse the result for every later upload there, never once per image. If you already resolved the project path in this session with the lookup from "Fully-qualified references", read the fields from that response instead of calling again.
-
-For a `private` or `internal` project, upload only when `enforce_auth_checks_on_uploads` is `true`. When it is `false`, `null`, or missing (the field can be hidden from your role), do not upload: use a text preview, or give the user the image path to attach.
-
-```bash
-# One call per project per session: path, visibility and media setting together
-GITLAB_HOST=<hostname> glab api projects/:id | jq '{path_with_namespace, visibility, enforce_auth_checks_on_uploads}'
-
-# Inside a clone of the project
-GITLAB_HOST=<hostname> glab api projects/:id/uploads --form "file=@path/to/image.png" | jq -r '.markdown'
-# ![image](/uploads/<hash>/image.png)
-
-# Outside a clone: URL-encode the project path
-GITLAB_HOST=<hostname> glab api "projects/group%2Fproject/uploads" --form "file=@path/to/image.png" | jq -r '.markdown'
-```
-
-- **`--form`, not `-F`.** `--form` sends `multipart/form-data` and switches the method to POST. `-F file=@path` reads the file into a JSON string field and does not upload it.
-- **No `curl` and no token.** Never extract the token to upload with another tool, and never run `glab auth status -t`: it prints the token.
-- **Response.** The JSON holds `markdown`, ready to paste, and `url`, a path that resolves only inside this project. Replace the default alt text with a description of what the image shows.
-- **Visibility.** In a private or internal project the file is visible only to people who can view the project when "Require authentication to view media files" (`enforce_auth_checks_on_uploads`) is on. When it is off, anyone with the link can open the file. In a public project anyone with the link can always open it, even when it is attached to a confidential issue.
-- **Before uploading.** Open the file and remove secrets, personal data, and customer data. An uploaded file is hard to delete.
-- **No other host.** Never use an external image host, a snippet, a release asset, or a commit on the branch to show an image.
-
-Use the returned Markdown in an MR or issue description or comment:
-
-```markdown
-![Login form with the validation message](/uploads/<hash>/image.png)
-```
-
-When adding the image to an existing description, follow the re-fetch rule from "Reviewing and managing MRs": fetch the current raw description first and append to it, because `--description` replaces the whole body.
-
----
+Read [references/uploads.md](references/uploads.md) before uploading an image or file for a description or comment. Upload only with `glab api --form` to the project's uploads API, never to an external host, and in a private or internal project only when `enforce_auth_checks_on_uploads` is `true`.
 
 ## `glab api` -- last resort for advanced operations
 
@@ -706,60 +467,6 @@ Use `-f` for short inline values (`-f title="Bug fix"`), `-F` for file-backed co
 > glab api projects/:id/issues --paginate | jq -s 'add | .[].title'
 > ```
 
-### Group-level operations
-
-There is no `glab` subcommand for group operations -- use `glab api` with URL-encoded group paths (slashes as `%2F`):
-
-```bash
-# List projects in a group
-GITLAB_HOST=gitlab.example.com glab api \
-  "groups/team%2Fsubgroup/projects" --paginate | jq -s 'add | .[].name' -r | sort
-
-# Include descendant subgroups
-GITLAB_HOST=gitlab.example.com glab api \
-  "groups/team%2Fsubgroup/projects?include_subgroups=true" --paginate \
-  | jq -s 'add | .[].path_with_namespace' -r
-```
-
-Placeholder variables (auto-resolved inside a git repo): `:id`, `:fullpath`, `:repo`.
-
-### Creating groups and subgroups
-
-There is no `glab` subcommand for group creation -- use `glab api` with `POST groups`. To create a **subgroup**, pass the parent group's numeric id via `parent_id`:
-
-```bash
-# Resolve the parent group id first (URL-encode the path, slashes as %2F):
-GITLAB_HOST=gitlab.example.com glab api "groups/team%2Fresearch" | jq '.id'
-
-# Create the subgroup under that parent:
-GITLAB_HOST=gitlab.example.com glab api -X POST groups \
-  -f name="AI Research" \
-  -f path="ai-research" \
-  -f parent_id=196 \
-  -f description="Research group for PoCs." \
-  -f visibility="private"
-```
-
-`name` is the human-readable display name; `path` is the URL slug (lowercase, hyphens). A subgroup's `visibility` cannot be more open than its parent (a `private` parent cannot contain a `public` subgroup). Omit `parent_id` to create a top-level group.
-
-### Transferring a project to another namespace
-
-Validate the target first, then transfer. `transfer_locations` returns every namespace the current user is allowed to move the project into, with both `id` and `full_path`:
-
-```bash
-# 1. List valid target namespaces:
-glab api "projects/:id/transfer_locations" \
-  | jq '.[] | {id, full_path}'
-
-# 2. Transfer to the target namespace (numeric group id):
-glab api -X PUT "projects/<project-id>/transfer" -f namespace=<group-id>
-```
-
-> **Method gotcha (PUT, not POST):** the historical GitLab API docs describe this endpoint as `POST /projects/:id/transfer`, but current GitLab (verified on 18.11 with glab 1.106) does not register the route for `POST` -- a `POST` returns a bare `{"error":"404 Not Found"}` while `PUT` reaches the handler. Use `PUT`. If a `PUT` unexpectedly 404s on an older instance, fall back to `POST`.
-
-The transfer preserves the project's numeric id, history, issues, and MRs, and GitLab leaves a redirect from the old path. Two follow-ups are still required:
-
-- **Update local git remotes** to the new `path_with_namespace` (returned in the transfer response). The old SSH/HTTPS URL keeps working via the redirect, but the canonical path has changed.
-- You need **Owner** (or Maintainer, depending on instance settings) on both the project and the target namespace. If `transfer_locations` does not list your intended target, you lack the rights or the target violates a constraint (for example a visibility mismatch), and the transfer will fail.
+Read [references/groups-and-milestones.md](references/groups-and-milestones.md) for group projects, subgroups, project transfers and milestones. Look milestones up by title: a milestone path takes the global `id`, not the project `iid`.
 
 For comprehensive API patterns (GraphQL, pagination, groups, advanced queries), read `references/api-patterns.md`.
