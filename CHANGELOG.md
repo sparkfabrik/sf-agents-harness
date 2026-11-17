@@ -10,6 +10,8 @@ Changes are grouped by date.
 
 ### Changed
 
+- `sf-writing-style` skill: PR and MR descriptions look for validation evidence in the linked issue, state the cost of the problem when it is known, claim only what the evidence covers, and say what an overridable value must satisfy.
+- `gh` and `glab` skills: a PR or MR description can say where a reviewer should look first in any change that needs a careful look.
 - `glab` skill: CI/CD, repository files, file uploads, groups, milestones, other hosts and login options moved to references, so the skill loads in one read.
 
 ## [2026-11-16]

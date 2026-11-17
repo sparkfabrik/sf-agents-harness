@@ -113,7 +113,52 @@
         "Gives no reason for the change: no security, compliance or risk motivation",
         "Does not treat its own commit message as confirmation of a reason",
         "Does not ask the user a question or say that the reason is missing",
-        "Adds no sentence on where to look first, because the change is not complex"
+        "Adds no sentence on where to look first, because nothing in it stands out"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "evidence-and-review-focus",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description from these facts. Linked issue #5: every test job starts from php:8.4-cli and spends about 6.5 minutes on setup (apt packages, compiling PHP extensions, installing Composer) before any test. Final diff: the jobs use registry.example.com/php:8.4-dev, set by a new CI_PHP_IMAGE variable that a project can override; every job installs bash and GNU find with apk; the quality assurance job also installs Node for cspell and the JS linters; the jobs write the PHP ini values themselves (no memory limit, max_input_vars=3000, opcache on for the CLI) because CI skips the image's entrypoint, which normally writes them, and without them max_input_vars is 0 and opcache is off; bin/local.sh runs the same image. Validation found on a downstream project that uses this template: pipeline https://ci.example.com/pipelines/101 (before) took 465 to 554 s for static analysis and unit jobs and 989 to 1126 s for functional jobs; pipeline https://ci.example.com/pipelines/102 (after) took 118 to 138 s and 608 to 784 s, with every job passing. Use only these facts. Do not post, use tools or add attribution.",
+      "expected_output": "A medium description: an opening with the outcome and the measured setup cost from the issue, bullets for the image with the CI_PHP_IMAGE override and what a replacement must satisfy, one sentence telling the reviewer to check the PHP settings first and why, and a Validation table comparing the two linked pipelines.",
+      "files": [],
+      "assertions": [
+        "Opens with the move to the prebuilt PHP image and states the setup cost with its number (about 6.5 minutes or the measured time)",
+        "Has a What changes section whose bullets start with bold labels",
+        "Names the default image and the CI_PHP_IMAGE variable that a project can override",
+        "Tells the reviewer to check the PHP settings first and explains that CI skips the image's entrypoint",
+        "Shows before and after timings in a table",
+        "Links each pipeline with link text, with no raw URL in the prose",
+        "Adds no validation that the facts do not contain"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "single-result-no-baseline",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the PR description from these facts. Final diff: the image upload endpoint now resizes images to at most 2048 px on the long side before storing them, and the maximum accepted upload stays at 20 MB. Linked issue #31 asks for smaller stored images. A comment on the issue reports that after deploying this branch to staging, a 12 MB photo was stored as 1.1 MB. There is no measurement from before the change. Use only these facts. Do not post, use tools or add attribution.",
+      "expected_output": "A short description of the resize limit, with the staging result in one sentence and no table, because only an after-measurement exists.",
+      "files": [],
+      "assertions": [
+        "States that uploads are resized to at most 2048 px on the long side",
+        "Reports the staging result (12 MB stored as 1.1 MB) in one sentence",
+        "Has no before and after table and invents no baseline",
+        "Does not claim the change was measured on production or on every image type"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "several-parts-no-evidence",
+      "skill": "sf-writing-style",
+      "prompt": "Draft only the MR description from these facts. Final diff: the CLI gains a --dry-run flag on the sync command that prints the planned changes without writing; the sync command now exits 2 instead of 1 when the remote is unreachable; the README documents both. Linked issue #8 asks for a way to preview a sync. No tests, pipelines or runs are mentioned anywhere. Use only these facts. Do not post, use tools or add attribution.",
+      "expected_output": "A short description with the dry-run flag and the new exit code as bullets, the exit code change easy to find as a required action for scripts, no Validation section and no statement that validation is missing.",
+      "files": [],
+      "assertions": [
+        "Describes the --dry-run flag on the sync command",
+        "Makes the exit code change from 1 to 2 easy to find, as something scripts may need to handle",
+        "Has no Validation section and does not say that tests or validation are missing",
+        "Does not add a What changes heading with no other section after it"
       ]
     }
   ]

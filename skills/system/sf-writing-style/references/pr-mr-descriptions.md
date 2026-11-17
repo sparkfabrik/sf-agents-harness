@@ -6,18 +6,18 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 
 1. Treat the final diff as the source of truth for scope.
 2. Use the linked issue or task for purpose, constraints, and required outcomes.
-3. Include only validation that was observed or supplied.
+3. For a medium or complex change, look for validation evidence in the linked issue, its comments, and the PRs or MRs linked from it. Look further only where they or the user point. Use only evidence you found or were given; never run something only to fill the section, and never invent it. Without evidence, leave validation out rather than saying it is missing.
 4. Use commit messages and old descriptions as hints. Remove stale or out-of-scope claims.
 
 ## Build a review map
 
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
-1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome.
-2. Group the change into reviewer-relevant themes, not files or commits.
-3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions.
-4. State useful validation without command transcripts, logs, or test inventories.
-5. For a complex change, add one sentence on where a reviewer should look first when part of it needs a careful look: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
+1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
+2. Group the change into reviewer-relevant themes, not files or commits. When a change applies to a set of things, name the set, such as the test jobs or the public API endpoints. Write "every" or "all" only when it is true for the diff.
+3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must satisfy.
+4. State useful validation without command transcripts, logs, or test inventories, following [Validation evidence](#validation-evidence).
+5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody. When a risky part was not exercised, say so in this sentence.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
 The description should help a reviewer decide where to focus. It should not narrate how the author reached the result.
@@ -25,10 +25,19 @@ The description should help a reviewer decide where to focus. It should not narr
 ## Match the shape to the change
 
 - **Small change.** Use one sentence. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. Add a `What changes` heading only when another section follows, such as `Validation` or `Example`. Give a bullet a short bold label only when it is a full sentence that needs a name. Put the sentence on where to look after the bullets.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
+
+## Validation evidence
+
+- **Scope.** Claim only what the evidence covers, and say what ran.
+- **Comparison.** When before and after measurements both exist, compare them in a short table. State a single result in one sentence.
+- **Links.** Link a project or run when you have its URL, with link text such as `[pipeline 1234](url)`; never build a URL. Issue and PR/MR references link when written bare. On another platform, never link a private host: name the project and the result in text.
+- **Values.** Write measured values as code, such as `118 s`.
+- **Own checks.** Do not report that the PR or MR's own checks pass: the platform shows them. Cite them only for a finished measurement the checks do not show.
+- **Ending.** Link supporting issues and PRs or MRs in the validation text, and end with the issue reference.
 
 ## Show a preview
 
@@ -65,7 +74,7 @@ The preview is an allowed expansion beyond the default word limits, like validat
 Include details that define the public contract:
 
 - User-visible behavior and operational impact.
-- Public interfaces, commands, flags, configuration keys, and accepted values.
+- Public interfaces, commands, flags, configuration keys, accepted values, and the new default values.
 - Dependency or package changes that make the new contract available.
 - Compatibility, migration, rollout, and rollback requirements.
 - Security or data-handling consequences supported by the diff.
@@ -80,6 +89,8 @@ Leave out details that make the description read like a patch inventory:
 - Generic tables or diagrams that do not make a complex relationship clearer.
 
 ## Examples
+
+The headings inside each example are one level lower so they nest under the example name. In a real description, use `###` for `What changes`, `Validation` and the other sections.
 
 ### Small fix
 
@@ -152,16 +163,16 @@ Remove the retired keys and define the new environment map before the next deplo
 
 #### Validation
 
-Verified configuration parsing and deployment selection for the supported environments.
+A dry run on staging resolved the expected target for all `4` environments, for both scheduled and manual deployments.
 
 ## Final check
 
 - Can a reader understand the outcome without the task conversation?
-- If the opening gives a reason, did the issue, a discussion or the user confirm it? Without confirmation, does it state only the outcome?
-- If a complex change has a part that needs a careful look, does one specific sentence say where to look first?
-- Does every major change group appear once?
-- Does every explicit requirement and scope boundary remain visible?
+- Is any reason in the opening confirmed by the issue, a discussion or the user?
+- When the issue or the evidence gives the cost of the problem, does the opening state it with its number?
+- Does every major change group, explicit requirement and scope boundary appear once?
+- Is every "every" or "all" true for the diff and the evidence?
+- Does each validation claim cover only what ran, with no invented baseline or result?
 - Are breaking changes and required actions easy to find?
-- Is every validation claim factual and useful?
 - Is a preview present only when it helps, and is it real, trimmed, and free of secrets and personal data?
 - Did stale, out-of-scope, and file-level narration get removed?
