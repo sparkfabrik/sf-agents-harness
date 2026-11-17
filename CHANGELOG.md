@@ -11,6 +11,7 @@ Changes are grouped by date.
 ### Changed
 
 - `sf-writing-style` skill: PR and MR descriptions limit validation claims to what ran, link the projects and pipelines they name, write counts as code, state what an overridable value requires, leave out the PR or MR's own pipeline, and name the group each change applies to.
+- `glab` skill: CI/CD, repository files, file uploads, groups, milestones, other hosts and login options moved to references, so the skill loads in one read.
 
 ## [2026-11-16]
 
