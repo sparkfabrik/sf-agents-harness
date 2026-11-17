@@ -14,9 +14,9 @@ Use this reference only when drafting, rewriting, or publishing a pull request o
 Before drafting, make a private coverage checklist from the explicit requirements and final diff. Include the outcome, public contracts, compatibility or migration details, dependencies that enable the behavior, scope boundaries, and supplied validation. Use the checklist to protect load-bearing facts while trimming prose; do not paste it into the description.
 
 1. State the outcome in the opening sentence or short paragraph. Add the reason only when the linked issue, a discussion or the user confirms it. The diff can suggest a reason, but a reviewer cannot check a guessed motivation; without confirmation, state only the outcome. When the issue or the evidence gives the cost of the problem, such as time lost or failed runs, state it with its number.
-2. Group the change into reviewer-relevant themes, not files or commits. Name the group each change applies to, such as every PHP job or every API endpoint. Write "every" or "all" only when the diff touches every member of that group.
-3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must provide, such as a package manager, root access or preinstalled extensions.
-4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 334906](url)`. Claim only what the evidence covers: name the suite, database or platform that ran, and never write "every" or "all" when part of the matrix did not run. Link every project, pipeline, job or issue you name; a bare project path such as `group/project` does not link. Write counts and measured values in prose as code, such as `410` Kernel tests in `815 s`. Link supporting issues and PRs or MRs in the validation text, and end the description with the issue reference only, without extra trailers such as `Evidence:`.
+2. Group the change into reviewer-relevant themes, not files or commits. Name the group each change applies to, such as every test job or every API endpoint. Write "every" or "all" only when the diff touches every member of that group.
+3. Surface breaking changes, compatibility limits, migrations, rollout steps, or required actions. When a value can be overridden, say what a replacement must provide, such as a package manager, a permission or a tool that must already be installed.
+4. State useful validation without command transcripts, logs, or test inventories. When it has numbers, show before and after in a short table and link each run with link text, such as `[pipeline 1234](url)`. Claim only what the evidence covers: name the suite, database or platform that ran, and never write "every" or "all" when part of the matrix did not run. Link every project, pipeline, job or issue you name; a bare project path such as `group/project` does not link. Write counts and measured values in prose as code, such as `120` tests in `45 s`. Link supporting issues and PRs or MRs in the validation text, and end the description with the issue reference only, without extra trailers such as `Evidence:`.
 5. When part of the change needs a careful look, add one sentence on where a reviewer should look first, and why: a risk the diff shows, a check the user asked for, or a doubt someone stated. Name the behavior, not a file. Leave it out when nothing stands out; "review the main changes" helps nobody.
 6. Check that every explicit requirement, major subsystem, public contract, and scope boundary appears once.
 
@@ -25,7 +25,12 @@ The description should help a reviewer decide where to focus. It should not narr
 ## Match the shape to the change
 
 - **Small change.** Use one sentence. Add no heading.
-- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. When the change has several parts or evidence to show, use `What changes` with a bold label on each bullet, then the sentence on where to look and `Validation` when they apply.
+- **Medium change.** Use a lead sentence or short paragraph, followed by two to five bullets when the changes are easier to scan separately. When the change has several parts or evidence to show, use this order, leaving out any part that has no content:
+  1. A lead that states the outcome and, when the issue or evidence gives it, the cost of the problem with its number.
+  2. `### What changes`, with a short bold label on each bullet.
+  3. One sentence on where to look first.
+  4. `### Validation`: one sentence on what ran, where, and what it covers, then the before and after table.
+  5. The issue reference.
 - **Complex or breaking change.** Use a lead paragraph, then `What changes`, then the sentence on where to look when there is one. Add `Breaking changes`, `Rollout`, or `Validation` only when the section has useful content.
 
 There is no hard word limit for complex descriptions. Use the shortest description that preserves the review map. The parent skill's 80-word default applies to uncomplicated changes, not as a reason to omit major scope, migration steps, or validation.
@@ -132,29 +137,6 @@ Adds a **date filter** to the customer list.
 #### Preview
 
 ![Customer list with the date filter open](/uploads/<hash>/customer-list-date-filter.png)
-
-Closes #42
-
-### Medium change with evidence
-
-Runs the test jobs on a **prebuilt PHP image** instead of `php:8.4-cli`. Each job spent about 5 minutes installing packages and compiling extensions before its first check.
-
-#### What changes
-
-- **Image:** `registry.example.com/php:8.4-dev`, set by the new `CI_PHP_IMAGE` variable. A replacement must be Alpine based, with the PHP extensions and Composer installed.
-- **PHP settings:** no memory limit, and opcache on for the CLI.
-- **Tools:** every PHP job installs `bash` and GNU `find`.
-
-Check the PHP settings first: CI skips the image's entrypoint, which normally writes them, so the jobs set them instead.
-
-#### Validation
-
-On [example/app](https://ci.example.com/example/app), the same `410` unit and `100` functional tests passed on SQLite, with none failing:
-
-| Jobs                     | Before ([pipeline 101](https://ci.example.com/pipelines/101)) | After ([pipeline 102](https://ci.example.com/pipelines/102)) |
-| ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
-| Static analysis and unit | 465 to 554 s                                                  | 118 to 138 s                                                 |
-| Functional on SQLite     | 989 to 1126 s                                                 | 608 to 784 s                                                 |
 
 Closes #42
 
