@@ -17,7 +17,7 @@ Run the bundled helper (`<skill-dir>` is the folder of this skill, for example `
 python3 <skill-dir>/scripts/check_sources.py --since-hours 24
 ```
 
-Exit 0 means a tag or an advisory was published in the window, 1 means nothing, 2 means a fetch failed. For each advisory it prints the affected version range and the risk vector (`A:None` = anonymous users can exploit it, `E:Exploit` = a public exploit exists). It also lists PSAs of the last 7 days: a PSA announcing a release for today with no tag yet means "announced, not released".
+Exit 0 means a tag or an advisory was published in the window, 1 means nothing and every source answered, 2 means nothing was found but a source failed. A failing source prints an `UNAVAILABLE` line and the others still report: say which source was down and that the check is incomplete, because `git.drupalcode.org` can be overloaded during a release. For each advisory it prints the affected version range and the risk vector (`A:None` = anonymous users can exploit it, `E:Exploit` = a public exploit exists). It also lists PSAs of the last 7 days: a PSA announcing a release for today with no tag yet means "announced, not released".
 
 ### Reading drupal.org and Slack through the user's Chrome
 

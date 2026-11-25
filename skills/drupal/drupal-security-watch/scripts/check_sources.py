@@ -9,8 +9,16 @@ Reads public, unauthenticated sources:
   the affected version range and the risk vector.
 - drupal.org PSA RSS feed: announcements of upcoming releases.
 
-Output is plain text, newest first. Exit code is 0 when a tag or an
-advisory was published inside --since-hours, 1 when nothing was, 2 on error.
+Output is plain text, newest first. Each source is fetched on its own: a
+source that fails prints an "UNAVAILABLE" line and the others still report.
+
+Exit codes:
+- 0: a tag or an advisory was published inside --since-hours, even when
+  another source failed.
+- 1: nothing was published and every source answered.
+- 2: nothing was found but at least one source failed, so the check is
+  incomplete.
+
 A recent PSA alone does not change the exit code; it is printed so the
 caller can report "announced, not released".
 """
@@ -64,18 +72,20 @@ def main():
     since = now - timedelta(hours=args.since_hours)
     psa_since = now - timedelta(days=args.psa_days)
     found = False
+    failed = []
 
-    try:
-        tags = json.loads(get(TAGS_URL))
-        sas = json.loads(get(SA_URL))["list"]
-        psa_xml = get(PSA_RSS)
-    except Exception as exc:  # noqa: BLE001
-        print(f"ERROR fetching sources: {exc}", file=sys.stderr)
-        return 2
+    def fetch(name, url, parse):
+        try:
+            return parse(get(url))
+        except Exception as exc:  # noqa: BLE001
+            failed.append(name)
+            print(f"UNAVAILABLE: {name} ({url}): {exc}")
+            return None
 
     print(f"Checked at {fmt(now)}")
 
     print(f"\n== Core tags since {fmt(since)} ==")
+    tags = fetch("core tags", TAGS_URL, json.loads) or []
     for tag in tags:
         # Annotated tags carry their own creation time, which is when the
         # release was tagged; the commit can be older than the release.
@@ -92,6 +102,7 @@ def main():
         print(f"latest tag: {tags[0]['name']}")
 
     print(f"\n== Security advisories since {fmt(since)} ==")
+    sas = fetch("security advisories", SA_URL, lambda body: json.loads(body)["list"]) or []
     for node in sas:
         created = datetime.fromtimestamp(int(node["created"]), timezone.utc)
         if created < since:
@@ -108,6 +119,7 @@ def main():
         print(f"latest SA: {sas[0]['title']}")
 
     print(f"\n== PSAs since {fmt(psa_since)} ==")
+    psa_xml = fetch("PSA feed", PSA_RSS, lambda body: body) or ""
     items = re.findall(
         r"<item>.*?<title>(.*?)</title>.*?<link>(.*?)</link>.*?<pubDate>(.*?)</pubDate>",
         psa_xml,
@@ -119,7 +131,11 @@ def main():
             print(f"{title}\t{fmt(published)}\t{link}")
 
     print("\nRisk vector keys: " + "; ".join(f"{k}={v}" for k, v in VECTOR_HELP.items()))
-    return 0 if found else 1
+    if failed:
+        print(f"\nIncomplete check, unavailable: {', '.join(failed)}")
+    if found:
+        return 0
+    return 2 if failed else 1
 
 
 if __name__ == "__main__":
