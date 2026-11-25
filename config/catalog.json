@@ -75,6 +75,9 @@
     },
     "spark-http-proxy": {
       "description": "Local dev reverse proxy: container domains and HTTPS"
+    },
+    "drupal-security-watch": {
+      "description": "Watch Drupal security releases and triage project impact"
     }
   },
   "agents": {}
