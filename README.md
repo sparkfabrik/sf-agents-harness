@@ -42,6 +42,7 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 | **adversarial-verify**     | Adversarial verification (Chain-of-Verification) of code, architecture, data, docs, tests, and analysis -- red-teaming, hidden-behavior probing, stress tests | `skills/system/adversarial-verify/`       |
 | **angular-developer**      | Angular code generation and architectural guidance for components, signals, forms, routing, testing, SSR, and tooling                                         | `skills/angular/angular-developer/`       |
 | **angular-new-app**        | Create modern Angular applications with the Angular CLI                                                                                                       | `skills/angular/angular-new-app/`         |
+| **drupal-security-watch**  | Drupal security release watch -- core tags, advisories and PSAs, Drupal Slack, per-repository triage and hotfix on approval                                   | `skills/drupal/drupal-security-watch/`    |
 
 Skills are documents that provide context to Copilot on specific topics. Each skill contains:
 

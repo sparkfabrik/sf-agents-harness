@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-25]
+
+### Added
+
+- `drupal-security-watch` skill: watches Drupal security releases (core tags, advisories, PSAs and the Drupal Slack `#security-announcements` channel), triages their impact on the repositories the user names and creates a hotfix only on approval.
+
 ## [2026-11-23]
 
 ### Changed
