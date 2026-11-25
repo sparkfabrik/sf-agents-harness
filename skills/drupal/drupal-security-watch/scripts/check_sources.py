@@ -77,10 +77,17 @@ def main():
 
     print(f"\n== Core tags since {fmt(since)} ==")
     for tag in tags:
-        created = datetime.fromisoformat(tag["commit"]["created_at"])
+        # Annotated tags carry their own creation time, which is when the
+        # release was tagged; the commit can be older than the release.
+        stamp = tag.get("created_at")
+        note = ""
+        if not stamp:
+            stamp = tag["commit"]["created_at"]
+            note = "\t(commit date: the tag has no timestamp)"
+        created = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
         if created >= since:
             found = True
-            print(f"{tag['name']}\t{fmt(created)}")
+            print(f"{tag['name']}\t{fmt(created)}{note}")
     if tags:
         print(f"latest tag: {tags[0]['name']}")
 
