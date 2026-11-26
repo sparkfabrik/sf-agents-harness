@@ -1,0 +1,48 @@
+{
+  "name": "prompt-navigator",
+  "version": "0.1.0",
+  "description": "A side pane listing your prompts in this session; press one to jump to it in the transcript",
+  "author": {
+    "name": "Giuseppe Rota"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "haikuSummaries": {
+      "type": "boolean",
+      "title": "Haiku summaries",
+      "description": "Add a one-line Claude Haiku summary under each prompt, cached per prompt (small cost)",
+      "default": false
+    },
+    "highlightColor": {
+      "type": "string",
+      "title": "Highlight color",
+      "description": "Theme color of the entry for what you are reading; /theme-colors shows them all",
+      "options": [
+        "text",
+        "inactive",
+        "subtle",
+        "suggestion",
+        "remember",
+        "success",
+        "error",
+        "warning",
+        "merged",
+        "claude",
+        "permission",
+        "planMode",
+        "autoAccept",
+        "promptBorder",
+        "bashBorder",
+        "ide"
+      ],
+      "default": "suggestion"
+    }
+  },
+  "keywords": [
+    "prompts",
+    "navigation",
+    "transcript",
+    "pane",
+    "mod"
+  ]
+}

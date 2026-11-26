@@ -87,9 +87,10 @@ Browse the `agents/` directory for available agents.
 
 Claude Code plugins bundle agents, skills and reference files that are installed together and removed together. They are not synced by sparkdock; install them with the `/plugin` command from the marketplace defined in `.claude-plugin/marketplace.json`.
 
-| Plugin             | Description                                                                                                          | Path                      |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| **drupal-migrate** | Source-agnostic content-migration toolkit into Drupal -- analyst agent, source-analysis skills, content verification | `plugins/drupal-migrate/` |
+| Plugin               | Description                                                                                                          | Path                        |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| **drupal-migrate**   | Source-agnostic content-migration toolkit into Drupal -- analyst agent, source-analysis skills, content verification | `plugins/drupal-migrate/`   |
+| **prompt-navigator** | Side pane listing the session's prompts; press one to jump to it in the transcript                                   | `plugins/prompt-navigator/` |
 
 See each plugin's `README.md` for install instructions and usage.
 
