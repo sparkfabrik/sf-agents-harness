@@ -1,12 +1,18 @@
-import { atom, read, update } from 'claude-code'
+import { atom, memberOf, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { Mode, Overrides } from '../types'
+import type { Mode, Override } from '../types'
 import { keyArgument, outputSize, statusMark, truncate } from './summary'
 import type { CallStatus } from './summary'
 
 const mode = atom({ plugin: 'collapse-tools', key: 'mode' } as const, 'auto' as Mode)
-const overrides = atom({ plugin: 'collapse-tools', key: 'overrides' } as const, {} as Overrides)
+// Bumped by /collapse, which resets every row's own choice at once.
+const epoch = atom({ plugin: 'collapse-tools', key: 'epoch' } as const, 0)
+// One value per row, so a click redraws only the row it toggles.
+const override = atom({ plugin: 'collapse-tools', key: 'override' } as const, null as Override | null)
+// Rows of a ToolGroup this mod unfolded: they carry isExpanded too, but keep
+// their chevron, unlike rows the ctrl+o transcript or --verbose draws in full.
+const unfolded = new Set<string>()
 
 const AGENT_TOOLS = ['Agent', 'Task']
 const HANDBACK = /^\s*\[Subagent hand-back\]/
@@ -14,9 +20,9 @@ const REPORT_START = /The report follows:\s*/
 const MODES: Record<string, Mode> = { all: 'collapsed', none: 'expanded' }
 
 async function isOpen($: EngineInterface, id: string, auto: boolean): Promise<boolean> {
-  const chosen = (await read($, overrides))[id]
-  if (chosen !== undefined) {
-    return chosen
+  const chosen = await read($, memberOf(override, { requestId: id }))
+  if (chosen !== null && chosen.epoch === (await read($, epoch))) {
+    return chosen.open
   }
   const current = await read($, mode)
 
@@ -32,7 +38,8 @@ function toolList(value: unknown): string[] {
 }
 
 async function setOpen($: EngineInterface, id: string, open: boolean): Promise<void> {
-  await update($, overrides, all => ({ ...all, [id]: open }))
+  const now = await read($, epoch)
+  await update($, memberOf(override, { requestId: id }), () => ({ open, epoch: now }))
 }
 
 export const register: Register = (on, options) => {
@@ -41,7 +48,7 @@ export const register: Register = (on, options) => {
   }
   const expandedTools = toolList(options.expandedTools)
   const collapseOwnSubagents = options.collapseOwnSubagents !== false
-  const collapseFailed = options.collapseFailed !== false
+  const collapseFailed = options.collapseFailed === true
   const collapseOtherAgents = options.collapseOtherAgents === true
 
   const startsOpen = (tool: string, status: CallStatus): boolean =>
@@ -68,7 +75,7 @@ export const register: Register = (on, options) => {
     if (target === undefined) {
       return { text: `Unknown argument "${arg}": use all, none or toggle.` }
     }
-    await update($, overrides, () => ({}))
+    await update($, epoch, n => n + 1)
     await update($, mode, () => target)
     const words: Record<Mode, string> = {
       auto: 'Tool calls back to their default state.',
@@ -81,6 +88,10 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'ToolUse' }, async ($, e, next) => {
     const { tool, tool_use_id: id, input, output } = e.props
+    // The ctrl+o transcript and --verbose draw every row in full.
+    if (e.props.isExpanded && !unfolded.has(id)) {
+      return next(e)
+    }
     const open = await isOpen($, id, startsOpen(tool, e.props))
     const { Box, Button, Text } = $.ui.resolve(e)
     const chevron = (
@@ -104,6 +115,8 @@ export const register: Register = (on, options) => {
 
     const columns = e.viewport?.columns ?? 100
     const argument = keyArgument(input)
+    // A multi-line command shows its first line: say how many more it runs.
+    const extra = argument === undefined ? 0 : argument.trim().split('\n').length - 1
     const size = e.props.isRunning ? undefined : outputSize(output)
     const mark = statusMark(e.props)
 
@@ -116,6 +129,7 @@ export const register: Register = (on, options) => {
           {argument === undefined
             ? ''
             : `(${truncate(argument, Math.max(20, columns - tool.length - 30))})`}{' '}
+          {extra > 0 ? <Text color="warning">{`+${extra} ${extra === 1 ? 'line' : 'lines'} `}</Text> : ''}
           <Text dimColor>
             {mark}
             {size === undefined ? '' : ` ${size}`}
@@ -126,6 +140,9 @@ export const register: Register = (on, options) => {
   })
 
   on('ui.render', { component: 'ToolResult' }, async ($, e, next) => {
+    if (e.props.isExpanded) {
+      return next(e)
+    }
     const status = { isRunning: false, isErrored: e.props.isErrored, isInterrupted: false }
     if (await isOpen($, e.props.tool_use_id, startsOpen(e.props.tool, status))) {
       return next(e)
@@ -145,7 +162,9 @@ export const register: Register = (on, options) => {
     if (from === undefined || origin.kind === 'channel') {
       return next(e)
     }
-    const isReport = HANDBACK.test(text)
+    // A peer can write the hand-back frame too; only a task notification is a
+    // subagent's report.
+    const isReport = origin.kind === 'task-notification' && HANDBACK.test(text)
     if (isReport ? !collapseOwnSubagents : !collapseOtherAgents) {
       return next(e)
     }
@@ -212,7 +231,8 @@ export const register: Register = (on, options) => {
           {chevron}
           <Text dimColor> {e.props.calls.length} calls</Text>
         </Box>
-        {await next({ ...e, props: { ...e.props, isExpanded: true } })}
+        {(e.props.calls.forEach(call => call.tool_use_id && unfolded.add(call.tool_use_id)),
+        await next({ ...e, props: { ...e.props, isExpanded: true } }))}
       </Box>
     )
   })

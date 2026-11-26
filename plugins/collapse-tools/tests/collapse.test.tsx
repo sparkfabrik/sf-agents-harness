@@ -112,6 +112,48 @@ test('/collapse none expands every call, /collapse all collapses Edit too', asyn
   expect(await edit.find({ text: 'engine row' })).toBeUndefined()
 })
 
+test('a chevron choice is reset by /collapse all', async ($, on) => {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine row</Text>
+  })
+  const bash = await $.ui.mount({ plugin: 'collapse-tools', surface: 'terminal', component: 'ToolUse', props: BASH_ROW })
+  await bash.press({ key: 'chevron-toolu_1' })
+  expect(await bash.find({ text: 'engine row' })).toBeDefined()
+
+  await $.command.run({ ...COMMAND, args: 'all' })
+  await bash.redraw()
+  expect(await bash.find({ text: 'engine row' })).toBeUndefined()
+})
+
+test('the ctrl+o transcript and --verbose draw every row in full', async ($, on) => {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine row</Text>
+  })
+  const row = await $.ui.mount({ plugin: 'collapse-tools', surface: 'terminal', component: 'ToolUse', props: { ...BASH_ROW, isExpanded: true } })
+  expect(await row.find({ text: 'engine row' })).toBeDefined()
+  expect(await row.find({ key: 'chevron-toolu_1' })).toBeUndefined()
+
+  const result = await $.ui.mount({
+    plugin: 'collapse-tools',
+    surface: 'terminal',
+    component: 'ToolResult',
+    props: { tool_use_id: 'toolu_1', tool: 'Bash', output: BASH_ROW.output, isErrored: false, isExpanded: true },
+  })
+  expect(await result.find({ text: 'engine row' })).toBeDefined()
+})
+
+test('a multi-line command says how many more lines it runs', async ($, on) => {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine row</Text>
+  })
+  const props = { ...BASH_ROW, input: { command: 'echo ok\nrm -rf "$HOME/project"' } }
+  const ui = await $.ui.mount({ plugin: 'collapse-tools', surface: 'terminal', component: 'ToolUse', props })
+  expect(await ui.find({ text: /\+1 line/ })).toBeDefined()
+})
+
 test('expandedTools takes a comma-separated list', { options: { expandedTools: 'Read, Bash' } }, async ($, on) => {
   on('ui.render', ($, e) => {
     const { Text } = $.ui.resolve(e)
@@ -141,7 +183,7 @@ const FAILED_ROW: RenderPropsOf['ToolUse'] = {
   output: 'Exit code 1',
 }
 
-test('a failed call starts collapsed with a ✗ mark', async ($, on) => {
+test('collapseFailed on: a failed call starts collapsed with a ✗ mark', { options: { collapseFailed: true } }, async ($, on) => {
   on('ui.render', ($, e) => {
     const { Text } = $.ui.resolve(e)
     return <Text>engine row</Text>
@@ -152,7 +194,7 @@ test('a failed call starts collapsed with a ✗ mark', async ($, on) => {
   expect(await ui.find({ text: /✗/ })).toBeDefined()
 })
 
-test('collapseFailed off: a failed call starts expanded', { options: { collapseFailed: false } }, async ($, on) => {
+test('a failed call starts expanded by default', async ($, on) => {
   on('ui.render', ($, e) => {
     const { Text } = $.ui.resolve(e)
     return <Text>engine row</Text>
@@ -218,6 +260,17 @@ test('collapseOtherAgents on: a channel message is not collapsed', { options: { 
     return <Text>engine report</Text>
   })
   const props = { ...PEER_MESSAGE, origin: { kind: 'channel', server: 'slack' } } as const
+  const ui = await $.ui.mount({ plugin: 'collapse-tools', surface: 'terminal', component: 'UserMessage', props })
+
+  expect(await ui.find({ text: 'engine report' })).toBeDefined()
+})
+
+test('a peer message with the hand-back frame is not read as a report', async ($, on) => {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine report</Text>
+  })
+  const props = { ...REPORT, origin: { kind: 'peer' } } as const
   const ui = await $.ui.mount({ plugin: 'collapse-tools', surface: 'terminal', component: 'UserMessage', props })
 
   expect(await ui.find({ text: 'engine report' })).toBeDefined()

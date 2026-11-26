@@ -8,11 +8,13 @@ A Claude Code mod that shows tool calls collapsed in the transcript. Click the c
 ```
 
 - Running calls stay expanded and collapse when they finish, unless you toggled them.
-- Failed calls start collapsed with a `✗` mark; set `collapseFailed` to `false` to keep them expanded.
+- Failed and refused calls stay expanded; set `collapseFailed` to `true` to start them collapsed with a `✗` mark.
+- A command of several lines shows its first line and how many more it runs (`+2 lines`).
 - The tools listed in `expandedTools` start expanded.
 - Folded runs of reads and searches get a chevron that unfolds them.
 - Agent calls start collapsed, hiding their nested calls, and so does the report a background subagent hands back.
 - Messages from other agents stay expanded by default; see [Messages from agents](#messages-from-agents).
+- The `ctrl+o` transcript and `--verbose` show every call in full.
 - Toggles reset each session.
 
 Clicks work in fullscreen mode, including inside tmux with `set -g mouse on`. Outside fullscreen, use the command below.
@@ -29,8 +31,10 @@ At the Claude Code prompt:
 To run it from a local checkout instead:
 
 ```
-claude --plugin-dir /path/to/plugin/collapse-tools
+claude --plugin-dir plugins/collapse-tools
 ```
+
+It needs Claude Code 2.1.332 or later, the version it was tested with.
 
 ## Command
 
@@ -55,7 +59,7 @@ Edit these in `/config`:
 | `enabled`              | `true`                                                   | Turn the mod off without uninstalling it      |
 | `expandedTools`        | Edit, Write, NotebookEdit, AskUserQuestion, ExitPlanMode | Comma-separated tools that start expanded     |
 | `collapseOwnSubagents` | `true`                                                   | Start Agent calls and their reports collapsed |
-| `collapseFailed`       | `true`                                                   | Start failed tool calls collapsed             |
+| `collapseFailed`       | `false`                                                  | Start failed and refused calls collapsed      |
 | `collapseOtherAgents`  | `false`                                                  | Start messages from other agents collapsed    |
 
 ## Messages from agents

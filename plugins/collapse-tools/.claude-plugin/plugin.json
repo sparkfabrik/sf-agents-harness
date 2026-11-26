@@ -5,6 +5,9 @@
   "author": {
     "name": "Giuseppe Rota"
   },
+  "engines": {
+    "claude-code": ">=2.1.332"
+  },
   "types": "./types/index.d.ts",
   "userConfig": {
     "enabled": {
@@ -28,8 +31,8 @@
     "collapseFailed": {
       "type": "boolean",
       "title": "Collapse failed calls",
-      "description": "Start failed tool calls collapsed too, marked with ✗",
-      "default": true
+      "description": "Start failed and refused tool calls collapsed too, marked with ✗",
+      "default": false
     },
     "collapseOtherAgents": {
       "type": "boolean",
