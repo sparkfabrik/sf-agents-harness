@@ -19,6 +19,8 @@ declare module 'claude-code' {
       /** First item of the window; -1 follows the end. */
       offset: number
       showReplies: boolean
+      /** The topmost transcript row on screen, written to redraw the pane. */
+      top: string
     }
   }
 }

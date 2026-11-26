@@ -5,6 +5,9 @@
   "author": {
     "name": "Giuseppe Rota"
   },
+  "engines": {
+    "claude-code": ">=2.1.332"
+  },
   "types": "./types/index.d.ts",
   "userConfig": {
     "haikuSummaries": {
@@ -16,7 +19,7 @@
     "highlightColor": {
       "type": "string",
       "title": "Highlight color",
-      "description": "Theme color of the entry for what you are reading; /theme-colors shows them all",
+      "description": "Theme color of the entry for what you are reading; /prompts colors shows them all",
       "options": [
         "text",
         "inactive",

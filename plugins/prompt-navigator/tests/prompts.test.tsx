@@ -1,5 +1,5 @@
 import type { ModelUsage, SessionMessage, TurnCompleteInput } from 'claude-code'
-import { expect, test } from 'claude-code/testing'
+import { expect, mock, test } from 'claude-code/testing'
 import type { TestBody } from 'claude-code/testing'
 
 const pane = (bodyRows: number) =>
@@ -103,6 +103,83 @@ test('a long list opens at the end and keeps the bottom button in view', async (
   await ui.unmount()
 })
 
+test('a prompt that starts with a tag of its own is listed', async ($, on) => {
+  await start($, on, [
+    { role: 'user', text: '<Button> does not render', toolUses: [], uuid: 'u1' },
+    { role: 'user', text: '<task-notification>done</task-notification>', toolUses: [], uuid: 'u2' },
+  ])
+  const ui = await $.ui.mount({ ...pane(20), surface: 'terminal' })
+  expect(await ui.find({ text: /<Button> does not render/ })).toBeDefined()
+  expect(await ui.find({ text: /task-notification/ })).toBeUndefined()
+  await ui.unmount()
+})
+
+test('a refresh reads only the rows after the last one seen', async ($, on) => {
+  const reads: unknown[] = []
+  on('command.register', (_, e) => ({ value: { command: e.name } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('turn.complete', (_, e) => ({ text: e.answer }))
+  on('session.messages', (_, e) => {
+    reads.push(e)
+    return { value: 'after' in e && e.after ? [{ role: 'user', text: 'second prompt', toolUses: [], uuid: 'u2' }] : [ROWS[0]!] }
+  })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await $.turn.complete(TURN)
+  expect(JSON.stringify(reads.at(-1))).toContain('11111111-1111-4111-8111-111111111111')
+  const ui = await $.ui.mount({ ...pane(20), surface: 'terminal' })
+  expect(await ui.find({ text: /Find me a prompt history plugin/ })).toBeDefined()
+  expect(await ui.find({ text: /second prompt/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('the open pane follows the top row as the conversation scrolls', async ($, on) => {
+  const clock = mock.clock(on)
+  await start($, on)
+  const ui = await $.ui.mount({ ...pane(20), surface: 'terminal' })
+  await $.ui.mount({
+    plugin: 'prompt-navigator', surface: 'terminal', component: 'AssistantMessage', requestId: '66666666-6666-4666-8666-000000000000',
+    props: { text: 'x', isFirstOfReply: true, onScreen: { first: 1, last: 2, of: 3 } },
+  } as never).catch(() => undefined)
+  await clock.settle()
+  expect(JSON.stringify(await ui.find({ key: '55555555-5555-4555-8555-555555555555:0' }))).toContain('suggestion')
+  await ui.unmount()
+})
+
+test('summaries reach the newest exchanges past the 40th', { options: { haikuSummaries: true } }, async ($, on) => {
+  let calls = 0
+  const store: Record<string, unknown> = {}
+  on('store.get', (_, e) => ({ value: store[e.key] }))
+  on('store.set', (_, e) => {
+    store[e.key] = e.value
+    return { value: undefined }
+  })
+  on('store.keys', () => ({ value: Object.keys(store) }))
+  on('store.delete', (_, e) => {
+    delete store[e.key]
+    return { value: undefined }
+  })
+  on('turn.complete', (_, e) => ({ text: e.answer }))
+  on('model.complete', () => {
+    calls++
+    return { value: { isAnswered: true, text: 'summary ' + calls, usage: USAGE } }
+  })
+  const rows: SessionMessage[] = Array.from({ length: 45 }, (_, i) => [
+    { role: 'user', text: 'prompt ' + (i + 1), toolUses: [], uuid: 'p' + (i + 1) },
+    { role: 'assistant', text: 'reply ' + (i + 1), toolUses: [], uuid: 'a' + (i + 1) },
+  ]).flat() as SessionMessage[]
+  const clock = mock.clock(on)
+  await start($, on, rows)
+  await $.turn.complete(TURN)
+  await clock.settle()
+  expect(calls).toBe(40)
+  expect(store['summary:p45']).toBeDefined()
+  expect(store['summary:p5']).toBeUndefined()
+  await $.turn.complete(TURN)
+  await clock.settle()
+  expect(calls).toBe(45)
+  expect(store['summary:p1']).toBeDefined()
+})
+
 test('haiku summaries are written once and cached', { options: { haikuSummaries: true } }, async ($, on) => {
   let calls = 0
   const store: Record<string, unknown> = {}
@@ -127,7 +204,7 @@ test('haiku summaries are written once and cached', { options: { haikuSummaries:
 })
 
 test('cached summaries are hidden while summaries are off', async ($, on) => {
-  on('store.get', () => ({ value: { '11111111-1111-4111-8111-111111111111': 'Old cached summary' } }))
+  on('store.get', () => ({ value: 'Old cached summary' }))
   await start($, on)
   const ui = await $.ui.mount({ ...pane(20), surface: 'terminal' })
   expect(await ui.find({ text: /Find me a prompt history plugin/ })).toBeDefined()

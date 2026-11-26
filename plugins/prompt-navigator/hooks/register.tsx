@@ -5,12 +5,25 @@ import type { Prompt, Reply } from '../types'
 
 const PANE = 'prompts'
 const COLORS_PANE = 'prompt-colors'
-// The theme's named colors (ThemeKey); they follow the theme the person picked.
-const THEME_COLORS = ["text","inverseText","inactive","subtle","suggestion","remember","success","error","warning","merged","claude","permission","planMode","autoAccept","promptBorder","bashBorder","ide","diffAdded","diffRemoved","diffAddedDimmed","diffRemovedDimmed","diffAddedWord","diffRemovedWord"] as const
-const SUMMARIES_KEY = 'summaries'
+// The theme's named colors (ThemeKey) the highlightColor option offers; they
+// follow the theme the person picked.
+const THEME_COLORS = ["text","inactive","subtle","suggestion","remember","success","error","warning","merged","claude","permission","planMode","autoAccept","promptBorder","bashBorder","ide"] as const
+// One store key per summarized prompt, so two sessions never overwrite each
+// other's; the oldest are dropped past MAX_SUMMARIES.
+const SUMMARY_PREFIX = 'summary:'
+const LEGACY_SUMMARIES_KEY = 'summaries'
+const MAX_SUMMARIES = 2000
+const SUMMARIES_PER_PASS = 40
 const MAX_PROMPT_LINES = 8
 const MAX_REPLY_LINES = 2
 const GUTTER = 5
+// What the list keeps of each text: enough for its rows at any pane width.
+const MAX_PROMPT_CHARS = 4000
+const MAX_REPLY_CHARS = 1000
+const PAGE = 4096
+// The tags the engine wraps a user row in (slash-command echoes, shell mode,
+// notifications, reminders): such a row is not a prompt.
+const WRAPPER = /^<(command-name|command-message|command-args|local-command-stdout|local-command-stderr|local-command-caveat|bash-input|bash-stdout|bash-stderr|task-notification|system-reminder|user-prompt-submit-hook|tools-used-before-summary|stored_memory|artifact-content-authored-by-others)[\s>]/
 
 const prompts = atom({ plugin: 'prompt-navigator', key: 'prompts' } as const, [], {
   shape: 'prompts-3',
@@ -18,6 +31,8 @@ const prompts = atom({ plugin: 'prompt-navigator', key: 'prompts' } as const, []
 const lastId = atom({ plugin: 'prompt-navigator', key: 'lastId' } as const, '')
 const offsetAtom = atom({ plugin: 'prompt-navigator', key: 'offset' } as const, -1)
 const showReplies = atom({ plugin: 'prompt-navigator', key: 'showReplies' } as const, false)
+// The topmost row on screen, written only to redraw the pane when it changes.
+const topAtom = atom({ plugin: 'prompt-navigator', key: 'top' } as const, '')
 
 type Row = {
   role: string
@@ -42,6 +57,15 @@ type Item = {
 // and the next drawing measures again.
 let layout = { maxOffset: 0, rows: 20 }
 let isSummarizing = false
+// Set while the pane is drawn, cleared when it closes: the transcript's rows
+// redraw the pane only while it is open.
+let isPaneOpen = false
+
+// What the reads so far built, so each refresh reads only the rows after the
+// last one seen. Empty after a reload, which reads the session again.
+type Feed = { seen: string; count: number; before: string; list: Prompt[]; exchanges: Exchange[] }
+const emptyFeed = (): Feed => ({ seen: '', count: 0, before: '', list: [], exchanges: [] })
+let feed = emptyFeed()
 
 // Where the conversation is scrolled: the rows the transcript reports on screen,
 // each row's place in the conversation, and the pane entry each row belongs to.
@@ -71,8 +95,10 @@ function topVisible(): string {
 
 // Records whether a row is on screen. Rows report only as they reach the
 // viewport's edges, so a row cut at the top (or bottom) edge also clears every
-// row before (or after) it that scrolled away unreported. A changed top row
-// redraws the pane.
+// row before (or after) it that scrolled away unreported. The bookkeeping runs
+// with the pane closed too, so it is right when the pane opens; a changed top
+// row redraws only the open pane, through a state write after the draw (a
+// draw cannot write state).
 function track($: EngineInterface, id: string, onScreen: Shown) {
   if (onScreen === undefined) return
   const before = topVisible()
@@ -89,7 +115,8 @@ function track($: EngineInterface, id: string, onScreen: Shown) {
       }
     }
   }
-  if (topVisible() !== before) $.ui.invalidate('ui.render')
+  const top = topVisible()
+  if (top !== before && isPaneOpen) $.clock.after(0, () => void update($, topAtom, () => top).catch(() => undefined))
 }
 
 // The entry for the topmost message on screen: a reply when replies are shown
@@ -110,7 +137,7 @@ const isPrompt = (m: Row) =>
   m.role === 'user' &&
   !(m.toolResults && m.toolResults.length > 0) &&
   m.text.trim() !== '' &&
-  !m.text.trimStart().startsWith('<')
+  !WRAPPER.test(m.text.trimStart())
 
 const flat = (text: string) => text.replace(/\s+/g, ' ').trim()
 const isShort = (text: string) => flat(text).length <= 30
@@ -130,7 +157,8 @@ function lastSentence(text: string): string {
 // known: at most max rows, the last cut with an ellipsis.
 function wrap(text: string, width: number, max: number): string[] {
   const out: string[] = []
-  for (const para of text.replace(/\r/g, '').split('\n')) {
+  // A row holds at most width + 1 characters: this much text fills max + 1 rows.
+  for (const para of text.slice(0, (width + 1) * (max + 1)).replace(/\r/g, '').split('\n')) {
     let line = ''
     for (const word of para.split(/\s+/).filter(Boolean)) {
       let w = word
@@ -164,7 +192,7 @@ function itemsOf(list: readonly Prompt[], withReplies: boolean, width: number): 
     items.push({ key: p.id, id: p.id, kind: 'prompt', number: i + 1, lines: wrap(p.text, room, MAX_PROMPT_LINES), notes })
     if (withReplies)
       p.replies.forEach((r: Reply) =>
-        items.push({ key: 'r-' + r.id, id: r.id, kind: 'reply', lines: wrap('● ' + flat(r.text), room, MAX_REPLY_LINES), notes: [] }),
+        items.push({ key: 'r-' + r.id, id: r.id, kind: 'reply', lines: wrap('● ' + flat(r.text.slice(0, (room + 1) * (MAX_REPLY_LINES + 1))), room, MAX_REPLY_LINES), notes: [] }),
       )
   })
   return items
@@ -182,82 +210,128 @@ function maxOffsetOf(items: Item[], rows: number): number {
   return 0
 }
 
+// Reads the rows after the last one seen (the whole session after a reload,
+// or when that row is gone, as after a compaction) and adds their prompts.
 async function refresh($: EngineInterface, wantsSummaries: boolean): Promise<Exchange[]> {
-  const rows = (await $.session.messages({ last: 4096 })) as Row[] | { deny: string }
-  if ('deny' in rows) return []
+  let rows: Row[] = []
+  for (;;) {
+    const page = (await $.session.messages(feed.seen ? { after: feed.seen } : { last: PAGE })) as Row[] | { deny: string }
+    if ('deny' in page) {
+      if (!feed.seen) return feed.exchanges
+      feed = emptyFeed()
+      orderOf = new Map()
+      ownerOf = new Map()
+      rows = []
+      continue
+    }
+    rows = rows.concat(page)
+    const last = page.at(-1)?.uuid
+    if (last) feed.seen = last
+    if (page.length < PAGE || !last) break
+  }
+  if (rows.length === 0 && feed.list.length > 0) return feed.exchanges
+  for (const m of rows) add(m)
   // Cached summaries stay in the store while summaries are off, but are shown
   // only while they are on.
-  const summaries = (wantsSummaries ? ((await $.store.get(SUMMARIES_KEY).catch(() => undefined)) ?? {}) : {}) as Record<string, string>
-  const exchanges: Exchange[] = []
-  const list: Prompt[] = []
-  let before = ''
-  const order = new Map<string, number>()
-  const owner = new Map<string, string>()
-  rows.forEach((m, i) => m.uuid && order.set(rowKey(m.uuid), i))
-  for (const m of rows) {
-    if (m.uuid && list.length > 0) owner.set(rowKey(m.uuid), isPrompt(m) ? m.uuid : list.at(-1)!.id)
-    // A tool call's row is drawn under its tool_use_id, just after its message.
-    if (m.uuid && list.length > 0)
-      for (const use of m.toolUses ?? []) {
-        order.set(use.tool_use_id, (order.get(rowKey(m.uuid)) ?? 0) + 0.5)
-        owner.set(use.tool_use_id, list.at(-1)!.id)
+  if (wantsSummaries) {
+    await migrateSummaries($)
+    for (const p of feed.list)
+      if (!p.summary) {
+        const cached = await $.store.get(SUMMARY_PREFIX + p.id).catch(() => undefined)
+        if (typeof cached === 'string') p.summary = cached
       }
-    if (isPrompt(m) && m.uuid) {
-      owner.set(rowKey(m.uuid), m.uuid)
-      exchanges.push({ id: m.uuid, prompt: m.text, before, after: '' })
-      list.push({
-        id: m.uuid,
-        text: m.text,
-        replies: [],
-        ...(isShort(m.text) && before ? { context: lastSentence(before) } : {}),
-        ...(summaries[m.uuid] ? { summary: summaries[m.uuid] } : {}),
-      })
-    } else if (m.role === 'assistant' && m.text.trim() !== '') {
-      before = m.text
-      const open = exchanges.at(-1)
-      if (open) open.after += (open.after ? '\n' : '') + m.text
-      if (m.uuid) list.at(-1)?.replies.push({ id: m.uuid, text: m.text })
-    }
   }
-  orderOf = order
-  ownerOf = owner
-  await update($, prompts, () => list)
-  const last = rows.at(-1)?.uuid
-  if (last) await update($, lastId, () => last)
-  return exchanges
+  await update($, prompts, () => feed.list.slice())
+  if (feed.seen) await update($, lastId, () => feed.seen)
+  return feed.exchanges
 }
 
-// Summarizes each finished exchange that has no summary, one Haiku call apiece,
-// cached in the store across sessions so an exchange is never summarized twice.
+// Adds one row to the feed: a prompt opens an entry, an assistant message is
+// a reply of the open one. Each row's place in the conversation and the entry
+// it belongs to are kept for the scroll tracking.
+function add(m: Row) {
+  const at = feed.count++
+  const list = feed.list
+  if (m.uuid) orderOf.set(rowKey(m.uuid), at)
+  if (m.uuid && list.length > 0) ownerOf.set(rowKey(m.uuid), isPrompt(m) ? m.uuid : list.at(-1)!.id)
+  // A tool call's row is drawn under its tool_use_id, just after its message.
+  if (list.length > 0)
+    for (const use of m.toolUses ?? []) {
+      orderOf.set(use.tool_use_id, at + 0.5)
+      ownerOf.set(use.tool_use_id, list.at(-1)!.id)
+    }
+  if (isPrompt(m) && m.uuid) {
+    ownerOf.set(rowKey(m.uuid), m.uuid)
+    feed.exchanges.push({ id: m.uuid, prompt: m.text.slice(0, 2000), before: feed.before.slice(-800), after: '' })
+    list.push({
+      id: m.uuid,
+      text: m.text.slice(0, MAX_PROMPT_CHARS),
+      replies: [],
+      ...(isShort(m.text) && feed.before ? { context: cut(lastSentence(feed.before.slice(-4000)), 300) } : {}),
+    })
+  } else if (m.role === 'assistant' && m.text.trim() !== '') {
+    feed.before = m.text.slice(-4000)
+    const open = feed.exchanges.at(-1)
+    if (open && open.after.length < 2500) open.after = (open.after + (open.after ? '\n' : '') + m.text).slice(0, 2500)
+    if (m.uuid) list.at(-1)?.replies.push({ id: m.uuid, text: m.text.slice(0, MAX_REPLY_CHARS) })
+  }
+}
+
+// Moves summaries cached by an older version, all under one key, to a key each.
+async function migrateSummaries($: EngineInterface) {
+  const legacy = (await $.store.get(LEGACY_SUMMARIES_KEY).catch(() => undefined)) as Record<string, string> | undefined
+  if (!legacy) return
+  for (const [id, summary] of Object.entries(legacy)) await $.store.set(SUMMARY_PREFIX + id, summary)
+  await $.store.delete(LEGACY_SUMMARIES_KEY)
+}
+
+// Drops the oldest summaries past MAX_SUMMARIES; the store keeps insertion order.
+async function pruneSummaries($: EngineInterface) {
+  const keys = (await $.store.keys()).filter(key => key.startsWith(SUMMARY_PREFIX))
+  for (const key of keys.slice(0, Math.max(0, keys.length - MAX_SUMMARIES))) await $.store.delete(key)
+}
+
+// Summarizes the newest finished exchanges that have no summary, one Haiku
+// call apiece, cached in the store across sessions so an exchange is never
+// summarized twice.
 async function summarize($: EngineInterface, exchanges: Exchange[]) {
   if (isSummarizing) return
   isSummarizing = true
   try {
-    for (const x of exchanges.filter(x => x.after !== '').slice(0, 40)) {
-      const cache = ((await $.store.get(SUMMARIES_KEY)) ?? {}) as Record<string, string>
-      if (cache[x.id]) continue
-      const reply = await $.model.complete({
-        model: 'haiku',
-        effort: 'low',
-        maxTokens: 300,
-        timeoutMs: 20000,
-        system:
-          'You summarize one exchange of a coding session for a navigation list. ' +
-          'Say what was asked and done, at most 12 words, no quotes, no trailing period.',
-        prompt:
-          '<assistant_before>' + x.before.slice(-800) + '</assistant_before>\n' +
-          '<user_prompt>' + x.prompt.slice(0, 2000) + '</user_prompt>\n' +
-          '<assistant_after>' + x.after.slice(0, 2500) + '</assistant_after>',
-      })
-      if (!reply.isAnswered) continue
-      const summary = cut(flat(reply.text.split('\n')[0] ?? '').replace(/^["'*]+|["'*.]+$/g, ''), 120)
+    const done = new Set(feed.list.filter(p => p.summary).map(p => p.id))
+    const todo = exchanges.filter(x => x.after !== '' && !done.has(x.id)).slice(-SUMMARIES_PER_PASS)
+    for (const x of todo) {
+      // Another session may have summarized it since the list was read.
+      const cached = await $.store.get(SUMMARY_PREFIX + x.id)
+      const summary = typeof cached === 'string' ? cached : await summaryOf($, x)
       if (!summary) continue
-      await $.store.set(SUMMARIES_KEY, { ...cache, [x.id]: summary })
+      if (typeof cached !== 'string') await $.store.set(SUMMARY_PREFIX + x.id, summary)
+      const entry = feed.list.find(p => p.id === x.id)
+      if (entry) entry.summary = summary
       await update($, prompts, list => list.map(p => (p.id === x.id ? { ...p, summary } : p)))
     }
+    if (todo.length > 0) await pruneSummaries($)
   } finally {
     isSummarizing = false
   }
+}
+
+async function summaryOf($: EngineInterface, x: Exchange): Promise<string> {
+  const reply = await $.model.complete({
+    model: 'haiku',
+    effort: 'low',
+    maxTokens: 300,
+    timeoutMs: 20000,
+    system:
+      'You summarize one exchange of a coding session for a navigation list. ' +
+      'Say what was asked and done, at most 12 words, no quotes, no trailing period.',
+    prompt:
+      '<assistant_before>' + x.before + '</assistant_before>\n' +
+      '<user_prompt>' + x.prompt + '</user_prompt>\n' +
+      '<assistant_after>' + x.after + '</assistant_after>',
+  })
+  if (!reply.isAnswered) return ''
+  return cut(flat(reply.text.split('\n')[0] ?? '').replace(/^["'*]+|["'*.]+$/g, ''), 120)
 }
 
 async function sync($: EngineInterface, wantsSummaries: boolean) {
@@ -278,6 +352,16 @@ async function jumpToBottom($: EngineInterface) {
   if (id) await jumpTo($, id, 'end')
 }
 
+async function toggleColors($: EngineInterface) {
+  const panes = await $.ui.panes()
+  if (panes.some(pane => pane.id === COLORS_PANE && pane.isPlaced)) {
+    await $.ui.close({ id: COLORS_PANE })
+    return { text: 'Colors pane closed.' }
+  }
+  await $.ui.open({ id: COLORS_PANE, title: 'Theme colors' })
+  return { text: 'Colors pane opened. Pick one as Highlight color in /config.' }
+}
+
 export const register: Register = (on, options) => {
   const wantsSummaries = options.haikuSummaries === true
   const highlight = typeof options.highlightColor === 'string' ? options.highlightColor : 'suggestion'
@@ -286,10 +370,7 @@ export const register: Register = (on, options) => {
     await $.command.register({
       name: 'prompts',
       description: 'Toggle a pane listing your prompts; press one to jump to it',
-    })
-    await $.command.register({
-      name: 'theme-colors',
-      description: "Toggle a pane showing the theme's named colors",
+      argumentHint: '[colors]',
     })
     const ran = await next(e)
     // A settings change reloads the mod and runs this again: start the
@@ -299,7 +380,8 @@ export const register: Register = (on, options) => {
     return ran
   })
 
-  on('command.run', { command: 'prompts' }, async $ => {
+  on('command.run', { command: 'prompts' }, async ($, e) => {
+    if (e.args.trim() === 'colors') return toggleColors($)
     const panes = await $.ui.panes()
     if (panes.some(pane => pane.id === PANE && pane.isPlaced)) {
       await $.ui.close({ id: PANE })
@@ -311,14 +393,9 @@ export const register: Register = (on, options) => {
     return { text: 'Prompts pane opened.' }
   })
 
-  on('command.run', { command: 'theme-colors' }, async $ => {
-    const panes = await $.ui.panes()
-    if (panes.some(pane => pane.id === COLORS_PANE && pane.isPlaced)) {
-      await $.ui.close({ id: COLORS_PANE })
-      return { text: 'Colors pane closed.' }
-    }
-    await $.ui.open({ id: COLORS_PANE, title: 'Theme colors' })
-    return { text: 'Colors pane opened. Pick one as Highlight color in /config.' }
+  on('ui.close', async ($, e, next) => {
+    if (e.id === PANE) isPaneOpen = false
+    return next(e)
   })
 
   on('ui.render', { component: 'Pane', requestId: COLORS_PANE }, async ($, e) => {
@@ -378,6 +455,10 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
+    isPaneOpen = true
+    // Read so that a changed top row redraws the pane; the module's own
+    // tracking says which row it is.
+    await read($, topAtom)
     const list = await read($, prompts)
     const withReplies = await read($, showReplies)
     const offset = await read($, offsetAtom)

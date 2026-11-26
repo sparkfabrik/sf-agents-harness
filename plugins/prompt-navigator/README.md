@@ -6,7 +6,7 @@ A Claude Code mod that lists your prompts in a side pane. Press one to scroll th
 - Each prompt is numbered and wraps to as many rows as it needs, up to 8.
 - A short reply such as `yes please` also shows what it answered (`← Want me to build one?`): the last question or sentence of the assistant message before it.
 - **○ replies** (or `r`) shows the assistant's text messages under each prompt; press one to jump to it.
-- The entry for the topmost message on screen in the conversation is colored, and follows as you scroll. Pick the color as **Highlight color** in `/config`; `/theme-colors` shows the theme's named colors.
+- The entry for the topmost message on screen in the conversation is colored, and follows as you scroll. Pick the color as **Highlight color** in `/config`; `/prompts colors` shows the colors you can pick.
 - **↓ bottom** (or `b`) stays at the foot of the pane and scrolls the list and the conversation to the end.
 - The list opens at the newest prompt. Scroll with the mouse wheel, or focus the pane with `ctrl+x tab` and use the arrows, PgUp/PgDn and Home/End.
 - Tool results, slash-command echoes and system notifications are left out.
@@ -29,5 +29,7 @@ At the Claude Code prompt:
 To run it from a local checkout instead:
 
 ```
-claude --plugin-dir /path/to/plugin/prompt-navigator
+claude --plugin-dir plugins/prompt-navigator
 ```
+
+It needs Claude Code 2.1.332 or later, the version it was tested with.
