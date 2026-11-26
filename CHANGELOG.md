@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
+## [2026-11-26]
+
+### Added
+
+- `collapse-tools` plugin: shows tool calls collapsed in the Claude Code transcript, with a chevron to expand or collapse each call and a `/collapse` command.
+
 ## [2026-11-23]
 
 ### Changed
