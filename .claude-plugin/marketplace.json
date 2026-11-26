@@ -12,7 +12,12 @@
       "source": "./plugins/drupal-migrate",
       "description": "Source-agnostic Drupal content-migration toolkit: analyst agent, source-analysis skills, content verification.",
       "version": "0.2.9",
-      "keywords": ["drupal", "migration", "wordpress-to-drupal", "drupal-to-drupal"]
+      "keywords": [
+        "drupal",
+        "migration",
+        "wordpress-to-drupal",
+        "drupal-to-drupal"
+      ]
     },
     {
       "name": "collapse-tools",
@@ -20,6 +25,13 @@
       "description": "Collapse tool calls in the transcript; click the chevron to expand or collapse.",
       "version": "0.1.0",
       "keywords": ["transcript", "collapse", "tool-calls", "mod"]
+    },
+    {
+      "name": "prompt-navigator",
+      "source": "./plugins/prompt-navigator",
+      "description": "A side pane listing your prompts in this session; press one to jump to it in the transcript.",
+      "version": "0.1.0",
+      "keywords": ["prompts", "navigation", "transcript", "pane", "mod"]
     }
   ]
 }
