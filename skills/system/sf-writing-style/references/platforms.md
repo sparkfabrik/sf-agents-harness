@@ -7,6 +7,7 @@ Use this reference when the text will be rendered by GitHub, GitLab, or Slack. T
 Both render GitHub-flavored Markdown with headings, tables, task lists, and fenced code.
 
 - **References link only when bare.** `#42` on GitHub, `#42` and `!15` on GitLab, and `@user` mentions become links. Inside backticks they render as plain code, so keep them out of code formatting.
+- **Project paths do not link.** A bare `group/project` path renders as plain text. When you have the project's URL, give it link text, such as `[group/project](url)`.
 - **Cross-project references need the full path.** A short reference resolves only inside its own repository or project. Write `owner/repo#42` on GitHub and `group/subgroup/project#42` on GitLab when the item lives elsewhere, or when the text may be read from a board, notification, or another project.
 - **Task lists track work.** Use `- [ ]` items for tasks and acceptance criteria that someone will tick off. Use plain bullets for facts.
 - **Templates come first.** When a project has issue or PR/MR templates, keep their required headings and fill them. Remove hint text and placeholders that do not apply.

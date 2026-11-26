@@ -6,11 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project has no semantic versioning — the latest commit is the current version.
 Changes are grouped by date.
 
-## [2026-11-15]
+## [2026-11-26]
 
 ### Added
 
 - `collapse-tools` plugin: shows tool calls collapsed in the Claude Code transcript, with a chevron to expand or collapse each call and a `/collapse` command.
+
+## [2026-11-23]
+
+### Changed
+
+- Upstream skill sync: refresh `angular/angular-developer` and `system/playwright-cli` from the declared source repositories.
+
+## [2026-11-17]
+
+### Changed
+
+- `sf-writing-style` skill: PR and MR descriptions look for validation evidence in the linked issue, state the cost of the problem when it is known, claim only what the evidence covers, and say what an overridable value must satisfy.
+- `gh` and `glab` skills: a PR or MR description can say where a reviewer should look first in any change that needs a careful look.
+- `glab` skill: CI/CD, repository files, file uploads, groups, milestones, other hosts and login options moved to references, so the skill loads in one read.
+
+## [2026-11-16]
+
+### Changed
+
+- `sf-writing-style`, `gh` and `glab` skills: PR and MR descriptions give the reason for a change only when it is confirmed, and a complex change can say where to look first.
+- `sf-writing-style` style check: skips issue and commit trailers and the AI attribution header.
+- Upstream skill sync: refresh `angular/angular-developer` from the declared source repository.
 
 ## [2026-11-09]
 
