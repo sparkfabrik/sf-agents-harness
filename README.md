@@ -90,6 +90,7 @@ Claude Code plugins bundle agents, skills and reference files that are installed
 | Plugin               | Description                                                                                                          | Path                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------- |
 | **drupal-migrate**   | Source-agnostic content-migration toolkit into Drupal -- analyst agent, source-analysis skills, content verification | `plugins/drupal-migrate/`   |
+| **collapse-tools**   | Collapses tool calls in the transcript; click the chevron to expand or collapse                                      | `plugins/collapse-tools/`   |
 | **prompt-navigator** | Side pane listing the session's prompts; press one to jump to it in the transcript                                   | `plugins/prompt-navigator/` |
 
 See each plugin's `README.md` for install instructions and usage.

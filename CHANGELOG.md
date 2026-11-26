@@ -10,6 +10,7 @@ Changes are grouped by date.
 
 ### Added
 
+- `collapse-tools` plugin: shows tool calls collapsed in the Claude Code transcript, with a chevron to expand or collapse each call and a `/collapse` command.
 - `prompt-navigator` plugin: a `/prompts` side pane that lists the session's prompts and scrolls the transcript to the one you press.
 
 ## [2026-11-23]

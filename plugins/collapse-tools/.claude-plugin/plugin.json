@@ -1,0 +1,50 @@
+{
+  "name": "collapse-tools",
+  "version": "0.1.0",
+  "description": "Collapse tool calls in the transcript; click the chevron to expand or collapse",
+  "author": {
+    "name": "Giuseppe Rota"
+  },
+  "engines": {
+    "claude-code": ">=2.1.332"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "enabled": {
+      "type": "boolean",
+      "title": "Collapse tool calls",
+      "description": "Turn off to show tool calls as Claude Code normally does",
+      "default": true
+    },
+    "expandedTools": {
+      "type": "string",
+      "title": "Tools kept expanded",
+      "description": "Comma-separated tool names that start expanded",
+      "default": "Edit, Write, NotebookEdit, AskUserQuestion, ExitPlanMode"
+    },
+    "collapseOwnSubagents": {
+      "type": "boolean",
+      "title": "Collapse subagents",
+      "description": "Start Agent calls collapsed, hiding their nested tool calls and the report a background subagent hands back",
+      "default": true
+    },
+    "collapseFailed": {
+      "type": "boolean",
+      "title": "Collapse failed calls",
+      "description": "Start failed and refused tool calls collapsed too, marked with ✗",
+      "default": false
+    },
+    "collapseOtherAgents": {
+      "type": "boolean",
+      "title": "Collapse messages from other agents",
+      "description": "Start messages from teammates and other Claude sessions collapsed",
+      "default": false
+    }
+  },
+  "keywords": [
+    "transcript",
+    "collapse",
+    "tool-calls",
+    "mod"
+  ]
+}
