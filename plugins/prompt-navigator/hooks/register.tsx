@@ -11,7 +11,6 @@ const THEME_COLORS = ["text","inactive","subtle","suggestion","remember","succes
 // One store key per summarized prompt, so two sessions never overwrite each
 // other's; the oldest are dropped past MAX_SUMMARIES.
 const SUMMARY_PREFIX = 'summary:'
-const LEGACY_SUMMARIES_KEY = 'summaries'
 const MAX_SUMMARIES = 2000
 const SUMMARIES_PER_PASS = 40
 const MAX_PROMPT_LINES = 8
@@ -66,6 +65,8 @@ let isPaneOpen = false
 type Feed = { seen: string; count: number; before: string; list: Prompt[]; exchanges: Exchange[] }
 const emptyFeed = (): Feed => ({ seen: '', count: 0, before: '', list: [], exchanges: [] })
 let feed = emptyFeed()
+// Prompts whose cached summary was looked up in the store.
+const looked = new Set<string>()
 
 // Where the conversation is scrolled: the rows the transcript reports on screen,
 // each row's place in the conversation, and the pane entry each row belongs to.
@@ -210,9 +211,18 @@ function maxOffsetOf(items: Item[], rows: number): number {
   return 0
 }
 
+// Refreshes run one at a time: two that overlapped would both read the rows
+// after the same last row and add them twice.
+let refreshing: Promise<unknown> = Promise.resolve()
+function refresh($: EngineInterface, wantsSummaries: boolean): Promise<Exchange[]> {
+  const run = refreshing.then(() => readNewRows($, wantsSummaries))
+  refreshing = run.catch(() => undefined)
+  return run
+}
+
 // Reads the rows after the last one seen (the whole session after a reload,
 // or when that row is gone, as after a compaction) and adds their prompts.
-async function refresh($: EngineInterface, wantsSummaries: boolean): Promise<Exchange[]> {
+async function readNewRows($: EngineInterface, wantsSummaries: boolean): Promise<Exchange[]> {
   let rows: Row[] = []
   for (;;) {
     const page = (await $.session.messages(feed.seen ? { after: feed.seen } : { last: PAGE })) as Row[] | { deny: string }
@@ -233,14 +243,14 @@ async function refresh($: EngineInterface, wantsSummaries: boolean): Promise<Exc
   for (const m of rows) add(m)
   // Cached summaries stay in the store while summaries are off, but are shown
   // only while they are on.
-  if (wantsSummaries) {
-    await migrateSummaries($)
+  // Each prompt's cached summary is looked up once, when it is first read.
+  if (wantsSummaries)
     for (const p of feed.list)
-      if (!p.summary) {
+      if (!p.summary && !looked.has(p.id)) {
+        looked.add(p.id)
         const cached = await $.store.get(SUMMARY_PREFIX + p.id).catch(() => undefined)
         if (typeof cached === 'string') p.summary = cached
       }
-  }
   await update($, prompts, () => feed.list.slice())
   if (feed.seen) await update($, lastId, () => feed.seen)
   return feed.exchanges
@@ -250,6 +260,7 @@ async function refresh($: EngineInterface, wantsSummaries: boolean): Promise<Exc
 // a reply of the open one. Each row's place in the conversation and the entry
 // it belongs to are kept for the scroll tracking.
 function add(m: Row) {
+  if (m.uuid && orderOf.has(rowKey(m.uuid))) return
   const at = feed.count++
   const list = feed.list
   if (m.uuid) orderOf.set(rowKey(m.uuid), at)
@@ -275,14 +286,6 @@ function add(m: Row) {
     if (open && open.after.length < 2500) open.after = (open.after + (open.after ? '\n' : '') + m.text).slice(0, 2500)
     if (m.uuid) list.at(-1)?.replies.push({ id: m.uuid, text: m.text.slice(0, MAX_REPLY_CHARS) })
   }
-}
-
-// Moves summaries cached by an older version, all under one key, to a key each.
-async function migrateSummaries($: EngineInterface) {
-  const legacy = (await $.store.get(LEGACY_SUMMARIES_KEY).catch(() => undefined)) as Record<string, string> | undefined
-  if (!legacy) return
-  for (const [id, summary] of Object.entries(legacy)) await $.store.set(SUMMARY_PREFIX + id, summary)
-  await $.store.delete(LEGACY_SUMMARIES_KEY)
 }
 
 // Drops the oldest summaries past MAX_SUMMARIES; the store keeps insertion order.

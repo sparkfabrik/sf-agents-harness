@@ -32,4 +32,4 @@ To run it from a local checkout instead:
 claude --plugin-dir plugins/prompt-navigator
 ```
 
-It needs Claude Code 2.1.332 or later, the version it was tested with.
+Tested with Claude Code 2.1.332.

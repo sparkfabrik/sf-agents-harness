@@ -132,6 +132,20 @@ test('a refresh reads only the rows after the last one seen', async ($, on) => {
   await ui.unmount()
 })
 
+test('two refreshes at once list a new prompt once', async ($, on) => {
+  on('command.register', (_, e) => ({ value: { command: e.name } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('turn.complete', (_, e) => ({ text: e.answer }))
+  on('session.messages', (_, e) => ({
+    value: 'after' in e && e.after === 'u1' ? [{ role: 'user', text: 'queued prompt', toolUses: [], uuid: 'u2' }] : 'after' in e && e.after ? [] : [{ role: 'user', text: 'first prompt', toolUses: [], uuid: 'u1' }],
+  }))
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await Promise.all([$.turn.complete(TURN), $.turn.complete(TURN)])
+  const ui = await $.ui.mount({ ...pane(20), surface: 'terminal' })
+  expect(await ui.findAll({ type: 'Text', text: /queued prompt/ })).toHaveLength(1)
+  await ui.unmount()
+})
+
 test('the open pane follows the top row as the conversation scrolls', async ($, on) => {
   const clock = mock.clock(on)
   await start($, on)
@@ -212,7 +226,7 @@ test('cached summaries are hidden while summaries are off', async ($, on) => {
   await ui.unmount()
 })
 
-test('the colors pane shows every theme color', async ($, on) => {
+test('the colors pane shows the selectable theme colors', async ($, on) => {
   await start($, on)
   const ui = await $.ui.mount({ ...pane(30), requestId: 'prompt-colors', surface: 'terminal' })
   expect(await ui.find({ text: /claude/ })).toBeDefined()

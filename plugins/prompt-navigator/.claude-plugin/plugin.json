@@ -5,9 +5,6 @@
   "author": {
     "name": "Giuseppe Rota"
   },
-  "engines": {
-    "claude-code": ">=2.1.332"
-  },
   "types": "./types/index.d.ts",
   "userConfig": {
     "haikuSummaries": {
